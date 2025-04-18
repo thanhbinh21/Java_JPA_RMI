@@ -20,25 +20,30 @@ import java.util.Set;
 @Table(name = "NhanVien")
 public class NhanVien {
     @Id
-    @Column(name = "ma_nhan_vien",columnDefinition = "nvarchar(45)",nullable = false)
+    @Column(name = "ma_nhan_vien", columnDefinition = "nvarchar(45)", nullable = false)
     @EqualsAndHashCode.Include
     private String id;
-    @Column(name = "ho_ten",columnDefinition = "nvarchar(100)",nullable = false)
+
+    @Column(name = "ho_ten", columnDefinition = "nvarchar(100)", nullable = false)
     private String hoTen;
-    @Column(name = "gioi_tinh",nullable = false)
+
+    @Column(name = "gioi_tinh", nullable = false)
     private boolean gioiTinh;
-    @Column(name = "nam_sinh",nullable = false)
+
+    @Column(name = "nam_sinh", nullable = false)
     private int namSinh;
-    @Column(name = "ngay_vao_lam",nullable = false)
+
+    @Column(name = "ngay_vao_lam", nullable = false)
     private LocalDate ngayVaoLam;
 
-    @Column(name = "so_dien_thoai",columnDefinition = "nvarchar(15)",nullable = false)
+    @Column(name = "so_dien_thoai", columnDefinition = "nvarchar(15)", nullable = false)
     private String soDienThoai;
 
     @OneToMany(mappedBy = "nhanVien", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<HoaDon> hoaDons;
+    @ToString.Exclude
+    private Set<HoaDon> hoaDons = new HashSet<>();
 
     @OneToMany(mappedBy = "nhanVien", fetch = FetchType.LAZY)
-    private Set<PhieuNhapThuoc> phieuNhapThuocs;
+    @ToString.Exclude
+    private Set<PhieuNhapThuoc> phieuNhapThuocs = new HashSet<>();
 }
-

@@ -19,31 +19,41 @@ import java.util.Set;
 @Table(name = "HoaDon")
 public class HoaDon {
     @Id
-    @Column(name = "ma_hoa_don",columnDefinition = "nvarchar(45)",nullable = false)
+    @Column(name = "ma_hoa_don", columnDefinition = "nvarchar(45)", nullable = false)
     @EqualsAndHashCode.Include
     private String id;
-    @Column(name = "thoi_gian",nullable = false)
+
+    @Column(name = "thoi_gian", nullable = false)
     private Timestamp thoiGian;
-    @Column(name = "trang_thai",nullable = false)
+
+    @Column(name = "trang_thai", nullable = false)
     private boolean trangThai;
 
     @ManyToOne
-    @JoinColumn(name = "ma_nhan_vien", nullable = false) // Cột khóa ngoại
+    @JoinColumn(name = "ma_nhan_vien", nullable = false)
+    @ToString.Exclude
     private NhanVien nhanVien;
+
     @ManyToOne
     @JoinColumn(name = "ma_khach_hang", nullable = false)
+    @ToString.Exclude
     private KhachHang khachHang;
+
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ChiTietHoaDon> chiTietHoaDons;
+    @ToString.Exclude
+    private Set<ChiTietHoaDon> chiTietHoaDons = new HashSet<>();
 
     public HoaDon(String id) {
         this.id = id;
     }
 
     public HoaDon() {
-
     }
 
     public HoaDon(String idHD, Timestamp thoiGian, NhanVien nhanVien, KhachHang khachHang) {
+        this.id = idHD;
+        this.thoiGian = thoiGian;
+        this.nhanVien = nhanVien;
+        this.khachHang = khachHang;
     }
 }

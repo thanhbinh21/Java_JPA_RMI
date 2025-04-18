@@ -7,11 +7,9 @@ import javax.swing.JTextField;
 public class Validation {
 
     public static Boolean isEmpty(String input) {
-        if (input.trim() == null) {
-            return true;
-        }
-        return input.trim().equals("");
+        return input == null || input.trim().isEmpty();
     }
+
 
     public static Boolean isEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$";
