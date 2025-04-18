@@ -132,4 +132,3 @@ VALUES
     ('NCC006', N'Công ty Dược phẩm VCP', '0285413833', N'780 Nguyễn Văn Linh, Quận 7, TP.HCM');
 
 
--- test
