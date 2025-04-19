@@ -2,6 +2,7 @@ package service.impl;
 
 import dao.DanhMucDAO;
 import dao.ThuocDAO;
+import entity.DanhMuc;
 import entity.Thuoc;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -16,6 +17,11 @@ public class ThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implemen
         super(thuocDAO);
         this.thuocDAO = thuocDAO;
         this.danhMucDAO = danhMucDAO;
+    }
+
+    @Override
+    public List<DanhMuc> getAllDanhMuc() throws RemoteException {
+        return danhMucDAO.findAll();
     }
 
     @Override

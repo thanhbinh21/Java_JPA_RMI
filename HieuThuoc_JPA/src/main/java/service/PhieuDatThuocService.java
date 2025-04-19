@@ -10,4 +10,7 @@ public interface PhieuDatThuocService extends GenericService<PhieuDatThuoc, Stri
     List<PhieuDatThuoc> findByKhachHang(KhachHang khachHang) throws RemoteException;
     List<ChiTietPhieuDatThuoc> findChiTietByPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc) throws RemoteException;
     boolean updateTrangThai(String maPDT, boolean daXuLy) throws RemoteException;
+
+
+    List<PhieuDatThuoc> findBySdt(String sdt) throws RemoteException;
 }

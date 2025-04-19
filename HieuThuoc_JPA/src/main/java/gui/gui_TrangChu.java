@@ -1,4 +1,3 @@
-
 package gui;
 
 import java.awt.BorderLayout;
@@ -11,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 
+import dao.impl.TaiKhoanDAOImpl;
 import entity.TaiKhoan;
 import other.MessageDialog;
 
@@ -39,13 +39,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
 import javax.swing.JButton;
+
+import service.TaiKhoanService;
+import service.impl.TaiKhoanServiceImpl;
 
 public class gui_TrangChu extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane, homePanel;
-    public  gui_TrangChu(TaiKhoan login) {
+    private TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(new TaiKhoanDAOImpl());
+
+    public gui_TrangChu(TaiKhoan login) throws RemoteException {
     	
     	setForeground(SystemColor.activeCaptionBorder);
     	
@@ -98,8 +104,13 @@ public class gui_TrangChu extends JFrame {
                     if (currentFrame != null) {
                         currentFrame.dispose();  
                     }
-                    
-                    Login loginFrame = new Login();  
+
+                    Login loginFrame = null;
+                    try {
+                        loginFrame = new Login();
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     loginFrame.getFrmlogin().setVisible(true);  
                 }else {
                 	return;
@@ -239,8 +250,9 @@ public class gui_TrangChu extends JFrame {
 		JMenuItem mni_banthuoc = new JMenuItem("Bán thuốc");
 		mni_banthuoc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				  gui_BanThuoc banthuoc = new gui_BanThuoc(login);
-			        // Thay thế panel hiện tại bằng panel mới
+                gui_BanThuoc banthuoc = null;
+                banthuoc = new gui_BanThuoc(login);
+                // Thay thế panel hiện tại bằng panel mới
 			        setPanel(banthuoc);
 			}
 		});
@@ -498,10 +510,9 @@ public class gui_TrangChu extends JFrame {
         ImageIcon scaledImageIcon = new ImageIcon(img);
         
         // set quyen 
-        if (!"admin".equals(login.getVaiTro().getId())) {
+        if (!"admin".equals(taiKhoanService.findById(login.getId()).getVaiTro().getId())) {
             mni_phanquyen.setEnabled(false);
             mni_nhanvien.setEnabled(false);
-            
         }
 
         
