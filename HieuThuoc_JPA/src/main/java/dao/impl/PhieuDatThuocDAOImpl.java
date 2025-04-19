@@ -45,6 +45,18 @@ public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> 
     }
 
     @Override
+    public List<PhieuDatThuoc> findBySdt(String sdt) {
+        try {
+            return em.createQuery("SELECT p FROM PhieuDatThuoc p WHERE p.khachHang.sdt = :sdt", PhieuDatThuoc.class)
+                    .setParameter("sdt", sdt)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
+    @Override
     public boolean updateTT(String selectedMaPDT) {
         try {
             em.getTransaction().begin();
