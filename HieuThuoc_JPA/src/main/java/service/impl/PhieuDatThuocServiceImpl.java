@@ -39,4 +39,9 @@ public class PhieuDatThuocServiceImpl extends GenericServiceImpl<PhieuDatThuoc, 
         }
         return false;
     }
+
+    @Override
+    public List<PhieuDatThuoc> findBySdt(String sdt) {
+        //
+    }
 }

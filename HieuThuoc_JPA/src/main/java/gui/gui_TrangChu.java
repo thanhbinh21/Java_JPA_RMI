@@ -39,6 +39,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
 import javax.swing.JButton;
 
 public class gui_TrangChu extends JFrame {
@@ -239,8 +240,13 @@ public class gui_TrangChu extends JFrame {
 		JMenuItem mni_banthuoc = new JMenuItem("Bán thuốc");
 		mni_banthuoc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				  gui_BanThuoc banthuoc = new gui_BanThuoc(login);
-			        // Thay thế panel hiện tại bằng panel mới
+                gui_BanThuoc banthuoc = null;
+                try {
+                    banthuoc = new gui_BanThuoc(login);
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+                // Thay thế panel hiện tại bằng panel mới
 			        setPanel(banthuoc);
 			}
 		});
