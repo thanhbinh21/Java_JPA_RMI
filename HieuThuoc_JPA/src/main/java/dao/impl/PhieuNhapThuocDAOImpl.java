@@ -22,7 +22,7 @@ public class PhieuNhapThuocDAOImpl extends GenericDAOImpl<PhieuNhapThuoc, String
 
     @Override
     public List<PhieuNhapThuoc> findAll() {
-        return super.getAll();
+        return super.findAll();
     }
 
     @Override

@@ -4,42 +4,20 @@ import dao.ChiTietPhieuDatThuocDAO;
 import entity.ChiTietPhieuDatThuoc;
 import entity.PhieuDatThuoc;
 import entity.Thuoc;
+import jakarta.persistence.EntityManager;
 
 
 import java.util.List;
 import java.util.Optional;
 
-public class ChiTietPhieuDatThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuDatThuoc, Long> implements ChiTietPhieuDatThuocDAO {
+public class ChiTietPhieuDatThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuDatThuoc, String> implements ChiTietPhieuDatThuocDAO {
 
     public ChiTietPhieuDatThuocDAOImpl() {
         super(ChiTietPhieuDatThuoc.class);
     }
-
-    @Override
-    public ChiTietPhieuDatThuoc findById(Long id) {
-        return super.findById(id);
+    public ChiTietPhieuDatThuocDAOImpl(EntityManager em) {
+        super(em, ChiTietPhieuDatThuoc.class);
     }
-
-    @Override
-    public List<ChiTietPhieuDatThuoc> findAll() {
-        return super.getAll();
-    }
-
-    @Override
-    public boolean save(ChiTietPhieuDatThuoc chiTietPhieuDatThuoc) {
-        return super.save(chiTietPhieuDatThuoc);
-    }
-
-    @Override
-    public boolean update(ChiTietPhieuDatThuoc chiTietPhieuDatThuoc) {
-        return super.update(chiTietPhieuDatThuoc);
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        return super.delete(id);
-    }
-
     @Override
     public List<ChiTietPhieuDatThuoc> findByPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc) {
         try {
@@ -52,18 +30,18 @@ public class ChiTietPhieuDatThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuDatT
         }
     }
 
-    @Override
-    public Optional<ChiTietPhieuDatThuoc> findByThuocAndPhieuDatThuoc(Thuoc thuoc, PhieuDatThuoc phieuDatThuoc) {
-        try {
-            return em.createQuery("SELECT c FROM ChiTietPhieuDatThuoc c WHERE c.thuoc = :thuoc AND c.phieuDatThuoc = :phieuDatThuoc", ChiTietPhieuDatThuoc.class)
-                    .setParameter("thuoc", thuoc)
-                    .setParameter("phieuDatThuoc", phieuDatThuoc)
-                    .getResultList()
-                    .stream()
-                    .findFirst();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
+//    @Override
+//    public Optional<ChiTietPhieuDatThuoc> findByThuocAndPhieuDatThuoc(Thuoc thuoc, PhieuDatThuoc phieuDatThuoc) {
+//        try {
+//            return em.createQuery("SELECT c FROM ChiTietPhieuDatThuoc c WHERE c.thuoc = :thuoc AND c.phieuDatThuoc = :phieuDatThuoc", ChiTietPhieuDatThuoc.class)
+//                    .setParameter("thuoc", thuoc)
+//                    .setParameter("phieuDatThuoc", phieuDatThuoc)
+//                    .getResultList()
+//                    .stream()
+//                    .findFirst();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return Optional.empty();
+//        }
+//    }
 }

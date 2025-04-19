@@ -20,7 +20,7 @@ public class NhaCungCapDAOImpl extends GenericDAOImpl<NhaCungCap, String> implem
 
     @Override
     public List<NhaCungCap> findAll() {
-        return super.getAll();
+        return super.findAll();
     }
 
     @Override

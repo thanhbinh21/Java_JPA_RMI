@@ -134,11 +134,11 @@ public class gui_TrangChu extends JFrame {
         mni_phanquyen.setBackground(SystemColor.scrollbar);
         hethong.add(mni_phanquyen);
         
-//        JMenuItem mni_gioithieu = new JMenuItem("Hướng dẫn sử dụng");
-//        mni_gioithieu.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/symbols.png")));
-//        mni_gioithieu.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
-//        mni_gioithieu.setBackground(SystemColor.scrollbar);
-//        hethong.add(mni_gioithieu);
+        JMenuItem mni_gioithieu = new JMenuItem("Hướng dẫn sử dụng");
+        mni_gioithieu.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/symbols.png")));
+        mni_gioithieu.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
+        mni_gioithieu.setBackground(SystemColor.scrollbar);
+        hethong.add(mni_gioithieu);
        
 
 

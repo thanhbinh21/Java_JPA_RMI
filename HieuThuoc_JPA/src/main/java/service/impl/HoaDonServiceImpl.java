@@ -1,55 +1,34 @@
 package service.impl;
 
 import dao.HoaDonDAO;
-import dao.impl.HoaDonDAOImpl;
 import entity.HoaDon;
+import entity.KhachHang;
+import entity.NhanVien;
+import java.rmi.RemoteException;
+import java.util.List;
 import service.HoaDonService;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+public class HoaDonServiceImpl extends GenericServiceImpl<HoaDon, String> implements HoaDonService {
 
-public class HoaDonServiceImpl implements HoaDonService {
+    private final HoaDonDAO hoaDonDAO;
 
-    private final HoaDonDAO hoaDonDAO = new HoaDonDAOImpl();
-
-    @Override
-    public void themHoaDon(HoaDon hoaDon) {
-        hoaDonDAO.save(hoaDon);
+    public HoaDonServiceImpl(HoaDonDAO hoaDonDAO) throws RemoteException {
+        super(hoaDonDAO);
+        this.hoaDonDAO = hoaDonDAO;
     }
 
     @Override
-    public Optional<HoaDon> timHoaDonTheoMa(String maHoaDon) {
-        return Optional.ofNullable(hoaDonDAO.findById(maHoaDon));
+    public List<HoaDon> findByKhachHang(KhachHang khachHang) throws RemoteException {
+        return hoaDonDAO.findByKhachHang(khachHang);
     }
 
     @Override
-    public List<HoaDon> timHoaDonTheoKhachHang(String maKhachHang) {
-       return null;
+    public List<HoaDon> findByNhanVien(NhanVien nhanVien) throws RemoteException {
+        return hoaDonDAO.findByNhanVien(nhanVien);
     }
 
     @Override
-    public List<HoaDon> timHoaDonTheoNhanVien(String maNhanVien) {
-        return null;
-    }
-
-    @Override
-    public List<HoaDon> timHoaDonTheoKhoangThoiGian(LocalDateTime tuNgay, LocalDateTime denNgay) {
-        return null;
-    }
-
-    @Override
-    public List<HoaDon> layTatCaHoaDon() {
-        return hoaDonDAO.findAll();
-    }
-
-    @Override
-    public boolean capNhatHoaDon(HoaDon hoaDon) {
-        return hoaDonDAO.update(hoaDon);
-    }
-
-    @Override
-    public boolean xoaHoaDon(String maHoaDon) {
-        return hoaDonDAO.delete(maHoaDon);
+    public List<Object[]> getSoLuongHoaDonTheoKhachHang() throws RemoteException {
+        return hoaDonDAO.getSoLuongHoaDonTheoKhachHang();
     }
 }

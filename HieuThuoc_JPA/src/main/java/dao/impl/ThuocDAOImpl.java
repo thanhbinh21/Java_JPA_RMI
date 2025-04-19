@@ -1,12 +1,11 @@
 package dao.impl;
 
 import dao.ThuocDAO;
-import entity.NhaSanXuat;
+import entity.DanhMuc;
 import entity.Thuoc;
-
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
-import java.util.Optional;
 
 public class ThuocDAOImpl extends GenericDAOImpl<Thuoc, String> implements ThuocDAO {
 
@@ -14,81 +13,30 @@ public class ThuocDAOImpl extends GenericDAOImpl<Thuoc, String> implements Thuoc
         super(Thuoc.class);
     }
 
-    @Override
-    public Thuoc findById(String maThuoc) {
-        return super.findById(maThuoc);
+    public ThuocDAOImpl(EntityManager em) {
+        super(em, Thuoc.class);
     }
 
     @Override
-    public List<Thuoc> findAll() {
-        return super.getAll();
+    public List<Thuoc> selectByDanhMuc(DanhMuc danhMuc) {
+        Query query = em.createQuery("SELECT t FROM Thuoc t WHERE t.danhMuc = :danhMuc", Thuoc.class);
+        query.setParameter("danhMuc", danhMuc);
+        return query.getResultList();
     }
 
     @Override
-    public boolean save(Thuoc thuoc) {
-        return super.save(thuoc);
+    public List<Thuoc> searchByKeyword(String keyword) {
+        Query query = em.createQuery(
+                "SELECT t FROM Thuoc t WHERE LOWER(t.maThuoc) LIKE LOWER(:keyword) OR LOWER(t.tenThuoc) LIKE LOWER(:keyword) OR LOWER(t.thanhPhan) LIKE LOWER(:keyword)",
+                Thuoc.class
+        );
+        query.setParameter("keyword", "%" + keyword + "%");
+        return query.getResultList();
     }
 
-    @Override
-    public boolean update(Thuoc thuoc) {
-        return super.update(thuoc);
-    }
-
-    @Override
-    public boolean delete(String maThuoc) {
-        return super.delete(maThuoc);
-    }
-
-    @Override
-    public Optional<Thuoc> findByTenThuoc(String tenThuoc) {
-        try {
-            return em.createQuery("SELECT t FROM Thuoc t WHERE t.tenThuoc = :tenThuoc", Thuoc.class)
-                    .setParameter("tenThuoc", tenThuoc)
-                    .getResultList()
-                    .stream()
-                    .findFirst();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public List<Thuoc> findByDanhMuc(String danhMuc) {
-        try {
-            return em.createQuery("SELECT t FROM Thuoc t WHERE t.danhMuc = :danhMuc", Thuoc.class)
-                    .setParameter("danhMuc", danhMuc)
-                    .getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return List.of();
-        }
-    }
-
-    @Override
-    public List<Thuoc> findByNhaSanXuat(NhaSanXuat nhaSanXuat) {
-        try {
-            return em.createQuery("SELECT t FROM Thuoc t WHERE t.nhaSanXuat = :nhaSanXuat", Thuoc.class)
-                    .setParameter("nhaSanXuat", nhaSanXuat)
-                    .getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return List.of();
-        }
-    }
-
-    @Override
-    public void updateSoLuongTon(Thuoc thuoc, int updatedSoLuongTon) {
-        try {
-            em.getTransaction().begin();
-            thuoc.setSoLuongTon(updatedSoLuongTon);
-            em.merge(thuoc);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-        }
-    }
+//    @Override
+//    public List<Object[]> getMaTenThuoc() {
+//        String query = "SELECT t.maThuoc, t.tenThuoc FROM Thuoc t";
+//        return em.createQuery(query, Object[].class).getResultList();
+//    }
 }

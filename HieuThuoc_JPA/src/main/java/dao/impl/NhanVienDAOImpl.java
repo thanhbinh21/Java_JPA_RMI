@@ -20,7 +20,7 @@ public class NhanVienDAOImpl extends GenericDAOImpl<NhanVien, String> implements
 
     @Override
     public List<NhanVien> findAll() {
-        return super.getAll();
+        return super.findAll();
     }
 
     @Override

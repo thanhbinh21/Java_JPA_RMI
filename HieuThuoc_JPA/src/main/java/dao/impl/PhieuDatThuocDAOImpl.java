@@ -4,10 +4,10 @@ import dao.PhieuDatThuocDAO;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.PhieuDatThuoc;
+import jakarta.persistence.EntityManager;
 
 
 import java.util.List;
-import java.util.Optional;
 
 public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> implements PhieuDatThuocDAO {
 
@@ -15,30 +15,10 @@ public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> 
         super(PhieuDatThuoc.class);
     }
 
-    @Override
-    public PhieuDatThuoc findById(String maPhieuDat) {
-        return super.findById(maPhieuDat);
+    public PhieuDatThuocDAOImpl(EntityManager em) {
+        super(em, PhieuDatThuoc.class);
     }
 
-    @Override
-    public List<PhieuDatThuoc> findAll() {
-        return super.getAll();
-    }
-
-    @Override
-    public boolean save(PhieuDatThuoc phieuDatThuoc) {
-        return super.save(phieuDatThuoc);
-    }
-
-    @Override
-    public boolean update(PhieuDatThuoc phieuDatThuoc) {
-        return super.update(phieuDatThuoc);
-    }
-
-    @Override
-    public boolean delete(String maPhieuDat) {
-        return super.delete(maPhieuDat);
-    }
 
     @Override
     public List<PhieuDatThuoc> findByKhachHang(KhachHang khachHang) {
@@ -66,6 +46,21 @@ public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> 
 
     @Override
     public boolean updateTT(String selectedMaPDT) {
+        try {
+            em.getTransaction().begin();
+            PhieuDatThuoc phieuDatThuoc = em.find(PhieuDatThuoc.class, selectedMaPDT);
+            if (phieuDatThuoc != null) {
+                phieuDatThuoc.setTrangThai(true);
+                em.merge(phieuDatThuoc);
+                em.getTransaction().commit();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
         return false;
     }
 }

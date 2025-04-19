@@ -2,51 +2,36 @@ package dao.impl;
 
 import dao.ChiTietHoaDonDAO;
 import entity.ChiTietHoaDon;
-import entity.HoaDon;
+import entity.KhachHang;
+import jakarta.persistence.EntityManager;
 
 
 import java.util.List;
 
-public class ChiTietHoaDonDAOImpl extends GenericDAOImpl<ChiTietHoaDon, Long> implements ChiTietHoaDonDAO {
+public class ChiTietHoaDonDAOImpl extends GenericDAOImpl<ChiTietHoaDon, String> implements ChiTietHoaDonDAO {
 
     public ChiTietHoaDonDAOImpl() {
         super(ChiTietHoaDon.class);
     }
-
-    @Override
-    public ChiTietHoaDon findById(Long id) {
-        return super.findById(id);
+    public ChiTietHoaDonDAOImpl(EntityManager em) {
+        super(em, ChiTietHoaDon.class);
     }
 
-    @Override
-    public List<ChiTietHoaDon> findAll() {
-        return super.getAll();
-    }
+//    @Override
+//    public List<ChiTietHoaDon> findByHoaDon(HoaDon hoaDon) {
+//        try {
+//            return em.createQuery("SELECT c FROM ChiTietHoaDon c WHERE c.hoaDon = :hoaDon", ChiTietHoaDon.class)
+//                    .setParameter("hoaDon", hoaDon)
+//                    .getResultList();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return List.of();
+//        }
+//    }
 
     @Override
-    public boolean save(ChiTietHoaDon chiTietHoaDon) {
-        return super.save(chiTietHoaDon);
+    public List<ChiTietHoaDon> findByHoaDonId(String hoaDonId) {
+        return List.of();
     }
 
-    @Override
-    public boolean update(ChiTietHoaDon chiTietHoaDon) {
-        return super.update(chiTietHoaDon);
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        return super.delete(id);
-    }
-
-    @Override
-    public List<ChiTietHoaDon> findByHoaDon(HoaDon hoaDon) {
-        try {
-            return em.createQuery("SELECT c FROM ChiTietHoaDon c WHERE c.hoaDon = :hoaDon", ChiTietHoaDon.class)
-                    .setParameter("hoaDon", hoaDon)
-                    .getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return List.of();
-        }
-    }
 }

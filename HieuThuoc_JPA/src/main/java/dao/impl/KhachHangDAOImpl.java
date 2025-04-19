@@ -2,10 +2,9 @@ package dao.impl;
 
 import dao.KhachHangDAO;
 import entity.KhachHang;
-
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import java.util.List;
-import java.util.Optional;
 
 public class KhachHangDAOImpl extends GenericDAOImpl<KhachHang, String> implements KhachHangDAO {
 
@@ -13,42 +12,15 @@ public class KhachHangDAOImpl extends GenericDAOImpl<KhachHang, String> implemen
         super(KhachHang.class);
     }
 
-    @Override
-    public KhachHang findById(String id) {
-        return super.findById(id);
+    public KhachHangDAOImpl(EntityManager em) {
+        super(em, KhachHang.class);
     }
 
     @Override
-    public List<KhachHang> findAll() {
-        return super.getAll();
+    public KhachHang selectBySdt(String sdt) {
+        Query query = em.createQuery("SELECT kh FROM KhachHang kh WHERE kh.soDienThoai = :sdt", KhachHang.class);
+        query.setParameter("sdt", sdt);
+        List<KhachHang> results = query.getResultList();
+        return results.isEmpty() ? null : results.get(0);
     }
-
-    @Override
-    public boolean save(KhachHang khachHang) {
-        return super.save(khachHang);
-    }
-
-    @Override
-    public boolean update(KhachHang khachHang) {
-        return super.update(khachHang);
-    }
-
-    @Override
-    public boolean delete(String id) {
-        return super.delete(id);
-    }
-
-    @Override
-    public KhachHang findBySoDienThoai(String soDienThoai) {
-        try {
-            return em.createQuery("SELECT k FROM KhachHang k WHERE k.soDienThoai = :soDienThoai", KhachHang.class)
-                    .setParameter("soDienThoai", soDienThoai)
-                    .getSingleResult();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }
