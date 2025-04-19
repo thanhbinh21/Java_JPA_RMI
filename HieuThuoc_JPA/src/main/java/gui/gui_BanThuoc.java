@@ -87,6 +87,8 @@ public class gui_BanThuoc extends JPanel {
 	private  HoaDonService HD_SERVICE;
 	private  BanThuocService BAN_THUOC_SERVICE; // Tổng hợp các nghiệp vụ bán thuốc
 	private  PhieuDatThuocService DDT_SERVICE;
+	private  DanhMucService DM_SERVICE;
+	private  ChiTietHoaDonService CTHD_SERVICE;
 
 
 
@@ -110,6 +112,8 @@ public class gui_BanThuoc extends JPanel {
 			this.HD_SERVICE = (HoaDonServiceImpl) registry.lookup("HoaDonService");
 			this.BAN_THUOC_SERVICE = (BanThuocServiceImpl) registry.lookup("BanThuocService");
 			this.DDT_SERVICE = (PhieuDatThuocServiceImpl) registry.lookup("PhieuDatThuocService");
+			this.DM_SERVICE = (DanhMucServiceImpl) registry.lookup("DanhMucService");
+			this.CTHD_SERVICE = (ChiTietHoaDonServiceImpl) registry.lookup("ChiTietHoaDonService");
 			loadTable(THUOC_SERVICE.findAll());
 			loadDanhMucThuoc();
 			loadDDT();
@@ -240,8 +244,12 @@ public class gui_BanThuoc extends JPanel {
     	 cboxSearch = new JComboBox();
     	 cboxSearch.addActionListener(new ActionListener() {
     	 	public void actionPerformed(ActionEvent e) {
-    	 		loadTableTheoDanhMuc();
-    	 	}
+                try {
+                    loadTableTheoDanhMuc();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
     	 });
     	 cboxSearch.setBackground(SystemColor.text);
     	 cboxSearch.setModel(new DefaultComboBoxModel(new String[] {"Tất cả"}));
@@ -296,8 +304,12 @@ public class gui_BanThuoc extends JPanel {
     	JButton btnReload = new JButton();
     	btnReload.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			btnReloadActionPerformed();
-    		}
+                try {
+                    btnReloadActionPerformed();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
     	});
     	btnReload.setBackground(SystemColor.activeCaptionBorder);
     	btnReload.setBounds(318, 24, 47, 42);
@@ -458,8 +470,12 @@ public class gui_BanThuoc extends JPanel {
     	btnXoa.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/delete.png")));
     	btnXoa.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			btnDeleteCartItemActionPerformed();
-    		}
+                try {
+                    btnDeleteCartItemActionPerformed();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
     	});
     	btnXoa.setText("XÓA");
     	btnXoa.setPreferredSize(new Dimension(120, 40));
@@ -551,9 +567,13 @@ public class gui_BanThuoc extends JPanel {
     	JButton btn_tkim = new JButton();
     	btn_tkim.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			btnSearchActionPerformed();
-    			
-    		}
+                try {
+                    btnSearchActionPerformed();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
     	});
     	btn_tkim.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/search.png")));
     	btn_tkim.setToolTipText("Tìm");
@@ -602,8 +622,12 @@ public class gui_BanThuoc extends JPanel {
     	btnLuuhd.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/bill.png")));
     	btnLuuhd.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			btnThanhToanActionPerformed();
-    		}
+                try {
+                    btnThanhToanActionPerformed();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
     	});
     	btnLuuhd.setText("THANH TOÁN");
     	btnLuuhd.setPreferredSize(new Dimension(120, 40));
@@ -651,8 +675,12 @@ public class gui_BanThuoc extends JPanel {
     	btnHuyHD.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/return.png")));
     	btnHuyHD.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-    			btnHuyActionPerformed();
-    		}
+                try {
+                    btnHuyActionPerformed();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
     	
     		
     	});
@@ -811,7 +839,7 @@ public class gui_BanThuoc extends JPanel {
 		Timestamp thoiGian = new Timestamp(System.currentTimeMillis());
 		NhanVien nhanVien = tklogin.getNhanVien();
 		try {
-			KhachHang khachHang = KH_SERVICE.findBySdt(txtsdt.getText());
+			KhachHang khachHang = KH_SERVICE.getKhachHangBySdt(txtsdt.getText());
 			return new HoaDon(idHD, thoiGian, nhanVien, khachHang);
 		} catch (Exception e) {
 			MessageDialog.error(this, "Lỗi khi lấy thông tin khách hàng: " + e.getMessage());
@@ -912,7 +940,7 @@ public class gui_BanThuoc extends JPanel {
 				try {
 					Thuoc thuoc = THUOC_SERVICE.findById(txtMaThuoc.getText());
 					int updatedSoLuongTon = thuoc.getSoLuongTon() - cthd.getSoLuong();
-					THUOC_SERVICE.update(new Thuoc(thuoc.getId(), thuoc.getTen(), thuoc.getDonViTinh(), thuoc.getGiaBan(), updatedSoLuongTon, thuoc.getHanSuDung(), thuoc.getHinhAnh(), thuoc.getThanhPhan(), thuoc.getCongDung(), thuoc.getDanhMuc(), thuoc.getNhaSanXuat(), thuoc.getKhuyenMai()));
+					THUOC_SERVICE.update(new Thuoc(thuoc.getId(), thuoc.getTen(), thuoc.getDonViTinh(), thuoc.getThanhPhan(), updatedSoLuongTon, thuoc.getDonGia(), thuoc.getHinhAnh(), thuoc.getHanSuDung(), thuoc.getNhaSanXuat(), thuoc.getDanhMuc(), thuoc.getKhuyenMai(), thuoc.getChiTietHoaDons()));
 					loadTable(THUOC_SERVICE.findAll());
 					txtSoLuong.setText("");
 				} catch (Exception e) {
@@ -922,11 +950,11 @@ public class gui_BanThuoc extends JPanel {
 			}
 		}
 	}
-	private void btnSearchActionPerformed() {
+	private void btnSearchActionPerformed() throws RemoteException {
 		try {
 			KhachHang kh = null;
 			if (Validation.isPhoneNumber(txtsdt.getText())) {
-				kh = KH_SERVICE.findBySdt(txtsdt.getText());
+				kh = KH_SERVICE.getKhachHangBySdt(txtsdt.getText());
 			} else {
 				MessageDialog.error(this, "Kiểm tra lại số điện thoại");
 				return;
@@ -945,16 +973,18 @@ public class gui_BanThuoc extends JPanel {
 			try {
 				Thuoc thuoc = THUOC_SERVICE.findById(cthdToRemove.getThuoc().getId());
 				int updatedSoLuongTon = thuoc.getSoLuongTon() + cthdToRemove.getSoLuong();
-				THUOC_SERVICE.update(new Thuoc(thuoc.getId(), thuoc.getTen(), thuoc.getDonViTinh(), thuoc.getGiaBan(), updatedSoLuongTon, thuoc.getHanSuDung(), thuoc.getHinhAnh(), thuoc.getThanhPhan(), thuoc.getCongDung(), thuoc.getDanhMuc(), thuoc.getNhaSanXuat(), thuoc.getKhuyenMai()));
+				THUOC_SERVICE.update(new Thuoc(thuoc.getId(), thuoc.getTen(), thuoc.getDonViTinh(), thuoc.getThanhPhan(), updatedSoLuongTon, thuoc.getDonGia(), thuoc.getHinhAnh(), thuoc.getHanSuDung(), thuoc.getNhaSanXuat(), thuoc.getDanhMuc(), thuoc.getKhuyenMai(), thuoc.getChiTietHoaDons()));
 				loadTable(THUOC_SERVICE.findAll());
 			} catch (Exception e) {
 				MessageDialog.error(this, "Lỗi khi cập nhật số lượng thuốc: " + e.getMessage());
 				e.printStackTrace();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
     
-    private void btnDeleteCartItemActionPerformed() {
+    private void btnDeleteCartItemActionPerformed() throws RemoteException {
         if (MessageDialog.confirm(this, "Bạn có chắc muốc xóa khỏi giỏ hàng?", "Xóa thuốc khỏi giỏ hàng")) {
             if (listCTHD.isEmpty()) {
                 MessageDialog.error(this, "Không có sản phẩm trong giỏ hàng!");
@@ -969,14 +999,15 @@ public class gui_BanThuoc extends JPanel {
             Thuoc thuocCTHD = cthd.getThuoc();
             Thuoc thuoc = listThuoc.get(listThuoc.indexOf(thuocCTHD));
             int updatedSoLuongTon = thuoc.getSoLuongTon() + cthd.getSoLuong();
-            THUOC_DAO.updateSoLuongTon(thuoc, updatedSoLuongTon);
-            loadTable(THUOC_DAO.findAll());
+			thuoc.setSoLuongTon(updatedSoLuongTon);
+            THUOC_SERVICE.update(thuoc);
+            loadTable(THUOC_SERVICE.findAll());
         }
     }
-    public List<Thuoc> getSearchTable(String text) {
+    public List<Thuoc> getSearchTable(String text) throws RemoteException {
         text = text.toLowerCase();
         List result = new ArrayList<Thuoc>();
-               for (Thuoc e : THUOC_DAO.findAll()) {
+               for (Thuoc e : THUOC_SERVICE.findAll()) {
                     if (e.getId().toLowerCase().contains(text)
                             || e.getTen().toLowerCase().contains(text)
                             || e.getDanhMuc().getTen().toLowerCase().contains(text)
@@ -990,19 +1021,20 @@ public class gui_BanThuoc extends JPanel {
     }
 
  
-    private void btnReloadActionPerformed() {
+    private void btnReloadActionPerformed() throws RemoteException {
 
         txtSearch.setText("");
         cboxSearch.setSelectedIndex(0);
-        loadTable(THUOC_DAO.findAll());
+        loadTable(THUOC_SERVICE.findAll());
     }
-    private void btnHuyActionPerformed() {
+    private void btnHuyActionPerformed() throws RemoteException {
         if (MessageDialog.confirm(this, "Xác nhận hủy hóa đơn?", "Hủy hóa đơn")) {
             for (ChiTietHoaDon cthd : listCTHD) {
                 Thuoc thuocCTHD = cthd.getThuoc();
                 Thuoc thuoc = listThuoc.get(listThuoc.indexOf(thuocCTHD));
                 int updatedSoLuongTon = thuoc.getSoLuongTon() + cthd.getSoLuong();
-                THUOC_DAO.updateSoLuongTon(thuoc, updatedSoLuongTon);
+				thuoc.setSoLuongTon(updatedSoLuongTon);
+                THUOC_SERVICE.update(thuoc);
             }
          
            deteleAllTxt(); 
@@ -1018,7 +1050,7 @@ public class gui_BanThuoc extends JPanel {
            
         }
     }
-    private void deteleAllTxt() {
+    private void deteleAllTxt() throws RemoteException {
     	txtDonGia.setText("");
     	txtHinhAnh.setText("");
     	txtHoTenKH.setText("");
@@ -1033,21 +1065,21 @@ public class gui_BanThuoc extends JPanel {
     	txtTongTien.setText("");
     	txtHinhAnh.setIcon(null);
     	
-           loadTable(THUOC_DAO.findAll());
+           loadTable(THUOC_SERVICE.findAll());
            if(modalCart.getColumnCount()!=0) {
         	   modalCart.setRowCount(0); 
            }
            
     }
-    private void btnThanhToanActionPerformed() {
+    private void btnThanhToanActionPerformed() throws RemoteException {
         try {
 			if(modalCart.getColumnCount()!=0 &&isValidHoaDon()) {
 				if (MessageDialog.confirm(this, "Xác nhận thanh toán?", "Lập hóa đơn")) {
 			        HoaDon hd = getInputHoaDon(); 
 			        if (hd != null) {
-			            HD_DAO.save(hd);
+			            HD_SERVICE.save(hd);
 						for (ChiTietHoaDon a : listCTHD) {
-							CTHD_DAO.save((ChiTietHoaDon) listCTHD);
+							CTHD_SERVICE.save((ChiTietHoaDon) listCTHD);
 			            }
 
 			      
@@ -1078,10 +1110,10 @@ public class gui_BanThuoc extends JPanel {
 		}
     }
 
-	public void loadDanhMucThuoc() {
+	public void loadDanhMucThuoc() throws RemoteException {
 		List<DanhMuc> danhMucs = null;
 		try {
-			danhMucs = THUOC_SERVICE.getAllDanhMuc();
+			danhMucs = DM_SERVICE.findAll();
 			cboxSearch.addItem("Tất cả");
 			for (DanhMuc a : danhMucs) {
 				cboxSearch.addItem(a.getTen());
@@ -1092,7 +1124,7 @@ public class gui_BanThuoc extends JPanel {
 		}
 	}
 
-	public void loadTableTheoDanhMuc() {
+	public void loadTableTheoDanhMuc() throws RemoteException {
 		String selectedDanhMuc = cboxSearch.getSelectedItem().toString();
 		List<Thuoc> filList = new ArrayList<>();
 		if (selectedDanhMuc.equals("Tất cả")) {
@@ -1121,7 +1153,7 @@ public class gui_BanThuoc extends JPanel {
 			listDDT = DDT_SERVICE.findAll();
 			boolean hasUnprocessed = false;
 			for (PhieuDatThuoc a : listDDT) {
-				if (!a.isDaXuLy()) {
+				if (!a.isTrangThai()) {
 					cbb_DDT.addItem(a.getId());
 					hasUnprocessed = true;
 				}
@@ -1167,7 +1199,7 @@ public class gui_BanThuoc extends JPanel {
 		}
 		KhachHang kh = null;
 		try {
-			kh = KH_SERVICE.findBySdt(txtSdtDDT.getText());
+			kh = KH_SERVICE.getKhachHangBySdt(txtSdtDDT.getText());
 			if (kh == null) {
 				MessageDialog.error(this, "Không tìm thấy khách hàng với số điện thoại này.");
 				resetDDTFields();
@@ -1179,7 +1211,7 @@ public class gui_BanThuoc extends JPanel {
 			cbb_DDT.removeAllItems();
 			cbb_DDT.addItem("Tất cả");
 			for (PhieuDatThuoc pdt : listPDT) {
-				if (!pdt.isDaXuLy()) {
+				if (!pdt.isTrangThai()) {
 					cbb_DDT.addItem(pdt.getId());
 					foundUnprocessed = true;
 				}

@@ -3,12 +3,13 @@ package entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "NhaCungCap")
-public class NhaCungCap {
+public class NhaCungCap implements Serializable {
     @Id
     @Column(name = "ma_nha_cung_cap")
     private String id;

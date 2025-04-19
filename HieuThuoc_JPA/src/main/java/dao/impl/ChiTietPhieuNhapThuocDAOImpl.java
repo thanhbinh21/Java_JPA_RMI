@@ -10,7 +10,7 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-public class ChiTietPhieuNhapThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuNhapThuoc, Long> implements ChiTietPhieuNhapThuocDAO {
+public class ChiTietPhieuNhapThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuNhapThuoc, ChiTietPhieuNhapThuoc.ChiTietPhieuNhapThuocID> implements ChiTietPhieuNhapThuocDAO {
 
     public ChiTietPhieuNhapThuocDAOImpl() {
         super(ChiTietPhieuNhapThuoc.class);

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(name = "PhieuDatThuoc")
-public class PhieuDatThuoc {
+public class PhieuDatThuoc implements Serializable {
     @Id
     @Column(name = "ma_phieu_dat_thuoc", columnDefinition = "varchar(45)")
     @EqualsAndHashCode.Include

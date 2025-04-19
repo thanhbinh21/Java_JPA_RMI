@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import javax.swing.JTextField;
 
 import java.awt.Color;
+import java.time.format.DateTimeFormatter;
 
 public class gui_thongtinlogin extends JPanel {
 
@@ -75,9 +76,9 @@ public class gui_thongtinlogin extends JPanel {
         lblNewLabel_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
         lblNewLabel_1_1_1_1.setBounds(123, 248, 115, 23);
         add(lblNewLabel_1_1_1_1);
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		String ngayVaoLamString = dateFormat.format(taiKhoan.getNhanVien().getNgayVaoLam());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String ngayVaoLamString = taiKhoan.getNhanVien().getNgayVaoLam().format(formatter);
 
 		textFieldNGAYVAOLAM = new JTextField(ngayVaoLamString);
 		textFieldNGAYVAOLAM.setFont(new Font("Tahoma", Font.PLAIN, 15));

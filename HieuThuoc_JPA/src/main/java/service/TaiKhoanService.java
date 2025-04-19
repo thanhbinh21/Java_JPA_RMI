@@ -1,8 +1,10 @@
 package service;
 
 import entity.TaiKhoan;
+import jakarta.persistence.EntityManager;
+
 import java.rmi.RemoteException;
 
 public interface TaiKhoanService extends GenericService<TaiKhoan, String> {
-    TaiKhoan authenticate(String username, String password) throws RemoteException;
+    TaiKhoan findByIdAndPassword(String username, String password) throws RemoteException;
 }

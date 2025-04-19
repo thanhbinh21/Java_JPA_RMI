@@ -2,6 +2,7 @@ package dao.impl;
 
 import dao.NhaSanXuatDAO;
 import entity.NhaSanXuat;
+import jakarta.persistence.EntityManager;
 
 
 import java.util.List;
@@ -11,6 +12,10 @@ public class NhaSanXuatDAOImpl extends GenericDAOImpl<NhaSanXuat, String> implem
 
     public NhaSanXuatDAOImpl() {
         super(NhaSanXuat.class);
+    }
+
+    public NhaSanXuatDAOImpl(EntityManager em) {
+        super(em, NhaSanXuat.class);
     }
 
     @Override
@@ -39,16 +44,15 @@ public class NhaSanXuatDAOImpl extends GenericDAOImpl<NhaSanXuat, String> implem
     }
 
     @Override
-    public Optional<NhaSanXuat> findByTenNhaSanXuat(String tenNhaSanXuat) {
+    public NhaSanXuat findByTenNhaSanXuat(String tenNhaSanXuat) {
         try {
-            return em.createQuery("SELECT n FROM NhaSanXuat n WHERE n.tenNhaSanXuat = :tenNhaSanXuat", NhaSanXuat.class)
+            return em.createQuery("SELECT n FROM NhaSanXuat n WHERE n.ten = :tenNhaSanXuat", NhaSanXuat.class)
                     .setParameter("tenNhaSanXuat", tenNhaSanXuat)
                     .getResultList()
-                    .stream()
-                    .findFirst();
+                    .get(0);
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.empty();
+            return null;
         }
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper=false, onlyExplicitlyIncluded=true)
 @Entity
 @Table(name = "PhieuNhapThuoc")
-public class PhieuNhapThuoc {
+public class PhieuNhapThuoc implements Serializable {
     @Id
     @Column(name = "ma_phieu_nhap_thuoc", unique = true, nullable = false)
     @EqualsAndHashCode.Include
