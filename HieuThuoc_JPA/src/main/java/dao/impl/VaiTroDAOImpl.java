@@ -20,7 +20,7 @@ public class VaiTroDAOImpl extends GenericDAOImpl<VaiTro, String> implements Vai
 
     @Override
     public List<VaiTro> findAll() {
-        return super.getAll();
+        return super.findAll();
     }
 
     @Override

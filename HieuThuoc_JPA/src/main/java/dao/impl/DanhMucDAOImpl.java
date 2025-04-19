@@ -2,6 +2,7 @@ package dao.impl;
 
 import dao.DanhMucDAO;
 import entity.DanhMuc;
+import jakarta.persistence.EntityManager;
 
 
 import java.util.List;
@@ -13,42 +14,18 @@ public class DanhMucDAOImpl extends GenericDAOImpl<DanhMuc, String> implements D
         super(DanhMuc.class);
     }
 
-    @Override
-    public DanhMuc findById(String maDanhMuc) {
-        return super.findById(maDanhMuc);
+    public DanhMucDAOImpl(EntityManager em) {
+        super(em, DanhMuc.class);
     }
-
     @Override
-    public List<DanhMuc> findAll() {
-        return super.getAll();
-    }
-
-    @Override
-    public boolean save(DanhMuc danhMuc) {
-        return super.save(danhMuc);
-    }
-
-    @Override
-    public boolean update(DanhMuc danhMuc) {
-        return super.update(danhMuc);
-    }
-
-    @Override
-    public boolean delete(String maDanhMuc) {
-        return super.delete(maDanhMuc);
-    }
-
-    @Override
-    public Optional<DanhMuc> findByTenDanhMuc(String tenDanhMuc) {
+    public List<DanhMuc> findByTenDanhMuc(String tenDanhMuc) {
         try {
-            return em.createQuery("SELECT d FROM DanhMuc d WHERE d.tenDanhMuc = :tenDanhMuc", DanhMuc.class)
+            return em.createQuery("SELECT d FROM DanhMuc d WHERE d.ten = :tenDanhMuc", DanhMuc.class)
                     .setParameter("tenDanhMuc", tenDanhMuc)
-                    .getResultList()
-                    .stream()
-                    .findFirst();
+                    .getResultList();
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.empty();
+            return List.of();
         }
     }
 }

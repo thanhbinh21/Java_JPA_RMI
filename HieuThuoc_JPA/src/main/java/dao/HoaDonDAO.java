@@ -5,14 +5,9 @@ import entity.KhachHang;
 import entity.NhanVien;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface HoaDonDAO {
-    HoaDon findById(String id);
-    List<HoaDon> findAll();
-    boolean save(HoaDon hoaDon);
-    boolean update(HoaDon hoaDon);
-    boolean delete(String id);
+public interface HoaDonDAO extends GenericDAO<HoaDon, String> {
     List<HoaDon> findByKhachHang(KhachHang khachHang);
     List<HoaDon> findByNhanVien(NhanVien nhanVien);
+    List<Object[]> getSoLuongHoaDonTheoKhachHang();
 }

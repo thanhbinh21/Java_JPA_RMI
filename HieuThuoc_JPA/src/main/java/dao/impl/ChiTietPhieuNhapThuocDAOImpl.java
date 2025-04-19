@@ -4,6 +4,7 @@ import dao.ChiTietPhieuNhapThuocDAO;
 import entity.ChiTietPhieuNhapThuoc;
 import entity.PhieuNhapThuoc;
 import entity.Thuoc;
+import jakarta.persistence.EntityManager;
 
 
 import java.util.List;
@@ -15,29 +16,8 @@ public class ChiTietPhieuNhapThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuNha
         super(ChiTietPhieuNhapThuoc.class);
     }
 
-    @Override
-    public ChiTietPhieuNhapThuoc findById(Long id) {
-        return super.findById(id);
-    }
-
-    @Override
-    public List<ChiTietPhieuNhapThuoc> findAll() {
-        return super.getAll();
-    }
-
-    @Override
-    public boolean save(ChiTietPhieuNhapThuoc chiTietPhieuNhapThuoc) {
-        return super.save(chiTietPhieuNhapThuoc);
-    }
-
-    @Override
-    public boolean update(ChiTietPhieuNhapThuoc chiTietPhieuNhapThuoc) {
-        return super.update(chiTietPhieuNhapThuoc);
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        return super.delete(id);
+    public ChiTietPhieuNhapThuocDAOImpl(EntityManager em) {
+        super(em, ChiTietPhieuNhapThuoc.class);
     }
 
     @Override

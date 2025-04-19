@@ -20,7 +20,7 @@ public class NhaSanXuatDAOImpl extends GenericDAOImpl<NhaSanXuat, String> implem
 
     @Override
     public List<NhaSanXuat> findAll() {
-        return super.getAll();
+        return super.findAll();
     }
 
     @Override

@@ -78,7 +78,7 @@ public abstract class GenericDAOImpl <T,ID> implements GenericDAO<T, ID> {
 
     //JPQL
     @Override
-    public List<T> getAll() {
+    public List<T> findAll() {
         return em.createQuery("from " + clazz.getSimpleName() + " t", clazz)
                 .getResultList();
     }

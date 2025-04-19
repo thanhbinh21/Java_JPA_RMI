@@ -1,72 +1,87 @@
 package service.impl;
 
 import dao.ChiTietHoaDonDAO;
+import dao.DanhMucDAO;
 import dao.HoaDonDAO;
 import dao.KhachHangDAO;
 import dao.ThuocDAO;
-import dao.impl.ChiTietHoaDonDAOImpl;
-import dao.impl.HoaDonDAOImpl;
-import dao.impl.KhachHangDAOImpl;
-import dao.impl.ThuocDAOImpl;
 import entity.ChiTietHoaDon;
 import entity.HoaDon;
 import entity.KhachHang;
-import entity.NhanVien;
 import entity.Thuoc;
+import java.rmi.RemoteException;
+import java.util.List;
 import service.BanThuocService;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+public class BanThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implements BanThuocService {
 
-public class BanThuocServiceImpl implements BanThuocService {
+    private final ThuocDAO thuocDAO;
+    private final HoaDonDAO hoaDonDAO;
+    private final KhachHangDAO khachHangDAO;
+    private final ChiTietHoaDonDAO chiTietHoaDonDAO;
+    private final DanhMucDAO danhMucDAO;
 
-    private final HoaDonDAO hoaDonDAO = new HoaDonDAOImpl();
-    private final ChiTietHoaDonDAO chiTietHoaDonDAO = new ChiTietHoaDonDAOImpl();
-    private final ThuocDAO thuocDAO = new ThuocDAOImpl();
-    private final KhachHangDAO khachHangDAO = new KhachHangDAOImpl();
-
-    @Override
-    public HoaDon banThuoc(KhachHang khachHang, NhanVien nhanVien, List<ChiTietHoaDon> chiTietHoaDons) {
-        HoaDon hoaDon = new HoaDon();
-        hoaDon.setKhachHang(khachHang);
-        hoaDon.setNhanVien(nhanVien);
-        hoaDon.setThoiGian(Timestamp.valueOf(LocalDateTime.now()));
-        hoaDonDAO.save(hoaDon);
-
-        for (ChiTietHoaDon chiTiet : chiTietHoaDons) {
-            chiTiet.setHoaDon(hoaDon);
-            chiTietHoaDonDAO.save(chiTiet);
-
-            Optional<Thuoc> thuocOptional = Optional.ofNullable(thuocDAO.findById(chiTiet.getThuoc().getId()));
-            thuocOptional.ifPresent(thuoc -> {
-                int soLuongBan = chiTiet.getSoLuong();
-                int soLuongHienCo = thuoc.getSoLuongTon();
-                if (soLuongHienCo >= soLuongBan) {
-                    thuoc.setSoLuongTon(soLuongHienCo - soLuongBan);
-                    thuocDAO.update(thuoc);
-                } else {
-                    System.err.println("Không đủ số lượng thuốc: " + thuoc.getTen());
-                    // Xử lý lỗi thực tế cần được triển khai cẩn thận
-                }
-            });
-        }
-        return hoaDon;
+    public BanThuocServiceImpl(ThuocDAO thuocDAO, HoaDonDAO hoaDonDAO, KhachHangDAO khachHangDAO,
+                               ChiTietHoaDonDAO chiTietHoaDonDAO, DanhMucDAO danhMucDAO) throws RemoteException {
+        super(thuocDAO); // Coi BanThuocService quản lý Thuoc cho các CRUD chung
+        this.thuocDAO = thuocDAO;
+        this.hoaDonDAO = hoaDonDAO;
+        this.khachHangDAO = khachHangDAO;
+        this.chiTietHoaDonDAO = chiTietHoaDonDAO;
+        this.danhMucDAO = danhMucDAO;
     }
 
     @Override
-    public Optional<Thuoc> timThuocTheoMa(String maThuoc) {
-        return Optional.ofNullable(thuocDAO.findById(maThuoc));
+    public List<Thuoc> getAllThuoc() throws RemoteException {
+        return thuocDAO.findAll();
     }
 
     @Override
-    public Optional<KhachHang> timKhachHangTheoId(String maKhachHang) {
-        return Optional.ofNullable(khachHangDAO.findById(maKhachHang));
+    public Thuoc getThuocById(String maThuoc) throws RemoteException {
+        return thuocDAO.findById(maThuoc);
     }
 
     @Override
-    public Optional<KhachHang> timKhachHangTheoSoDienThoai(String soDienThoai) {
-        return Optional.ofNullable(khachHangDAO.findBySoDienThoai(soDienThoai));
+    public List<Thuoc> getThuocByDanhMuc(String maDM) throws RemoteException {
+        return thuocDAO.selectByDanhMuc(danhMucDAO.findById(maDM));
+    }
+
+    @Override
+    public List<Thuoc> searchThuoc(String keyword) throws RemoteException {
+        return thuocDAO.searchByKeyword(keyword);
+    }
+
+    @Override
+    public boolean addThuocToCart(List<ChiTietHoaDon> cart, Thuoc thuoc, int soLuong) throws RemoteException {
+        // Triển khai logic
+        return false;
+    }
+
+    @Override
+    public boolean updateCartItemQuantity(List<ChiTietHoaDon> cart, String maThuoc, int newQuantity) throws RemoteException {
+        // Triển khai logic
+        return false;
+    }
+
+    @Override
+    public boolean removeThuocFromCart(List<ChiTietHoaDon> cart, String maThuoc) throws RemoteException {
+        // Triển khai logic
+        return false;
+    }
+
+    @Override
+    public HoaDon createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException {
+        // Triển khai logic
+        return null;
+    }
+
+    @Override
+    public KhachHang getKhachHangBySdt(String sdt) throws RemoteException {
+        return khachHangDAO.selectBySdt(sdt);
+    }
+
+    @Override
+    public boolean createKhachHang(KhachHang khachHang) throws RemoteException {
+        return khachHangDAO.save(khachHang);
     }
 }

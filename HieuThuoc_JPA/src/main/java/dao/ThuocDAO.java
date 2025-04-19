@@ -1,20 +1,14 @@
 package dao;
 
-import entity.NhaSanXuat;
+import entity.DanhMuc;
+import entity.KhachHang;
 import entity.Thuoc;
+import entity.TaiKhoan;
+import entity.HoaDon;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface ThuocDAO {
-    Thuoc findById(String maThuoc);
-    List<Thuoc> findAll();
-    boolean save(Thuoc thuoc);
-    boolean update(Thuoc thuoc);
-    boolean delete(String maThuoc);
-    Optional<Thuoc> findByTenThuoc(String tenThuoc);
-    List<Thuoc> findByDanhMuc(String danhMuc);
-    List<Thuoc> findByNhaSanXuat(NhaSanXuat nhaSanXuat);
-
-    void updateSoLuongTon(Thuoc thuoc, int updatedSoLuongTon);
+public interface ThuocDAO extends GenericDAO<Thuoc, String> {
+    List<Thuoc> selectByDanhMuc(DanhMuc danhMuc);
+    List<Thuoc> searchByKeyword(String keyword);
 }
