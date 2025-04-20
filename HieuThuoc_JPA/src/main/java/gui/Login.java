@@ -6,6 +6,7 @@ import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -19,9 +20,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import dao.TaiKhoanDAO;
-
 import dao.impl.TaiKhoanDAOImpl;
+import service.TaiKhoanService;
+import service.impl.TaiKhoanServiceImpl;
 import entity.TaiKhoan;
 import other.MessageDialog;
 import other.Validation;
@@ -31,7 +32,7 @@ public class Login extends JFrame implements ActionListener {
     private JFrame frmlogin;
     private JTextField tx_username;
     private JPasswordField tx_password;
-    private TaiKhoanDAO TK_DAO = new TaiKhoanDAOImpl();
+    private TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(new TaiKhoanDAOImpl());
     private boolean showPassword = false; 
 
     public static void main(String[] args) {
@@ -55,7 +56,7 @@ public class Login extends JFrame implements ActionListener {
 			this.frmlogin = frmlogin;
 		}
 	
-	    public Login() {
+	    public Login() throws RemoteException {
 	        login();
 	    }
     
@@ -153,7 +154,13 @@ public class Login extends JFrame implements ActionListener {
         btn_no.setBounds(94, 239, 140, 40);
         panel.add(btn_no);
 
-        btn_yes.addActionListener(e -> authentication());
+        btn_yes.addActionListener(e -> {
+            try {
+                authentication();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         btn_no.addActionListener(e -> System.exit(0));
     }
 
@@ -170,13 +177,13 @@ public class Login extends JFrame implements ActionListener {
 		return true;
 	}
 
-	private void authentication() {
+	private void authentication() throws RemoteException {
     String username = tx_username.getText();
     String password = new String(((JPasswordField) tx_password).getPassword());
 
 
     if (isValidateFields()) {
-        TaiKhoan tk = TK_DAO.findById(username);
+        TaiKhoan tk = taiKhoanService.findById(username);
 
         if (tk == null) {
             MessageDialog.error(this, "Tài khoản không tồn tại!");

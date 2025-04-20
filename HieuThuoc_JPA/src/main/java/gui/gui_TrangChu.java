@@ -42,11 +42,16 @@ import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import javax.swing.JButton;
 
+import service.TaiKhoanService;
+import service.impl.TaiKhoanServiceImpl;
+
 public class gui_TrangChu extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane, homePanel;
-    public  gui_TrangChu(TaiKhoan login) {
+    private TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(new TaiKhoanDAOImpl());
+
+    public gui_TrangChu(TaiKhoan login) throws RemoteException {
     	
     	setForeground(SystemColor.activeCaptionBorder);
     	
@@ -99,8 +104,13 @@ public class gui_TrangChu extends JFrame {
                     if (currentFrame != null) {
                         currentFrame.dispose();  
                     }
-                    
-                    Login loginFrame = new Login();  
+
+                    Login loginFrame = null;
+                    try {
+                        loginFrame = new Login();
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     loginFrame.getFrmlogin().setVisible(true);  
                 }else {
                 	return;
@@ -155,12 +165,12 @@ public class gui_TrangChu extends JFrame {
 		mni_vaitro.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
 		mni_vaitro.setBackground(SystemColor.scrollbar);
 		hethong.add(mni_vaitro);
-        
-//        JMenuItem mni_gioithieu = new JMenuItem("Hướng dẫn sử dụng");
-//        mni_gioithieu.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/symbols.png")));
-//        mni_gioithieu.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
-//        mni_gioithieu.setBackground(SystemColor.scrollbar);
-//        hethong.add(mni_gioithieu);
+
+        JMenuItem mni_gioithieu = new JMenuItem("Hướng dẫn sử dụng");
+        mni_gioithieu.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/symbols.png")));
+        mni_gioithieu.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
+        mni_gioithieu.setBackground(SystemColor.scrollbar);
+        hethong.add(mni_gioithieu);
        
 
 
@@ -274,7 +284,7 @@ public class gui_TrangChu extends JFrame {
 		mni_dm.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
 		mni_dm.setBackground(SystemColor.scrollbar);
 		danhmuc.add(mni_dm);
-		
+
 		
 
 		xuli.setFont(new Font("Segoe UI Black", Font.PLAIN, 20));
@@ -284,14 +294,11 @@ public class gui_TrangChu extends JFrame {
 		JMenuItem mni_banthuoc = new JMenuItem("Bán thuốc");
 		mni_banthuoc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                try {
-                    gui_BanThuoc banthuoc = new gui_BanThuoc(login);
-                    // Thay thế panel hiện tại bằng panel mới
-                    setPanel(banthuoc);
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                }
-            }
+                gui_BanThuoc banthuoc = null;
+                banthuoc = new gui_BanThuoc(login);
+                // Thay thế panel hiện tại bằng panel mới
+			        setPanel(banthuoc);
+			}
 		});
 	
 		mni_banthuoc.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/medicine.png")));
@@ -512,7 +519,7 @@ public class gui_TrangChu extends JFrame {
 
 
 
-
+		
 		JLabel lbl_login = new JLabel("NVA");
 		lbl_login.setText(login.toString());
 		lbl_login.setForeground(new Color(255, 20, 147));
@@ -547,10 +554,9 @@ public class gui_TrangChu extends JFrame {
         ImageIcon scaledImageIcon = new ImageIcon(img);
         
         // set quyen 
-        if (!"admin".equals(login.getVaiTro().getId())) {
+        if (!"admin".equals(taiKhoanService.findById(login.getId()).getVaiTro().getId())) {
             mni_phanquyen.setEnabled(false);
             mni_nhanvien.setEnabled(false);
-            
         }
 
         
