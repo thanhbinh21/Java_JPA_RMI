@@ -27,7 +27,7 @@ public class ThuocDAOImpl extends GenericDAOImpl<Thuoc, String> implements Thuoc
     @Override
     public List<Thuoc> searchByKeyword(String keyword) {
         Query query = em.createQuery(
-                "SELECT t FROM Thuoc t WHERE LOWER(t.maThuoc) LIKE LOWER(:keyword) OR LOWER(t.tenThuoc) LIKE LOWER(:keyword) OR LOWER(t.thanhPhan) LIKE LOWER(:keyword)",
+                "SELECT t FROM Thuoc t WHERE LOWER(t.id) LIKE LOWER(:keyword) OR LOWER(t.ten) LIKE LOWER(:keyword) OR LOWER(t.thanhPhan) LIKE LOWER(:keyword)",
                 Thuoc.class
         );
         query.setParameter("keyword", "%" + keyword + "%");

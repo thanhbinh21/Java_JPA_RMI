@@ -2,6 +2,7 @@ package dao.impl;
 
 import dao.VaiTroDAO;
 import entity.VaiTro;
+import jakarta.persistence.EntityManager;
 
 
 import java.util.List;
@@ -12,6 +13,8 @@ public class VaiTroDAOImpl extends GenericDAOImpl<VaiTro, String> implements Vai
     public VaiTroDAOImpl() {
         super(VaiTro.class);
     }
+
+    public VaiTroDAOImpl(EntityManager em) {super(em, VaiTro.class);}
 
     @Override
     public VaiTro findById(String id) {
@@ -39,16 +42,15 @@ public class VaiTroDAOImpl extends GenericDAOImpl<VaiTro, String> implements Vai
     }
 
     @Override
-    public Optional<VaiTro> findByTenVaiTro(String tenVaiTro) {
+    public VaiTro findByTenVaiTro(String tenVaiTro) {
         try {
             return em.createQuery("SELECT v FROM VaiTro v WHERE v.tenVaiTro = :tenVaiTro", VaiTro.class)
                     .setParameter("tenVaiTro", tenVaiTro)
                     .getResultList()
-                    .stream()
-                    .findFirst();
+                    .get(0);
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.empty();
+            return null;
         }
     }
 }

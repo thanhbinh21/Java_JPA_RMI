@@ -12,4 +12,5 @@ public interface PhieuDatThuocDAO extends GenericDAO<PhieuDatThuoc, String> {
 
     boolean updateTT(String selectedMaPDT);
     // Các phương thức đặc thù cho PhieuDatThuocDAO nếu có
+    List<PhieuDatThuoc> findBySdt(String sdt);
 }

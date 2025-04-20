@@ -1,5 +1,6 @@
 package rmi;
 
+<<<<<<< HEAD
 import dao.impl.ThuocDAOImpl;
 import dao.impl.DanhMucDAOImpl;
 import dao.impl.KhachHangDAOImpl;
@@ -13,18 +14,30 @@ import dao.impl.ChiTietPhieuDatThuocDAOImpl;
 import dao.impl.NhaCungCapDAOImpl;
 import dao.impl.PhieuNhapThuocDAOImpl;
 import dao.impl.ChiTietPhieuNhapThuocDAOImpl;
+=======
+import dao.impl.*;
+
+>>>>>>> ccf501d8b7640859e186f0c6f8add2dcb25edccf
 import dao.*;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
+import java.util.Map;
 
+import jakarta.persistence.EntityManager;
 import service.*;
 import service.impl.*;
+import until.JPAUtil;
 
 public class RMIServer {
 
     public static void main(String[] args) {
         try {
-            Registry registry = LocateRegistry.createRegistry(1099);
+            Registry registry = LocateRegistry.createRegistry(8989);
 
             // Khởi tạo các DAO
             ThuocDAO thuocDAO = new ThuocDAOImpl();
@@ -37,9 +50,13 @@ public class RMIServer {
             NhanVienDAO nhanVienDAO = new NhanVienDAOImpl();
             PhieuDatThuocDAO phieuDatThuocDAO = new PhieuDatThuocDAOImpl();
             ChiTietPhieuDatThuocDAO chiTietPhieuDatThuocDAO = new ChiTietPhieuDatThuocDAOImpl();
+<<<<<<< HEAD
             NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAOImpl();
             PhieuNhapThuocDAO phieuNhapThuocDAO = new PhieuNhapThuocDAOImpl();
             ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO = new ChiTietPhieuNhapThuocDAOImpl();
+=======
+            VaiTroDAO vaiTroDAO = new VaiTroDAOImpl();
+>>>>>>> ccf501d8b7640859e186f0c6f8add2dcb25edccf
 
             // Tạo các instance của remote object implementations
             ThuocService thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO);
@@ -47,6 +64,7 @@ public class RMIServer {
             HoaDonService hoaDonService = new HoaDonServiceImpl(hoaDonDAO);
             KhachHangService khachHangService = new KhachHangServiceImpl(khachHangDAO);
             TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(taiKhoanDAO);
+<<<<<<< HEAD
             PhieuDatThuocService phieuDatThuocService = new PhieuDatThuocServiceImpl(phieuDatThuocDAO, chiTietPhieuDatThuocDAO);
             
             // Khởi tạo các service mới
@@ -68,6 +86,30 @@ public class RMIServer {
             registry.rebind("NhaCungCapService", nhaCungCapService);
             registry.rebind("PhieuNhapThuocService", phieuNhapThuocService);
             registry.rebind("ChiTietPhieuNhapThuocService", chiTietPhieuNhapThuocService);
+=======
+            NhaSanXuatServiceImpl nhaSanXuatService = new NhaSanXuatServiceImpl(nhaSanXuatDAO);
+            NhanVienServiceImpl nhanVienService = new NhanVienServiceImpl(nhanVienDAO);
+            PhieuDatThuocService phieuDatThuocService = new PhieuDatThuocServiceImpl(phieuDatThuocDAO, chiTietPhieuDatThuocDAO);
+            VaiTroService vaiTroService = new VaiTroServiceImpl(vaiTroDAO);
+            DanhMucService danhMucService = new DanhMucServiceImpl(danhMucDAO);
+            ChiTietHoaDonService chiTietHoaDonService = new ChiTietHoaDonServiceImpl(chiTietHoaDonDAO);
+
+            // Đăng ký các remote object vào Registry với một tên
+            registry.bind("ThuocService", thuocService);
+            registry.bind("BanThuocService", banThuocService);
+            registry.bind("KhachHangService", khachHangService);
+            registry.bind("HoaDonService", hoaDonService);
+            registry.bind("TaiKhoanService", taiKhoanService);
+            registry.bind("NhaSanXuatService", nhaSanXuatService);
+            registry.bind("NhanVienService", nhanVienService);
+            registry.bind("PhieuDatThuocService", phieuDatThuocService);
+            registry.bind("VaiTroService", vaiTroService);
+            registry.bind("DanhMucService", danhMucService);
+            registry.bind("ChiTietHoaDonService", chiTietHoaDonService);
+
+            OneSessionService oneSessionServices = new OneSessionServiceImpl();
+            registry.bind("OneSessionService", oneSessionServices);
+>>>>>>> ccf501d8b7640859e186f0c6f8add2dcb25edccf
 
             System.out.println("RMI Server is running...");
         } catch (Exception e) {
