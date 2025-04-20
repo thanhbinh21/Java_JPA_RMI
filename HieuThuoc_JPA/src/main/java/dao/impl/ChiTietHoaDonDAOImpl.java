@@ -8,7 +8,7 @@ import jakarta.persistence.EntityManager;
 
 import java.util.List;
 
-public class ChiTietHoaDonDAOImpl extends GenericDAOImpl<ChiTietHoaDon, String> implements ChiTietHoaDonDAO {
+public class ChiTietHoaDonDAOImpl extends GenericDAOImpl<ChiTietHoaDon, ChiTietHoaDon.ChiTietHoaDonID> implements ChiTietHoaDonDAO {
 
     public ChiTietHoaDonDAOImpl() {
         super(ChiTietHoaDon.class);
@@ -30,7 +30,7 @@ public class ChiTietHoaDonDAOImpl extends GenericDAOImpl<ChiTietHoaDon, String> 
 //    }
 
     @Override
-    public List<ChiTietHoaDon> findByHoaDonId(String hoaDonId) {
+    public List<ChiTietHoaDon> findByHoaDonId(ChiTietHoaDon.ChiTietHoaDonID hoaDonId) {
         return List.of();
     }
 

@@ -2,6 +2,7 @@ package dao.impl;
 
 import dao.NhanVienDAO;
 import entity.NhanVien;
+import jakarta.persistence.EntityManager;
 
 
 import java.util.List;
@@ -11,6 +12,10 @@ public class NhanVienDAOImpl extends GenericDAOImpl<NhanVien, String> implements
 
     public NhanVienDAOImpl() {
         super(NhanVien.class);
+    }
+
+    public NhanVienDAOImpl(EntityManager em) {
+        super(em, NhanVien.class);
     }
 
     @Override
@@ -39,16 +44,15 @@ public class NhanVienDAOImpl extends GenericDAOImpl<NhanVien, String> implements
     }
 
     @Override
-    public Optional<NhanVien> findByTen(String ten) {
+    public NhanVien findByTen(String ten) {
         try {
             return em.createQuery("SELECT n FROM NhanVien n WHERE n.hoTen = :ten", NhanVien.class)
                     .setParameter("ten", ten)
                     .getResultList()
-                    .stream()
-                    .findFirst();
+                    .get(0);
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.empty();
+            return null;
         }
     }
 }

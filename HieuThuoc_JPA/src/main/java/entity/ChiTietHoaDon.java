@@ -3,13 +3,15 @@ package entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @IdClass(ChiTietHoaDon.ChiTietHoaDonID.class)
 @Table(name = "ChiTietHoaDon")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
-public class ChiTietHoaDon {
+public class ChiTietHoaDon implements Serializable {
     @Id
     @ManyToOne
     @JoinColumn(name = "ma_hoa_don", nullable = false)

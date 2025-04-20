@@ -3,6 +3,8 @@ package service.impl;
 import dao.TaiKhoanDAO;
 import entity.TaiKhoan;
 import java.rmi.RemoteException;
+
+import jakarta.persistence.EntityManager;
 import service.TaiKhoanService;
 
 public class TaiKhoanServiceImpl extends GenericServiceImpl<TaiKhoan, String> implements TaiKhoanService {
@@ -15,7 +17,7 @@ public class TaiKhoanServiceImpl extends GenericServiceImpl<TaiKhoan, String> im
     }
 
     @Override
-    public TaiKhoan authenticate(String username, String password) throws RemoteException {
+    public TaiKhoan findByIdAndPassword(String username, String password) throws RemoteException {
         return taiKhoanDAO.findByIdAndPassword(username, password);
     }
 }

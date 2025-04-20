@@ -1,3 +1,4 @@
+
 package gui;
 
 import java.awt.BorderLayout;
@@ -136,15 +137,36 @@ public class gui_TrangChu extends JFrame {
         mni_phanquyen.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/decentralized.png")));
         mni_phanquyen.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		//setPanel(new gui_taiKhoan());
-        	}
+                try {
+                    setPanel(new gui_taiKhoan());
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
         });
     
      
         mni_phanquyen.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
         mni_phanquyen.setBackground(SystemColor.scrollbar);
         hethong.add(mni_phanquyen);
-        
+
+		JMenuItem mni_vaitro = new JMenuItem("Quản lí vai trò");
+		mni_vaitro.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/user.png")));
+		mni_vaitro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                try {
+                    setPanel(new gui_qliVaiTro());
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
+		});
+
+
+		mni_vaitro.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
+		mni_vaitro.setBackground(SystemColor.scrollbar);
+		hethong.add(mni_vaitro);
+
         JMenuItem mni_gioithieu = new JMenuItem("Hướng dẫn sử dụng");
         mni_gioithieu.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/symbols.png")));
         mni_gioithieu.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
@@ -210,8 +232,12 @@ public class gui_TrangChu extends JFrame {
 		JMenuItem mni_nhanvien = new JMenuItem("Nhân viên");
 		mni_nhanvien.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//setPanel(new gui_nhanVien());
-			}
+                try {
+                    setPanel(new gui_nhanVien());
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
 		});
 		
 				mni_nhanvien.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/employees.png")));
@@ -222,8 +248,12 @@ public class gui_TrangChu extends JFrame {
 				JMenuItem mni_nsx = new JMenuItem("Nhà Sản Xuất");
 				mni_nsx.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						//setPanel(new gui_qliNhaSX());
-					}
+                        try {
+                            setPanel(new gui_qliNhaSX());
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
 				});
 				mni_nsx.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/decentralized.png")));
 				mni_nsx.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
@@ -240,7 +270,22 @@ public class gui_TrangChu extends JFrame {
 				mni_km.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
 				mni_km.setBackground(SystemColor.scrollbar);
 				danhmuc.add(mni_km);
-		
+
+		JMenuItem mni_dm = new JMenuItem("Danh mục thuốc");
+		mni_dm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                try {
+                    setPanel(new gui_qliDanhMuc());
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
+		});
+		mni_dm.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/scheme.png")));
+		mni_dm.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
+		mni_dm.setBackground(SystemColor.scrollbar);
+		danhmuc.add(mni_dm);
+
 		
 
 		xuli.setFont(new Font("Segoe UI Black", Font.PLAIN, 20));

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(name = "KhuyenMai")
-public class KhuyenMai {
+public class KhuyenMai implements Serializable {
 
     @Id
     @Column(name = "ma_khuyen_mai",columnDefinition = "varchar(45)")

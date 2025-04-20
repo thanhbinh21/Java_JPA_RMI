@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Set;
 
 
@@ -13,7 +14,7 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(name = "NhaSanXuat")
-public class NhaSanXuat {
+public class NhaSanXuat implements Serializable {
 
     @Id
     @Column(name = "ma_nha_san_xuat",columnDefinition = "varchar(45)")
