@@ -28,4 +28,16 @@ public class DanhMucDAOImpl extends GenericDAOImpl<DanhMuc, String> implements D
             return List.of();
         }
     }
+
+    @Override
+    public DanhMuc findByTen(String tenDM) {
+        try {
+            return em.createQuery("SELECT d FROM DanhMuc d WHERE d.ten = :tenDM", DanhMuc.class)
+                    .setParameter("tenDM", tenDM)
+                    .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
