@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Entity
 @IdClass(ChiTietPhieuDatThuoc.ChiTietPhieuDatThuocID.class)
 @Table(name = "ChiTietPhieuDatThuoc")
-public class ChiTietPhieuDatThuoc {
+public class ChiTietPhieuDatThuoc implements Serializable {
     @Id
     @ManyToOne
     @JoinColumn(name = "ma_phieu_dat_thuoc", nullable = false)

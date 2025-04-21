@@ -13,7 +13,7 @@ public class KhachHangDAOTest {
 
         // Test save
         KhachHang khachHang1 = new KhachHang();
-        khachHang1.setId("KH001"); // Gán ID thủ công
+        khachHang1.setId("KH001000"); // Gán ID thủ công
         khachHang1.setHoTen("Trần Thị B");
         khachHang1.setSoDienThoai("0987654321");
         khachHang1.setNgayThamGia(LocalDate.parse("2023-10-01"));

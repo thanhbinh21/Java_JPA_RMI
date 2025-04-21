@@ -3,6 +3,7 @@ package entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "KhachHang")
 @Data
-public class KhachHang {
+public class KhachHang implements Serializable {
     @Id
     @Column(name = "ma_khach_hang", columnDefinition = "varchar(45)")
     @EqualsAndHashCode.Include

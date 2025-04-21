@@ -11,7 +11,7 @@ import jakarta.persistence.EntityTransaction;
 import java.util.List;
 import java.util.Optional;
 
-public class ChiTietPhieuDatThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuDatThuoc, String> implements ChiTietPhieuDatThuocDAO {
+public class ChiTietPhieuDatThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuDatThuoc, ChiTietPhieuDatThuoc.ChiTietPhieuDatThuocID> implements ChiTietPhieuDatThuocDAO {
 
     public ChiTietPhieuDatThuocDAOImpl() {
         super(ChiTietPhieuDatThuoc.class);

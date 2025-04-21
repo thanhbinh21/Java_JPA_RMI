@@ -24,16 +24,28 @@ public class RandomMa {
         return sb.toString();
     }
     public static String maHoaDonAuto() {
-        return UUID.randomUUID().toString();
+        // Generate IDs in format HD-yyyyMMdd-XXXXX (year, month, day, random 5 chars)
+        java.time.LocalDate now = java.time.LocalDate.now();
+        String datePart = String.format("%d%02d%02d", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+        return "HD-" + datePart + "-" + getRandomId();
     }
     public static String maPhieuDatAuto() {
-        return UUID.randomUUID().toString();
+        // Generate IDs in format PD-yyyyMMdd-XXXXX
+        java.time.LocalDate now = java.time.LocalDate.now();
+        String datePart = String.format("%d%02d%02d", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+        return "PD-" + datePart + "-" + getRandomId();
     }
     public static String maPhieuNhapAuto() {
-        return UUID.randomUUID().toString();
+        // Generate IDs in format PN-yyyyMMdd-XXXXX
+        java.time.LocalDate now = java.time.LocalDate.now();
+        String datePart = String.format("%d%02d%02d", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+        return "PN-" + datePart + "-" + getRandomId();
     }
     public static String maKHAuto() {
-        return UUID.randomUUID().toString();
+        // Generate IDs in format KH-yyyyMMdd-XXXXX
+        java.time.LocalDate now = java.time.LocalDate.now();
+        String datePart = String.format("%d%02d%02d", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+        return "KH-" + datePart + "-" + getRandomId();
     }
 
 

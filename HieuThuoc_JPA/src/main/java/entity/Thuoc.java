@@ -1,19 +1,20 @@
 package entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Entity
 @Table(name = "Thuoc")
-public class Thuoc {
+public class Thuoc implements Serializable {
     @Id
     @Column(name = "ma_thuoc",columnDefinition = "varchar(45)")
     private String id;
