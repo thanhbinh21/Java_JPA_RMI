@@ -273,7 +273,7 @@ public class gui_TrangChu extends JFrame {
 		JMenuItem mni_nhapdatthuoc = new JMenuItem("Đặt thuốc");
 		mni_nhapdatthuoc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//setPanel(new gui_DatThuoc(login));
+				setPanel(new gui_DatThuoc(login));
 			}
 		});
 		mni_nhapdatthuoc.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/fulfillment.png")));

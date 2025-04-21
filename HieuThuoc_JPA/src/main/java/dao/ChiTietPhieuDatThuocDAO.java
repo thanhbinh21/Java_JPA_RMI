@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ChiTietPhieuDatThuocDAO extends GenericDAO<ChiTietPhieuDatThuoc, String> {
     List<ChiTietPhieuDatThuoc> findByPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc);
+
+
 }
