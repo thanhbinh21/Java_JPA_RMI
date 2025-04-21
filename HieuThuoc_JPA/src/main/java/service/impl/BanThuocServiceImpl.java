@@ -70,9 +70,42 @@ public class BanThuocServiceImpl extends GenericServiceImpl<Thuoc, String> imple
     }
 
     @Override
-    public HoaDon createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException {
-        // Triển khai logic
-        return null;
+    public boolean createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException {
+        try {
+            boolean saveHoaDonResult = hoaDonDAO.save(hoaDon);
+            if (!saveHoaDonResult) {
+                return false;
+            }
+
+            for (ChiTietHoaDon cartItem : cart) {
+                ChiTietHoaDon newCTHD = new ChiTietHoaDon();
+                newCTHD.setHoaDon(hoaDon);
+                
+                // Get a fresh Thuoc from the database with a clean session
+                String thuocId = cartItem.getThuoc().getId();
+                Thuoc thuoc = thuocDAO.findById(thuocId);
+                if (thuoc == null) {
+                    return false;
+                }
+                
+                newCTHD.setThuoc(thuoc);
+                newCTHD.setSoLuong(cartItem.getSoLuong());
+                newCTHD.setDonGia(cartItem.getDonGia());
+                boolean saveChiTietResult = chiTietHoaDonDAO.save(newCTHD);
+                if (!saveChiTietResult) {
+                    return false;
+                }
+                
+                int newSoLuongTon = thuoc.getSoLuongTon() - cartItem.getSoLuong();
+                thuoc.setSoLuongTon(newSoLuongTon);
+                thuocDAO.update(thuoc);
+            }
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implements ChiTietPhieuNhapThuocService {
     private final ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO;
@@ -29,9 +29,14 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
         this.thuocDAO = thuocDAO;
     }
 
+//    @Override
+//    public ChiTietPhieuNhapThuoc findById(Long id) throws RemoteException {
+//        return chiTietPhieuNhapThuocDAO.findById(id);
+//    }
+
     @Override
-    public ChiTietPhieuNhapThuoc findById(Long id) throws RemoteException {
-        return chiTietPhieuNhapThuocDAO.findById(id);
+    public ChiTietPhieuNhapThuoc findById(Long aLong) throws RemoteException {
+        return null;
     }
 
     @Override
@@ -50,9 +55,14 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
     }
 
     @Override
-    public boolean delete(Long id) throws RemoteException {
-        return chiTietPhieuNhapThuocDAO.delete(id);
+    public boolean delete(Long aLong) throws RemoteException {
+        return false;
     }
+
+//    @Override
+//    public boolean delete(Long id) throws RemoteException {
+//        return chiTietPhieuNhapThuocDAO.delete(id);
+//    }
 
     @Override
     public List<ChiTietPhieuNhapThuoc> findByPhieuNhapThuoc(String phieuNhapThuocId) throws RemoteException {
