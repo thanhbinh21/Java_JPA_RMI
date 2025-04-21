@@ -10,4 +10,5 @@ public interface ThuocService extends GenericService<Thuoc, String> {
     List<Thuoc> getThuocByDanhMuc(String maDM) throws RemoteException;
     List<Thuoc> searchThuoc(String keyword) throws RemoteException;
     List<Object[]> getMaTenThuoc() throws RemoteException;
+    List<Thuoc> getThuocByTenDanhMuc(String tenDM) throws RemoteException;
 }

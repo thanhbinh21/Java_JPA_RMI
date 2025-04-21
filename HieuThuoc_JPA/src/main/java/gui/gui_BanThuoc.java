@@ -1230,10 +1230,3 @@ public class gui_BanThuoc extends JPanel {
 		repaint();
 	}
 }
-
-
-
-
-
-
-
