@@ -33,6 +33,12 @@ public class ThuocDAOImpl extends GenericDAOImpl<Thuoc, String> implements Thuoc
         query.setParameter("keyword", "%" + keyword + "%");
         return query.getResultList();
     }
+    
+    @Override
+    public Thuoc getReference(String id) {
+        // Get a reference to the entity without loading its collections
+        return em.getReference(Thuoc.class, id);
+    }
 
 //    @Override
 //    public List<Object[]> getMaTenThuoc() {
