@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,8 +50,8 @@ public class gui_BanThuoc extends JPanel {
 	private PhieuDatThuocService DDT_SERVICE;
 
 	private JTable tableCart;
-	private JComboBox cboxSearch;
-	private JComboBox cbb_DDT;
+	private JComboBox cboxSearch = new JComboBox();
+	private JComboBox cbb_DDT = new JComboBox();
 	private JTextField txttongHD;
 	private JTextField txtSdtDDT;
 	private JTextField txtTenDDT;
@@ -65,6 +66,8 @@ public class gui_BanThuoc extends JPanel {
 
 		try {
 			loadTable(THUOC_SERVICE.findAll());
+			loadDanhMucThuoc();
+			loadDDT();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -111,6 +114,7 @@ public class gui_BanThuoc extends JPanel {
 					new String[]{"STT", "Tên thuốc", "Số lượng", "Đơn giá"});
 			table.setModel(modal);
 			tableCart.setModel(modalCart);
+
 
 			loadTable(THUOC_SERVICE.findAll());
 			loadDanhMucThuoc();
@@ -236,7 +240,6 @@ public class gui_BanThuoc extends JPanel {
 			JTextField field = getTextField(formFields[i][1]);
 			field.setHorizontalAlignment(SwingConstants.CENTER);
 			if (field == txtDonGia) {
-				field.setText("0.0");
 				field.setFocusable(false);
 			}
 			detailsPanel.add(field, gbc);
@@ -477,26 +480,25 @@ public class gui_BanThuoc extends JPanel {
 
 		return panel;
 	}
-
 	private JPanel createInvoiceDetailsPanel() {
 		JPanel panel = new JPanel(new GridBagLayout());
-//		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 10, 5, 10);
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
+		// Hàng 0: Mã hóa đơn
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.weightx = 0.15; // Decreased label width
-		JLabel lblMaHD = new JLabel("MAHD");
+		gbc.weightx = 0.15;
+		JLabel lblMaHD = new JLabel("Mã hóa đơn");
 		lblMaHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblMaHD, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridwidth = 3;
-		gbc.weightx = 0.85; // Increased text field width
+		gbc.weightx = 0.85;
 		txtMaHoaDon = new JTextField();
 		txtMaHoaDon.setEditable(false);
 		txtMaHoaDon.setBackground(Color.WHITE);
@@ -504,17 +506,17 @@ public class gui_BanThuoc extends JPanel {
 		txtMaHoaDon.setText(RandomMa.maHoaDonAuto());
 		panel.add(txtMaHoaDon, gbc);
 
+		// Hàng 1: Số điện thoại và nút tìm kiếm
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.15; // Decreased label width
-		JLabel lblSDT = new JLabel("SDT");
+		gbc.weightx = 0.15;
+		JLabel lblSDT = new JLabel("Số điện thoại");
 		lblSDT.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblSDT, gbc);
 
 		gbc.gridx = 1;
-		gbc.gridwidth = 2;
-		gbc.weightx = 0.7; // Increased text field width
+		gbc.gridwidth = 2; // Reduced width for text field
+		gbc.weightx = 0.70;
 		txtsdt = new JTextField();
 		txtsdt.setHorizontalAlignment(SwingConstants.CENTER);
 		txtsdt.setFont(new Font("Arial", Font.BOLD, 15));
@@ -523,69 +525,95 @@ public class gui_BanThuoc extends JPanel {
 		gbc.gridx = 3;
 		gbc.gridwidth = 1;
 		gbc.weightx = 0.15;
+		gbc.anchor = GridBagConstraints.EAST; // Align to the right
 		JButton btnSearch = new JButton("");
 		btnSearch.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/search.png")));
 		btnSearch.setToolTipText("Tìm kiếm");
 		btnSearch.setFont(new Font("Dialog", Font.BOLD, 16));
 		btnSearch.addActionListener(e -> btnSearchActionPerformed());
 		panel.add(btnSearch, gbc);
+		gbc.anchor = GridBagConstraints.WEST; // Reset anchor
 
+		// Hàng 2: Tên khách hàng và nút thêm khách hàng
 		gbc.gridx = 0;
-		gbc.gridy = 2; // Fixed gridy value
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.15; // Decreased label width
-		JLabel lblTenKH = new JLabel("TENKH");
+		gbc.gridy = 2;
+		gbc.weightx = 0.15;
+		JLabel lblTenKH = new JLabel("Tên khách hàng");
 		lblTenKH.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblTenKH, gbc);
 
 		gbc.gridx = 1;
-		gbc.gridwidth = 3;
-		gbc.weightx = 0.85; // Increased text field width
+		gbc.gridwidth = 2; // Reduced width for text field
+		gbc.weightx = 0.70;
 		txtHoTenKH = new JTextField();
 		txtHoTenKH.setHorizontalAlignment(SwingConstants.CENTER);
 		txtHoTenKH.setFont(new Font("Arial", Font.BOLD, 15));
 		panel.add(txtHoTenKH, gbc);
 
+		gbc.gridx = 3;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.15;
+		gbc.anchor = GridBagConstraints.EAST; // Align to the right
+		JButton btnAddKH = new JButton("");
+		btnAddKH.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/user.png")));
+		btnAddKH.setToolTipText("Thêm khách hàng");
+		btnAddKH.setFont(new Font("Dialog", Font.BOLD, 16));
+		btnAddKH.addActionListener(e -> btnKhachHangActionPerformed());
+		panel.add(btnAddKH, gbc);
+		gbc.anchor = GridBagConstraints.WEST; // Reset anchor
+
+		// Hàng 3: Dấu phân cách
 		gbc.gridx = 0;
-		gbc.gridy = 3; // Fixed gridy value
+		gbc.gridy = 3;
 		gbc.gridwidth = 4;
 		gbc.weightx = 1.0;
 		JSeparator separator = new JSeparator();
 		panel.add(separator, gbc);
 
+		// Hàng 4: Tổng tiền và VAT
 		gbc.gridx = 0;
 		gbc.gridy = 4;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.15; // Decreased label width
+		gbc.weightx = 0.15;
 		JLabel lblTongTien = new JLabel("TỔNG TIỀN");
-		lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblTongTien.setFont(new Font("Tahoma", Font.BOLD, 16));
 		panel.add(lblTongTien, gbc);
 
 		gbc.gridx = 1;
-		gbc.gridwidth = 3;
-		gbc.weightx = 0.85; // Increased text field width
+		gbc.gridwidth = 2;
+		gbc.weightx = 0.35;
 		txtTongTien = new JTextField("0.0");
 		txtTongTien.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTongTien.setFont(new Font("Arial", Font.BOLD, 15));
 		txtTongTien.setFocusable(false);
 		panel.add(txtTongTien, gbc);
 
+		gbc.gridx = 3;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.5;
+		JLabel vat = new JLabel("VAT: 10% ");
+
+		vat.setForeground(Color.RED);
+		vat.setFont(new Font("Tahoma", Font.ITALIC, 15));
+		vat.setHorizontalAlignment(SwingConstants.RIGHT);
+		panel.add(vat, gbc);
+
+		// Hàng 5: Tổng thanh toán
 		gbc.gridx = 0;
 		gbc.gridy = 5;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.15; // Decreased label width
-		JLabel lblTongThanhToan = new JLabel("TỔNG THANH TOÁN");
-		lblTongThanhToan.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		gbc.weightx = 0.15;
+		JLabel lblTongThanhToan = new JLabel("THANH TOÁN");
+		lblTongThanhToan.setFont(new Font("Tahoma", Font.BOLD, 16));
 		panel.add(lblTongThanhToan, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridwidth = 3;
-		gbc.weightx = 0.85; // Increased text field width
+		gbc.weightx = 0.85;
 		txttongHD = new JTextField();
 		txttongHD.setHorizontalAlignment(SwingConstants.CENTER);
 		txttongHD.setFont(new Font("Arial", Font.BOLD, 15));
 		panel.add(txttongHD, gbc);
 
+		// Hàng 6: Nút hủy và thanh toán
 		gbc.gridx = 0;
 		gbc.gridy = 6;
 		gbc.gridwidth = 2;
@@ -601,6 +629,7 @@ public class gui_BanThuoc extends JPanel {
 		panel.add(btnHuyHD, gbc);
 
 		gbc.gridx = 2;
+		gbc.gridy = 6;
 		gbc.gridwidth = 2;
 		gbc.weightx = 0.5;
 		gbc.anchor = GridBagConstraints.EAST;
@@ -613,20 +642,14 @@ public class gui_BanThuoc extends JPanel {
 
 		return panel;
 	}
-
 	private void btnKhachHangActionPerformed() {
+		gui_themKhachHang dialog = new gui_themKhachHang();
+		dialog.setSize(600, 400);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
 	}
 
-	private JButton createIconButton(String iconPath, String tooltip) {
-		JButton button = new JButton();
-		button.setIcon(new ImageIcon(gui_BanThuoc.class.getResource(iconPath)));
-		button.setToolTipText(tooltip);
-		button.setPreferredSize(new Dimension(40, 40));
-		button.setFocusable(false);
-		button.setBorderPainted(false);
-		button.setBackground(SystemColor.activeCaptionBorder);
-		return button;
-	}
+
 
 	private void handleWindowResize() {
 		revalidate();
@@ -693,7 +716,7 @@ public class gui_BanThuoc extends JPanel {
 			stt++;
 		}
 		txtTongTien.setText(Formatter.FormatVND(sum));
-		txttongHD.setText(Formatter.FormatVND(sum));
+		txttongHD.setText(Formatter.FormatVND(sum*1.1));
 	}
 
 
@@ -1017,7 +1040,7 @@ public class gui_BanThuoc extends JPanel {
 					System.out.println(hd);
 					System.out.println(listCTHD);;
 					boolean saveSuccess = BAN_THUOC_SERVICE.createHoaDon(hd, listCTHD);
-						
+
 						if (!saveSuccess) {
 							MessageDialog.error(this, "Không thể lưu hóa đơn vào cơ sở dữ liệu!");
 							return;
@@ -1034,7 +1057,7 @@ public class gui_BanThuoc extends JPanel {
 						listCTHD.clear();
 						loadTableCart(listCTHD);
 						deteleAllTxt();
-						
+
 						Container parent = this.getParent();
 						if (parent != null) {
 							parent.remove(this);
@@ -1071,43 +1094,59 @@ public class gui_BanThuoc extends JPanel {
 	}
 
 	private void loadDanhMucThuoc() {
+		cboxSearch.removeAllItems();
+		cboxSearch.addItem("Tất cả");
+		cboxSearch.setForeground(Color.BLACK);
 		try {
-			List<DanhMuc> danhMucList = THUOC_SERVICE.getAllDanhMuc();
-
-
-			DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) cboxSearch.getModel();
-			model.removeAllElements();
-			model.addElement("Tất cả");
-			for (DanhMuc dm : danhMucList) {
-				model.addElement(dm.getTen());
+			List<DanhMuc> listDanhMuc = THUOC_SERVICE.getAllDanhMuc();
+			if (listDanhMuc != null && !listDanhMuc.isEmpty()) {
+				for (DanhMuc a : listDanhMuc) {
+					cboxSearch.addItem(a.getTen());
+				}
+			} else {
+				System.out.println("No DanhMuc data found.");
 			}
+			cboxSearch.setSelectedIndex(0);
 		} catch (Exception e) {
-			MessageDialog.error(this, "Lỗi khi tải danh mục thuốc: " + e.getMessage());
 			e.printStackTrace();
+			MessageDialog.error(this, "Lỗi khi tải danh mục thuốc: " + e.getMessage());
 		}
 	}
 
 	private void loadDDT() {
 		try {
-			List<PhieuDatThuoc> listPDT = DDT_SERVICE.findAll();
-			DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) cbb_DDT.getModel();
-			model.removeAllElements();
-			model.addElement("KHONGCO");
-			for (PhieuDatThuoc pdt : listPDT) {
-				if (pdt.isTrangThai()) {
-					continue;
+			// Xóa toàn bộ item cũ
+			cbb_DDT.removeAllItems();
+			// Thêm mục mặc định
+			cbb_DDT.addItem("Tất cả");
+
+			List<PhieuDatThuoc> dsPhieuDat = DDT_SERVICE.findAll();
+			System.out.println(dsPhieuDat);
+			boolean hasUnprocessed = false;
+
+			if (dsPhieuDat != null && !dsPhieuDat.isEmpty()) {
+				for (PhieuDatThuoc pdt : dsPhieuDat) {
+					// Kiểm tra trạng thái đơn đặt (giả sử false là chưa xử lý)
+					if (!pdt.isTrangThai()) {
+						cbb_DDT.addItem(pdt.getId());
+						hasUnprocessed = true;
+					}
 				}
-				model.addElement(pdt.getId());
+			}
+
+			// Nếu không có đơn chưa xử lý, hiển thị thông báo
+			if (!hasUnprocessed) {
+				cbb_DDT.removeAllItems();
+				cbb_DDT.addItem("Không có đơn đặt thuốc");
 			}
 		} catch (Exception e) {
 			MessageDialog.error(this, "Lỗi khi tải đơn đặt thuốc: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
-
 	private void loadTableTheoDanhMuc() {
 		String selectedDanhMuc = (String) cboxSearch.getSelectedItem();
-		if (selectedDanhMuc.equals("Tất cả")) {
+		if ("Tất cả".equals(selectedDanhMuc)) {
 			try {
 				loadTable(THUOC_SERVICE.findAll());
 			} catch (Exception e) {
@@ -1115,7 +1154,7 @@ public class gui_BanThuoc extends JPanel {
 			}
 		} else {
 			try {
-				List<Thuoc> list = THUOC_SERVICE.getThuocByDanhMuc(selectedDanhMuc);
+				List<Thuoc> list = THUOC_SERVICE.getThuocByTenDanhMuc(selectedDanhMuc);
 				loadTable(list);
 			} catch (Exception e) {
 				MessageDialog.error(this, "Lỗi khi tải thuốc theo danh mục: " + e.getMessage());
