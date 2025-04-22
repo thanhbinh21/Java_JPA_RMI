@@ -35,7 +35,8 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
 //    }
 
     @Override
-    public ChiTietPhieuNhapThuoc findById(Long aLong) throws RemoteException {
+    public ChiTietPhieuNhapThuoc findById(Long id) throws RemoteException {
+
         return null;
     }
 
@@ -55,7 +56,9 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
     }
 
     @Override
-    public boolean delete(Long aLong) throws RemoteException {
+
+    public boolean delete(Long id) throws RemoteException {
+
         return false;
     }
 

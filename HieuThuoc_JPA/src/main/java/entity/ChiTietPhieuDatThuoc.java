@@ -28,6 +28,17 @@ public class ChiTietPhieuDatThuoc implements Serializable {
     @Column(name = "don_gia", nullable = false)
     private double donGia;
 
+    public ChiTietPhieuDatThuoc(PhieuDatThuoc phieudat, Thuoc thuoc, int soLuong, double donGia) {
+        this.phieuDatThuoc = phieuDatThuoc;
+        this.thuoc = thuoc;
+        this.soLuong = soLuong;
+        this.donGia = donGia;
+    }
+
+    public ChiTietPhieuDatThuoc() {
+
+    }
+
     @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor

@@ -4,16 +4,19 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
-@Setter
+
 @Getter
+@Setter
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = {"hoaDons", "phieuDatThuocs"}) // Exclude collections to prevent circular references
+
 @Entity
 @Table(name = "KhachHang")
-@Data
 public class KhachHang implements Serializable {
     @Id
     @Column(name = "ma_khach_hang", columnDefinition = "varchar(45)")
@@ -33,4 +36,18 @@ public class KhachHang implements Serializable {
     
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PhieuDatThuoc> phieuDatThuocs;
+
+    public KhachHang(String maKH, String tenKH, String dienThoai, boolean gioiTinhBoolean, LocalDate ngayThamGia) {
+        this.id = maKH;
+        this.hoTen = tenKH;
+        this.soDienThoai = dienThoai;
+        this.gioiTinh = gioiTinhBoolean;
+        this.ngayThamGia = ngayThamGia;
+    }
+
+    public KhachHang() {
+
+    }
+
+
 }
