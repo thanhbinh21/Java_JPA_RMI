@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-//
+
 //package gui;
 //
 //import java.awt.BorderLayout;
@@ -165,7 +164,7 @@
 //
 //		JMenuItem mni_thuoc = new JMenuItem("Thuốc");
 //		mni_thuoc.addActionListener(new ActionListener() {
-=======
+
 
 package gui;
 
@@ -388,12 +387,12 @@ public class gui_TrangChu extends JFrame {
 //		
 //		JMenuItem mni_khuyenmai = new JMenuItem("Khuyến mãi");
 //		mni_khuyenmai.addActionListener(new ActionListener() {
->>>>>>> ccf501d8b7640859e186f0c6f8add2dcb25edccf
+
 //			public void actionPerformed(ActionEvent e) {
 //				//setPanel(new gui_qliThuoc());
 //			}
 //		});
-<<<<<<< HEAD
+
 //		mni_thuoc.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/medicine.png")));
 //		mni_thuoc.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
 //		mni_thuoc.setBackground(SystemColor.scrollbar);
@@ -770,7 +769,7 @@ public class gui_TrangChu extends JFrame {
 //        return homePanel;
 //    }
 //}
-=======
+
 //		mni_khuyenmai.setIcon(new ImageIcon(gui_TrangChu.class.getResource("/icon/tag.png")));
 //		mni_khuyenmai.setFont(new Font("Segoe UI Black", Font.PLAIN, 15));
 //		mni_khuyenmai.setBackground(SystemColor.scrollbar);
@@ -1147,4 +1146,4 @@ public class gui_TrangChu extends JFrame {
         return homePanel;
     }
 }
->>>>>>> ccf501d8b7640859e186f0c6f8add2dcb25edccf
+

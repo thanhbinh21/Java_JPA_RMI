@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 //package gui;
 //
 //import entity.TaiKhoan;
@@ -86,7 +86,7 @@
 //		add(textFieldNGAYVAOLAM);
 //    }
 //}
-=======
+
 package gui;
 
 import entity.TaiKhoan;
@@ -175,4 +175,4 @@ public class gui_thongtinlogin extends JPanel {
 		add(textFieldNGAYVAOLAM);
     }
 }
->>>>>>> ccf501d8b7640859e186f0c6f8add2dcb25edccf
+

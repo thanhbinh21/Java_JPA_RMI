@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 //package gui;
 //
 //import java.awt.Color;
@@ -203,7 +203,7 @@
 //}
 //
 //
-=======
+
 package gui;
 
 import java.awt.Color;
@@ -414,4 +414,3 @@ public class Login extends JFrame implements ActionListener {
 }
 
 
->>>>>>> ccf501d8b7640859e186f0c6f8add2dcb25edccf

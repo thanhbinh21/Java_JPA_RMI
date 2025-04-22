@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 //package gui;
 //
 //import dao.*;
@@ -1224,7 +1224,7 @@
 //
 //
 //
-=======
+
 package gui;
 
 import dao.*;
@@ -2464,4 +2464,3 @@ public class gui_BanThuoc extends JPanel {
 
 
 
->>>>>>> ccf501d8b7640859e186f0c6f8add2dcb25edccf

@@ -63,7 +63,7 @@ public class ChiTietPhieuNhapThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuNha
             
             // Use native SQL query to insert directly into the database
             int rowsAffected = em.createNativeQuery(
-                    "INSERT INTO ChiTietPhieuNhapThuoc (ma_phieu_nhap_thuoc, ma_thuoc, so_luong, don_gia) " +
+                    "INSERT INTO ChiTietPhieuNhapThuoc (ma_phieu_nhap_thuoc, ma_thuoc, so_luong, don_gia) " +   
                     "VALUES (?, ?, ?, ?)")
                     .setParameter(1, phieuNhapId)
                     .setParameter(2, thuocId)
