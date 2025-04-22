@@ -4,17 +4,17 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"hoaDons", "phieuDatThuocs"})
 @Entity
 @Table(name = "KhachHang")
 public class KhachHang implements Serializable {
@@ -48,6 +48,7 @@ public class KhachHang implements Serializable {
     public KhachHang() {
 
     }
+
 
 
 }

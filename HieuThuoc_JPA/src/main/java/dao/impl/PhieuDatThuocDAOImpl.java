@@ -50,7 +50,7 @@ public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> 
     @Override
     public List<PhieuDatThuoc> findBySdt(String sdt) {
         try {
-            return em.createQuery("SELECT p FROM PhieuDatThuoc p WHERE p.khachHang.sdt = :sdt", PhieuDatThuoc.class)
+            return em.createQuery("SELECT p FROM PhieuDatThuoc p WHERE p.khachHang.soDienThoai = :sdt and p.trangThai = false ", PhieuDatThuoc.class)
                     .setParameter("sdt", sdt)
                     .getResultList();
         } catch (Exception e) {

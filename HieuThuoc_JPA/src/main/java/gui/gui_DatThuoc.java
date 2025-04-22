@@ -141,7 +141,7 @@ public class gui_DatThuoc extends JPanel {
 			DAT_THUOC_SEVICE = new DatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ThuocDAOImpl(), new KhachHangDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
 			PHEU_DAT_THUOC_SEVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
 			loadDanhMucThuoc();
-			formatTxt();
+			//formatTxt();
 		} catch (Exception e) {
 			MessageDialog.error(this, "Khởi tạo dịch vụ thất bại: " + e.getMessage());
 			e.printStackTrace();
@@ -980,31 +980,48 @@ public class gui_DatThuoc extends JPanel {
     }
 
     public void loadDanhMucThuoc() {
-//        for (DanhMuc a: DANHMUC_DAO.selectAll()) {
-//        	cboxSearch.addItem(a.getTen());
-//        }
-           
+        try {
+            List<DanhMuc> danhMucList = THUOC_SEVICE.getAllDanhMuc();
+            
+            DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) cboxSearch.getModel();
+            model.removeAllElements();
+            model.addElement("Tất cả");
+            
+            if (danhMucList != null) {
+                for (DanhMuc dm : danhMucList) {
+                    if (dm != null && dm.getTen() != null) {
+                        model.addElement(dm.getTen());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            MessageDialog.error(this, "Lỗi khi tải danh mục thuốc: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+    
     public void loadTableTheoDanhMuc() {
-//
-//        String selectedDanhMuc = cboxSearch.getSelectedItem().toString();
-//        loadTable(THUOC_CON.selectAll());
-//        List<Thuoc> filList = new ArrayList<>();
-//        if (selectedDanhMuc.equals("Tất cả")) {
-//            filList = listThuoc;
-//        } else {
-//            for (Thuoc e : listThuoc) {
-//                if (e.getDanhMuc().getTen().equals(selectedDanhMuc)) {
-//                    filList.add(e);
-//                }
-//            }
-//        }
-//
-//        loadTable(filList);
+        try {
+            String selectedDanhMuc = (String) cboxSearch.getSelectedItem();
+            if (selectedDanhMuc == null) {
+                return;
+            }
+            
+            List<Thuoc> filteredList;
+            if (selectedDanhMuc.equals("Tất cả")) {
+                filteredList = THUOC_SEVICE.findAll();
+            } else {
+                filteredList = THUOC_SEVICE.getThuocByTenDanhMuc(selectedDanhMuc);
+            }
+            
+            if (filteredList != null) {
+                loadTable(filteredList);
+            }
+        } catch (Exception e) {
+            MessageDialog.error(this, "Lỗi khi tải thuốc theo danh mục: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-
-
-
 
     private void formatTxt() {
         String txtDonGiaFormat = Formatter.FormatVND(Double.parseDouble(txtDonGia.getText()));
@@ -1020,9 +1037,9 @@ public class gui_DatThuoc extends JPanel {
         repaint();
     }
 }
-    
 
 
- 
+
+
 
 
