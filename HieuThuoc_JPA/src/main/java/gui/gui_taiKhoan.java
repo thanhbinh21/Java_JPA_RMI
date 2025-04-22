@@ -41,6 +41,10 @@ import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import other.CustomButton;
+import other.CustomComboBox;
+import other.CustomTable;
+import other.CustomTextField;
 import service.*;
 import until.JPAUtil;
 
@@ -51,11 +55,11 @@ import java.util.Map;
 public class gui_taiKhoan extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField txt_maTK;
-	private JTextField txt_mk;
-	private JTable table;
-	private JTextField txt_tim;
-	private JComboBox cbo_nv,cbo_vt;
+	private CustomTextField txt_maTK;
+	private CustomTextField txt_mk;
+	private CustomTable table;
+	private CustomTextField txt_tim;
+	private CustomComboBox cbo_nv,cbo_vt;
 	private DefaultTableModel model;
 	EntityManager em;
 	private TaiKhoanService TK_SERVICE;
@@ -100,13 +104,13 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 		lbl_4.setBounds(387, 209, 150, 35);
 		add(lbl_4);
 		
-		txt_maTK = new JTextField();
+		txt_maTK = new CustomTextField();
 		txt_maTK.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txt_maTK.setBounds(571, 78, 400, 35);
 		add(txt_maTK);
 		txt_maTK.setColumns(10);
 		
-		txt_mk = new JTextField();
+		txt_mk = new CustomTextField();
 		txt_mk.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txt_mk.setColumns(10);
 		txt_mk.setBounds(571, 147, 400, 35);
@@ -117,12 +121,12 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 		lbl_5.setBounds(387, 269, 150, 35);
 		add(lbl_5);
 		
-		 cbo_nv = new JComboBox();
+		 cbo_nv = new CustomComboBox();
 		 cbo_nv.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cbo_nv.setBounds(573, 209, 200, 35);
 		add(cbo_nv);
 		
-		 cbo_vt = new JComboBox();
+		 cbo_vt = new CustomComboBox();
 		 cbo_vt.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cbo_vt.setBounds(571, 269, 200, 35);
 		add(cbo_vt);
@@ -132,7 +136,7 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 		separator.setBounds(41, 383, 1289, 2);
 		add(separator);
 		
-		JButton btn_them = new JButton("Thêm tài khoản");
+		CustomButton btn_them = new CustomButton("Thêm tài khoản");
 		btn_them.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btn_them.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -185,7 +189,7 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 		String[] columnNames = { "Mã tài khoản", "Mật khẩu", "Nhân viên", "Vai trò" };
 		model = new DefaultTableModel(columnNames,0);
 		
-		table = new JTable();
+		table = new CustomTable();
 		table.setModel(model);
 		table.setBounds(489, 424, 1, 1);
 		
@@ -193,20 +197,20 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 		scrollPane.setBounds(215, 524, 900, 154);
 		add(scrollPane);
 		
-		JComboBox cbo_tim = new JComboBox();
+		CustomComboBox cbo_tim = new CustomComboBox();
 		cbo_tim.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cbo_tim.setModel(new DefaultComboBoxModel(new String[] {"Mã tài khoản", "Vai trò","Nhân viên"}));
 		cbo_tim.setSelectedIndex(1);
 		cbo_tim.setBounds(215, 446, 150, 35);
 		add(cbo_tim);
 		
-		txt_tim = new JTextField();
+		txt_tim = new CustomTextField();
 		txt_tim.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txt_tim.setBounds(405, 446, 200, 35);
 		add(txt_tim);
 		txt_tim.setColumns(10);
-		
-		JButton btn_tim = new JButton("Tìm");
+
+		CustomButton btn_tim = new CustomButton("Tìm");
 		btn_tim.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btn_tim.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -251,8 +255,8 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 
 		btn_tim.setBounds(654, 446, 100, 35);
 		add(btn_tim);
-		
-		JButton btn_lamMoi = new JButton("Làm mới");
+
+		CustomButton btn_lamMoi = new CustomButton("Làm mới");
 		btn_lamMoi.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btn_lamMoi.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -267,8 +271,8 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 		});
 		btn_lamMoi.setBounds(791, 446, 100, 35);
 		add(btn_lamMoi);
-		
-		JButton btn_sua = new JButton("Sửa thông tin");
+
+		CustomButton btn_sua = new CustomButton("Sửa thông tin");
 		btn_sua.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btn_sua.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -331,8 +335,8 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 		btn_sua.setBounds(538, 338, 150, 35);
 		add(btn_sua);
 
-		
-		JButton btn_xoa = new JButton("Xóa tài khoản");
+
+		CustomButton btn_xoa = new CustomButton("Xóa tài khoản");
 		btn_xoa.setFont(new Font("Tahoma", Font.PLAIN, 15));
 	      btn_xoa.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
@@ -367,8 +371,8 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 	        });
 		btn_xoa.setBounds(736, 338, 150, 35);
 		add(btn_xoa);
-		
-		JButton btn_ex = new JButton("Export");
+
+		CustomButton btn_ex = new CustomButton("Export");
 		btn_ex.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btn_ex.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
