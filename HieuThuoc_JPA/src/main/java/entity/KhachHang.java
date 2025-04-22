@@ -14,6 +14,7 @@ import java.util.Set;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
 @Entity
 @Table(name = "KhachHang")
 public class KhachHang implements Serializable {
@@ -29,8 +30,10 @@ public class KhachHang implements Serializable {
     private boolean gioiTinh;
     @Column(name = "ngay_tham_gia", nullable = false)
     private LocalDate ngayThamGia;
+
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<HoaDon> hoaDons;
+    
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PhieuDatThuoc> phieuDatThuocs;
 
