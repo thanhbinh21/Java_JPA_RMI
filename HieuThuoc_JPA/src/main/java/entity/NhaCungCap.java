@@ -19,5 +19,9 @@ public class NhaCungCap implements Serializable {
     private String sdt;
     @OneToMany(mappedBy = "nhaCungCap", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PhieuNhapThuoc> phieuNhapThuocs;
-
+    
+    @Override
+    public String toString() {
+        return "NhaCungCap [id=" + id + ", ten=" + ten + ", diaChi=" + diaChi + ", sdt=" + sdt + "]";
+    }
 }

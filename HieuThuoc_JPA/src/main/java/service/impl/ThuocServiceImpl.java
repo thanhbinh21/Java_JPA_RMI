@@ -28,6 +28,9 @@ public class ThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implemen
     public List<Thuoc> getThuocByDanhMuc(String maDM) throws RemoteException {
         return thuocDAO.selectByDanhMuc(danhMucDAO.findById(maDM));
     }
+    public List<Thuoc> getThuocByTenDanhMuc(String tenDM) throws RemoteException {
+        return thuocDAO.selectByDanhMuc(danhMucDAO.findByTen(tenDM));
+    }
 
     @Override
     public List<Thuoc> searchThuoc(String keyword) throws RemoteException {

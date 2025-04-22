@@ -10,7 +10,7 @@ import java.util.Set;
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
+@ToString(exclude = {"hoaDons", "phieuDatThuocs"}) // Exclude collections to prevent circular references
 @Entity
 @Table(name = "KhachHang")
 @Data
@@ -27,8 +27,10 @@ public class KhachHang implements Serializable {
     private boolean gioiTinh;
     @Column(name = "ngay_tham_gia", nullable = false)
     private LocalDate ngayThamGia;
+
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<HoaDon> hoaDons;
+    
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PhieuDatThuoc> phieuDatThuocs;
 }

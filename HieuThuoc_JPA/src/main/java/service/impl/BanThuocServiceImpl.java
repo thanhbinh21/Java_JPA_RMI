@@ -70,9 +70,71 @@ public class BanThuocServiceImpl extends GenericServiceImpl<Thuoc, String> imple
     }
 
     @Override
-    public HoaDon createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException {
-        // Triển khai logic
-        return null;
+    public boolean createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException {
+        try {
+            KhachHang khachHang = hoaDon.getKhachHang();
+            if (khachHang != null) {
+                KhachHang existingKH = khachHangDAO.selectBySdt(khachHang.getSoDienThoai());
+                if (existingKH == null) {
+                    boolean saveKhachHangResult = khachHangDAO.save(khachHang);
+                    if (!saveKhachHangResult) {
+                        return false;
+                    }
+                } else {
+                    hoaDon.setKhachHang(existingKH);
+                }
+            }
+            boolean saveHoaDonResult = hoaDonDAO.save(hoaDon);
+            if (!saveHoaDonResult) {
+                return false;
+            }
+            
+            jakarta.persistence.EntityManager em = until.JPAUtil.getEntityManager();
+            jakarta.persistence.EntityTransaction tx = null;
+            
+            try {
+                for (ChiTietHoaDon cartItem : cart) {
+                    tx = em.getTransaction();
+                    tx.begin();
+                    
+                    HoaDon freshHoaDon = em.find(HoaDon.class, hoaDon.getId());
+                    
+                    String thuocId = cartItem.getThuoc().getId();
+                    Thuoc freshThuoc = em.find(Thuoc.class, thuocId);
+                    
+                    if (freshThuoc == null) {
+                        tx.rollback();
+                        System.err.println("Could not find Thuoc with ID: " + thuocId);
+                        continue;
+                    }
+                    
+                    ChiTietHoaDon newCTHD = new ChiTietHoaDon();
+                    newCTHD.setHoaDon(freshHoaDon);
+                    newCTHD.setThuoc(freshThuoc);
+                    newCTHD.setSoLuong(cartItem.getSoLuong());
+                    newCTHD.setDonGia(cartItem.getDonGia());
+                    
+                    em.persist(newCTHD);
+                    
+                    int newSoLuongTon = freshThuoc.getSoLuongTon() - cartItem.getSoLuong();
+                    freshThuoc.setSoLuongTon(newSoLuongTon);
+                    tx.commit();
+                }
+                
+                return true;
+            } catch (Exception e) {
+                if (tx != null && tx.isActive()) {
+                    tx.rollback();
+                }
+                e.printStackTrace();
+                return false;
+            } finally {
+                em.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

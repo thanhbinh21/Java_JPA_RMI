@@ -1,3 +1,4 @@
+
 package gui;
 
 import java.awt.Color;
@@ -6,9 +7,12 @@ import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Objects;
 
 import javax.swing.ImageIcon;
@@ -34,7 +38,29 @@ public class Login extends JFrame implements ActionListener {
     private JFrame frmlogin;
     private JTextField tx_username;
     private JPasswordField tx_password;
-    private TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(new TaiKhoanDAOImpl());
+    private TaiKhoanService taiKhoanService;
+
+    {
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost", 8989);
+            
+            try {
+                taiKhoanService = (TaiKhoanService) registry.lookup("TaiKhoanService");
+            } catch (NotBoundException e) {
+                taiKhoanService = new TaiKhoanServiceImpl(new TaiKhoanDAOImpl());
+                System.out.println("Using local TaiKhoanService implementation");
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            System.out.println("Registry connection failed, using local implementation");
+            try {
+                taiKhoanService = new TaiKhoanServiceImpl(new TaiKhoanDAOImpl());
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+                MessageDialog.error(null, "Lỗi khởi tạo dịch vụ tài khoản!");
+            }
+        }
+    }
     private boolean showPassword = false; 
 
     public static void main(String[] args) {
@@ -49,7 +75,6 @@ public class Login extends JFrame implements ActionListener {
         });
     }
     	
-	
 		public JFrame getFrmlogin() {
 			return frmlogin;
 		}
@@ -58,7 +83,7 @@ public class Login extends JFrame implements ActionListener {
 			this.frmlogin = frmlogin;
 		}
 	
-	    public Login() throws RemoteException {
+	    public Login() {
 	        login();
 	    }
     
@@ -66,7 +91,7 @@ public class Login extends JFrame implements ActionListener {
         frmlogin = new JFrame();
         setSize(600, 350);
         frmlogin.setFont(new Font("Dialog", Font.BOLD, 15));
-       // frmlogin.setIconImage(Toolkit.getDefaultToolkit().getImage(Login.class.getResource("icon/QuanLyNhaThuoc.png")));
+        frmlogin.setIconImage(Toolkit.getDefaultToolkit().getImage(Login.class.getResource("/icon/QuanLyNhaThuoc.png")));
         frmlogin.setTitle("NHÀ THUỐC OVERRATED");
         frmlogin.setBounds(100, 100, 593, 355);
         frmlogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -117,8 +142,10 @@ public class Login extends JFrame implements ActionListener {
         tx_password.setEchoChar('•');
         passwordPanel.add(tx_password);
 
+        //
+        tx_username.setText("ADMIN");
+        tx_password.setText("123");
         // Nút con mắt
-        System.out.println(Login.class.getResource("HieuThuoc_JPA/src/main/java/icon/eye.png"));
         JButton btn_eye = new JButton(new ImageIcon(Login.class.getResource("/icon/eye.png")));
         btn_eye.setBorder(null);
         btn_eye.setBackground(SystemColor.textHighlightText);
@@ -135,8 +162,7 @@ public class Login extends JFrame implements ActionListener {
                 btn_eye.setIcon(new ImageIcon(Login.class.getResource(showPassword ? "/icon/visible.png" : "/icon/eye.png")));
             }
         });
-//        tx_username.setText("ADMIN");
-//		tx_password.setText("123");
+
         JButton btn_yes = new JButton("Đăng nhập");
         btn_yes.setBorder(null);
         btn_yes.setIcon(new ImageIcon(Login.class.getResource("/icon/enter.png")));
@@ -170,7 +196,7 @@ public class Login extends JFrame implements ActionListener {
         tx_password.setEchoChar(showPassword ? (char) 0 : '•'); // Hiện hoặc ẩn mật khẩu
     }
 	private boolean isValidateFields() {
-		if (Validation.isEmpty(tx_username.getText()) || Validation.isEmpty(String.valueOf(tx_password.getPassword()))) {
+        if (Validation.isEmpty(tx_username.getText()) || Validation.isEmpty(new String(tx_password.getPassword()))) {
 			MessageDialog.warring(this, "Không được để trống!");
 			return false;
 		}
@@ -193,8 +219,9 @@ public class Login extends JFrame implements ActionListener {
 
         if (username.equals(tk.getId()) && password.equals(tk.getPassword())) {
             gui_TrangChu trangChu = new gui_TrangChu(tk); // Truyền tài khoản vào đây
+            trangChu.setExtendedState(JFrame.MAXIMIZED_BOTH); // Full screen
             trangChu.setVisible(true);
-            frmlogin.setVisible(false); 
+            frmlogin.setVisible(false);
             this.dispose();
         } else {
             MessageDialog.error(this, "Tài khoản hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại!");

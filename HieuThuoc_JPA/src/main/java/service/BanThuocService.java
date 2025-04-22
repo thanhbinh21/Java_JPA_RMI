@@ -15,7 +15,7 @@ public interface BanThuocService extends GenericService<Thuoc, String> {
     boolean addThuocToCart(List<ChiTietHoaDon> cart, Thuoc thuoc, int soLuong) throws RemoteException;
     boolean updateCartItemQuantity(List<ChiTietHoaDon> cart, String maThuoc, int newQuantity) throws RemoteException;
     boolean removeThuocFromCart(List<ChiTietHoaDon> cart, String maThuoc) throws RemoteException;
-    HoaDon createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException;
+    boolean createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException;
     KhachHang getKhachHangBySdt(String sdt) throws RemoteException;
     boolean createKhachHang(KhachHang khachHang) throws RemoteException;
 }
