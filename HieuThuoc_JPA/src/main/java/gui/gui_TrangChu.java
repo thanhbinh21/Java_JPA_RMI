@@ -183,6 +183,7 @@ public class gui_TrangChu extends JFrame {
         addMenuItem(menu, "Bán thuốc", "/icon/medicine.png", e -> setPanel(new gui_BanThuoc(loginAccount)));
         addMenuItem(menu, "Trả thuốc", "/icon/bill.png", e -> setPanel(new gui_TraThuoc(loginAccount)));
         addMenuItem(menu, "Đặt thuốc", "/icon/fulfillment.png", e -> {
+            setPanel(new gui_DatThuoc(loginAccount));
         });
         addMenuItem(menu, "Nhập thuốc", "/icon/import.png", e -> setPanel(new gui_nhapThuoc(loginAccount)));
         addMenuItem(menu, "Tạo khuyến mãi", "/icon/tag.png", e -> {

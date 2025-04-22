@@ -5,6 +5,7 @@ import entity.ChiTietPhieuDatThuoc;
 import entity.PhieuDatThuoc;
 import entity.Thuoc;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class ChiTietPhieuDatThuocDAOImpl extends GenericDAOImpl<ChiTietPhieuDatT
             return List.of();
         }
     }
+
+
 
 //    @Override
 //    public Optional<ChiTietPhieuDatThuoc> findByThuocAndPhieuDatThuoc(Thuoc thuoc, PhieuDatThuoc phieuDatThuoc) {

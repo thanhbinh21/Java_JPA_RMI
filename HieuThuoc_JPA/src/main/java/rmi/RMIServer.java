@@ -1,7 +1,5 @@
-package rmi;
 
 import dao.impl.*;
-
 import dao.*;
 
 import java.rmi.Remote;
@@ -34,7 +32,15 @@ public class RMIServer {
             NhanVienDAO nhanVienDAO = new NhanVienDAOImpl();
             PhieuDatThuocDAO phieuDatThuocDAO = new PhieuDatThuocDAOImpl();
             ChiTietPhieuDatThuocDAO chiTietPhieuDatThuocDAO = new ChiTietPhieuDatThuocDAOImpl();
+
+
+            NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAOImpl();
+            PhieuNhapThuocDAO phieuNhapThuocDAO = new PhieuNhapThuocDAOImpl();
+            ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO = new ChiTietPhieuNhapThuocDAOImpl();
+
             VaiTroDAO vaiTroDAO = new VaiTroDAOImpl();
+
+
 
             // Tạo các instance của remote object implementations trực tiếp
             ThuocService thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO);
@@ -42,9 +48,27 @@ public class RMIServer {
             KhachHangService khachHangService = new KhachHangServiceImpl(khachHangDAO);
             HoaDonService hoaDonService = new HoaDonServiceImpl(hoaDonDAO);
             TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(taiKhoanDAO);
+
+            PhieuDatThuocService phieuDatThuocService = new PhieuDatThuocServiceImpl(phieuDatThuocDAO, chiTietPhieuDatThuocDAO);
+            
+            // Khởi tạo các service mới
+            NhaCungCapService nhaCungCapService = new NhaCungCapServiceImpl(nhaCungCapDAO);
+            PhieuNhapThuocService phieuNhapThuocService = new PhieuNhapThuocServiceImpl(
+                phieuNhapThuocDAO, nhaCungCapDAO, nhanVienDAO, chiTietPhieuNhapThuocDAO, thuocDAO);
+            ChiTietPhieuNhapThuocService chiTietPhieuNhapThuocService = new ChiTietPhieuNhapThuocServiceImpl(
+                chiTietPhieuNhapThuocDAO, phieuNhapThuocDAO, thuocDAO);
+
+         
+            
+            // Đăng ký các dịch vụ mới
+            registry.rebind("NhaCungCapService", nhaCungCapService);
+            registry.rebind("PhieuNhapThuocService", phieuNhapThuocService);
+            registry.rebind("ChiTietPhieuNhapThuocService", chiTietPhieuNhapThuocService);
+
+
             NhaSanXuatServiceImpl nhaSanXuatService = new NhaSanXuatServiceImpl(nhaSanXuatDAO);
             NhanVienServiceImpl nhanVienService = new NhanVienServiceImpl(nhanVienDAO);
-            PhieuDatThuocService phieuDatThuocService = new PhieuDatThuocServiceImpl(phieuDatThuocDAO, chiTietPhieuDatThuocDAO);
+            PhieuDatThuocService phieuDatThuocService1 = new PhieuDatThuocServiceImpl(phieuDatThuocDAO, chiTietPhieuDatThuocDAO);
             VaiTroService vaiTroService = new VaiTroServiceImpl(vaiTroDAO);
             DanhMucService danhMucService = new DanhMucServiceImpl(danhMucDAO);
             ChiTietHoaDonService chiTietHoaDonService = new ChiTietHoaDonServiceImpl(chiTietHoaDonDAO);
@@ -64,6 +88,7 @@ public class RMIServer {
 
             OneSessionService oneSessionServices = new OneSessionServiceImpl();
             registry.bind("OneSessionService", oneSessionServices);
+
 
             System.out.println("RMI Server is running...");
         } catch (Exception e) {

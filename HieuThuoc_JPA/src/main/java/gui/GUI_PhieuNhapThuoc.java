@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,6 +41,14 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
     private JComboBox<NhaCungCap> cboSupplier;
     private JButton btnGenerateId;
     private JButton btnCurrentDate;
+    private JLabel lblTongTien;
+    private JTextField txtTongTien;
+    private JButton btnThanhToan;
+    private double tongTien = 0.0;
+    
+    // Payment section in details panel
+    private JTextField txtDetailTongTien;
+    private JButton btnDetailThanhToan;
     
     // Receipt details panel components
     private JPanel pnlDetails;
@@ -78,6 +87,9 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
     // Date formatter
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     
+    // Added NhanVienDAO field
+    private NhanVienDAO nhanVienDAO;
+    
     public GUI_PhieuNhapThuoc() {
         setTitle("Medicine Import Receipt Management");
         setSize(1000, 800);
@@ -115,6 +127,9 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
                     phieuNhapThuocDAO, nhaCungCapDAO, nhanVienDAO, chiTietPhieuNhapThuocDAO, thuocDAO);
             chiTietPhieuNhapThuocService = new ChiTietPhieuNhapThuocServiceImpl(
                     chiTietPhieuNhapThuocDAO, phieuNhapThuocDAO, thuocDAO);
+            
+            // Assign NhanVienDAO to the class field
+            this.nhanVienDAO = nhanVienDAO;
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error initializing services: " + e.getMessage());
@@ -225,6 +240,30 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
         gbc.gridy = 2;
         gbc.weightx = 1.0;
         pnlForm.add(cboSupplier, gbc);
+        
+        // Total Amount
+        lblTongTien = new JLabel("Total Amount:");
+        lblTongTien.setFont(new Font("Arial", Font.PLAIN, 14));
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 0;
+        pnlForm.add(lblTongTien, gbc);
+        
+        JPanel pnlTongTien = new JPanel(new BorderLayout(5, 0));
+        txtTongTien = new JTextField(15);
+        txtTongTien.setEditable(false);
+        txtTongTien.setFont(new Font("Arial", Font.BOLD, 14));
+        txtTongTien.setHorizontalAlignment(JTextField.RIGHT);
+        btnThanhToan = new JButton("Check Out");
+        btnThanhToan.setFont(new Font("Arial", Font.PLAIN, 14));
+        btnThanhToan.addActionListener(this);
+        pnlTongTien.add(txtTongTien, BorderLayout.CENTER);
+//        pnlTongTien.add(btnThanhToan, BorderLayout.EAST);
+        
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.weightx = 1.0;
+        pnlForm.add(pnlTongTien, gbc);
         
         // Search panel
         JPanel pnlSearch = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -383,6 +422,53 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
         JScrollPane scrollDetails = new JScrollPane(tblDetails);
         scrollDetails.setBorder(BorderFactory.createEtchedBorder());
         pnlDetails.add(scrollDetails, BorderLayout.CENTER);
+        
+        // Payment Section
+        JPanel pnlPayment = new JPanel(new GridBagLayout());
+        pnlPayment.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(), "Payment Information", 
+                TitledBorder.LEFT, TitledBorder.TOP, 
+                new Font("Arial", Font.BOLD, 14)));
+                
+        GridBagConstraints gbcPayment = new GridBagConstraints();
+        gbcPayment.insets = new Insets(5, 5, 5, 5);
+        gbcPayment.fill = GridBagConstraints.HORIZONTAL;
+        gbcPayment.anchor = GridBagConstraints.WEST;
+        
+        // Total Amount
+        JLabel lblDetailTongTien = new JLabel("Total Amount:");
+        lblDetailTongTien.setFont(new Font("Arial", Font.BOLD, 16));
+        gbcPayment.gridx = 0;
+        gbcPayment.gridy = 0;
+        gbcPayment.weightx = 0;
+        pnlPayment.add(lblDetailTongTien, gbcPayment);
+        
+        txtDetailTongTien = new JTextField(15);
+        txtDetailTongTien.setEditable(false);
+        txtDetailTongTien.setFont(new Font("Arial", Font.BOLD, 16));
+        txtDetailTongTien.setHorizontalAlignment(JTextField.RIGHT);
+        txtDetailTongTien.setBackground(new Color(240, 240, 240));
+        
+        gbcPayment.gridx = 1;
+        gbcPayment.gridy = 0;
+        gbcPayment.weightx = 1.0;
+        pnlPayment.add(txtDetailTongTien, gbcPayment);
+        
+        // Payment Button
+        btnDetailThanhToan = new JButton("Check Out");
+        btnDetailThanhToan.setFont(new Font("Arial", Font.BOLD, 14));
+        btnDetailThanhToan.addActionListener(e -> saveReceipt());
+        
+        gbcPayment.gridx = 0;
+        gbcPayment.gridy = 1;
+        gbcPayment.gridwidth = 2;
+        gbcPayment.weightx = 1.0;
+        gbcPayment.fill = GridBagConstraints.NONE;
+        gbcPayment.anchor = GridBagConstraints.CENTER;
+        pnlPayment.add(btnDetailThanhToan, gbcPayment);
+        
+        // Add payment panel to bottom of details panel
+        pnlDetails.add(pnlPayment, BorderLayout.SOUTH);
     }
     
     private void createButtonPanel() {
@@ -397,10 +483,6 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
         btnNewReceipt.setFont(buttonFont);
         btnNewReceipt.setPreferredSize(buttonSize);
         
-        btnSaveReceipt = new JButton("Save Receipt");
-        btnSaveReceipt.setFont(buttonFont);
-        btnSaveReceipt.setPreferredSize(buttonSize);
-        
         btnDeleteReceipt = new JButton("Delete Receipt");
         btnDeleteReceipt.setFont(buttonFont);
         btnDeleteReceipt.setPreferredSize(buttonSize);
@@ -411,8 +493,6 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
         
         // Add buttons to panel with spacing
         pnlSouth.add(btnNewReceipt);
-        pnlSouth.add(Box.createHorizontalStrut(10));
-        pnlSouth.add(btnSaveReceipt);
         pnlSouth.add(Box.createHorizontalStrut(10));
         pnlSouth.add(btnDeleteReceipt);
         pnlSouth.add(Box.createHorizontalStrut(10));
@@ -425,7 +505,6 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
         btnCurrentDate.addActionListener(this);
         btnSearch.addActionListener(this);
         btnNewReceipt.addActionListener(this);
-        btnSaveReceipt.addActionListener(this);
         btnDeleteReceipt.addActionListener(this);
         btnClear.addActionListener(this);
         btnAddDetail.addActionListener(this);
@@ -497,32 +576,45 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
                 return;
             }
             
-            // Set current receipt
-            currentReceipt = receipt;
-            
-            // Populate form fields
+            // Set receipt info to form
             txtReceiptId.setText(receipt.getId());
-            txtReceiptDate.setText(receipt.getThoiGian() != null 
-                    ? receipt.getThoiGian().format(dateFormatter) 
-                    : "");
+            txtReceiptId.setEditable(false);  // Disable editing of existing receipt ID
+            
+            if (receipt.getThoiGian() != null) {
+                txtReceiptDate.setText(receipt.getThoiGian().format(dateFormatter));
+            }
             
             // Select supplier in combo box
-            for (int i = 0; i < cboSupplier.getItemCount(); i++) {
-                NhaCungCap supplier = cboSupplier.getItemAt(i);
-                if (supplier.getId().equals(receipt.getNhaCungCap().getId())) {
-                    cboSupplier.setSelectedIndex(i);
-                    break;
+            if (receipt.getNhaCungCap() != null) {
+                for (int i = 0; i < cboSupplier.getItemCount(); i++) {
+                    NhaCungCap supplier = cboSupplier.getItemAt(i);
+                    if (supplier.getId().equals(receipt.getNhaCungCap().getId())) {
+                        cboSupplier.setSelectedIndex(i);
+                        break;
+                    }
                 }
             }
             
-            // Disable receipt ID field for edits
-            txtReceiptId.setEditable(false);
+            // Store current receipt
+            currentReceipt = receipt;
             
-            // Load details
-            List<ChiTietPhieuNhapThuoc> details = chiTietPhieuNhapThuocService.findByPhieuNhapThuoc(receiptId);
+            // Load receipt details
+            List<ChiTietPhieuNhapThuoc> details = 
+                    chiTietPhieuNhapThuocService.findByPhieuNhapThuoc(receiptId);
             
-            // Update current details
+            // Store current details
             currentDetails = new ArrayList<>(details);
+            
+            // Calculate total amount
+            tongTien = 0.0;
+            for (ChiTietPhieuNhapThuoc detail : currentDetails) {
+                tongTien += detail.getSoLuong() * detail.getDonGia();
+            }
+            
+            // Format and set total amount in both places
+            String formattedTotal = String.format("%,.0f VND", tongTien);
+            txtTongTien.setText(formattedTotal);
+            txtDetailTongTien.setText(formattedTotal);
             
             // Update details table
             updateDetailsTable();
@@ -540,9 +632,13 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
         // Clear existing details
         detailTableModel.setRowCount(0);
         
+        // Reset total amount
+        tongTien = 0.0;
+        
         // Add current details to table
         for (ChiTietPhieuNhapThuoc detail : currentDetails) {
             double total = detail.getSoLuong() * detail.getDonGia();
+            tongTien += total;
             
             Object[] row = {
                 detail.getThuoc().getTen(),
@@ -551,6 +647,18 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
                 String.format("%,.0f", total)
             };
             detailTableModel.addRow(row);
+        }
+        
+        // Format the total amount text
+        String formattedTotal = String.format("%,.0f VND", tongTien);
+        
+        // Update total amount display in both places directly
+        txtTongTien.setText(formattedTotal);
+        txtDetailTongTien.setText(formattedTotal);
+        
+        // Show the details tab after adding items
+        if (!currentDetails.isEmpty()) {
+            tabPane.setSelectedIndex(1);
         }
     }
     
@@ -715,6 +823,24 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
             // Set supplier
             currentReceipt.setNhaCungCap((NhaCungCap) cboSupplier.getSelectedItem());
             
+            // Set default employee if not already set
+            if (currentReceipt.getNhanVien() == null) {
+                try {
+                    // Use the existing ADMIN employee record
+                    NhanVien adminEmployee = nhanVienDAO.findById("ADMIN");
+                    
+                    if (adminEmployee != null) {
+                        currentReceipt.setNhanVien(adminEmployee);
+                        System.out.println("Set employee to ADMIN: " + adminEmployee.getHoTen());
+                    } else {
+                        System.out.println("Warning: ADMIN employee not found in database");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Failed to set default employee: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            
             // Save receipt with details
             boolean saved = phieuNhapThuocService.addPhieuNhapWithDetails(currentReceipt, currentDetails);
             
@@ -821,6 +947,10 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
         txtUnitPrice.setText("");
         txtSearch.setText("");
         
+        // Clear total amounts
+        txtTongTien.setText("");
+        txtDetailTongTien.setText("");
+        
         txtReceiptId.setEditable(true);
         
         currentReceipt = null;
@@ -847,8 +977,6 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
             searchReceipts();
         } else if (e.getSource() == btnNewReceipt) {
             newReceipt();
-        } else if (e.getSource() == btnSaveReceipt) {
-            saveReceipt();
         } else if (e.getSource() == btnDeleteReceipt) {
             deleteReceipt();
         } else if (e.getSource() == btnClear) {
@@ -857,6 +985,8 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
             addDetail();
         } else if (e.getSource() == btnRemoveDetail) {
             removeDetail();
+        } else if (e.getSource() == btnThanhToan) {
+            saveReceipt();
         }
     }
     

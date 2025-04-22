@@ -35,8 +35,11 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
 //    }
 
     @Override
-    public ChiTietPhieuNhapThuoc findById(Long aLong) throws RemoteException {
-        return null;
+    public ChiTietPhieuNhapThuoc findById(Long id) throws RemoteException {
+u
+        // Not implemented - cannot convert from Long to composite ID
+        throw new UnsupportedOperationException("Cannot find ChiTietPhieuNhapThuoc by Long ID. Use findByThuocAndPhieuNhapThuoc instead.");
+
     }
 
     @Override
@@ -55,8 +58,26 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
     }
 
     @Override
-    public boolean delete(Long aLong) throws RemoteException {
-        return false;
+
+    public boolean delete(Long id) throws RemoteException {
+        // Not implemented - cannot convert from Long to composite ID
+        throw new UnsupportedOperationException("Cannot delete ChiTietPhieuNhapThuoc by Long ID. Use custom delete method instead.");
+    }
+
+    // Implement this method to delete using composite key
+    public boolean deleteByCompositeKey(String phieuNhapThuocId, String thuocId) throws RemoteException {
+        PhieuNhapThuoc phieuNhapThuoc = phieuNhapThuocDAO.findById(phieuNhapThuocId);
+        Thuoc thuoc = thuocDAO.findById(thuocId);
+        
+        if (phieuNhapThuoc == null || thuoc == null) {
+            return false;
+        }
+        
+        ChiTietPhieuNhapThuoc.ChiTietPhieuNhapThuocID compositeId = 
+            new ChiTietPhieuNhapThuoc.ChiTietPhieuNhapThuocID(phieuNhapThuoc, thuoc);
+            
+        return chiTietPhieuNhapThuocDAO.delete(compositeId);
+
     }
 
 //    @Override
