@@ -558,6 +558,7 @@ public class gui_TrangChu extends JFrame {
         if (!"admin".equals(taiKhoanService.findById(login.getId()).getVaiTro().getId())) {
             mni_phanquyen.setEnabled(false);
             mni_nhanvien.setEnabled(false);
+			mni_vaitro.setEnabled(false);
         }
 
         
