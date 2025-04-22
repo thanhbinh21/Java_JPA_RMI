@@ -32,14 +32,18 @@ import javax.swing.table.DefaultTableModel;
 import dao.DanhMucDAO;
 import dao.impl.DanhMucDAOImpl;
 import entity.DanhMuc;
+import other.CustomButton;
+import other.CustomComboBox;
+import other.CustomTable;
+import other.CustomTextField;
 import service.DanhMucService;
 
 
 public class gui_qliDanhMuc extends JPanel implements MouseListener {
-	private JTextField txtMaDM, txtTenDM;
-	private JComboBox<String> cboViTriKe;
-	private JButton btnThem, btnXoa, btnSua, btnThoat;
-	private JTable table;
+	private CustomTextField txtMaDM, txtTenDM;
+	private CustomComboBox<String> cboViTriKe;
+	private CustomButton btnThem, btnXoa, btnSua, btnThoat;
+	private CustomTable table;
 	private DefaultTableModel model;
 	private DanhMucService DM_SERVICE;
 
@@ -66,15 +70,18 @@ public class gui_qliDanhMuc extends JPanel implements MouseListener {
 
 		JPanel pnInfo = new JPanel(new GridLayout(3, 4, 5, 5));
 		pnInfo.add(new JLabel("Mã Danh Mục:"));
-		txtMaDM = new JTextField();
+		txtMaDM = new CustomTextField();
+		txtMaDM.setPreferredSize(new Dimension((int) txtMaDM.getPreferredSize().getWidth(), 30));
 		pnInfo.add(txtMaDM);
 
 		pnInfo.add(new JLabel("Tên Danh Mục:"));
-		txtTenDM = new JTextField();
+		txtTenDM = new CustomTextField();
+		txtTenDM.setPreferredSize(new Dimension((int) txtTenDM.getPreferredSize().getWidth(), 30));
 		pnInfo.add(txtTenDM);
 
 		pnInfo.add(new JLabel("Vị Trí Kệ:"));
-		cboViTriKe = new JComboBox<>();
+		cboViTriKe = new CustomComboBox<>();
+		cboViTriKe.setPreferredSize(new Dimension((int) cboViTriKe.getPreferredSize().getWidth(), 30));
 		pnInfo.add(cboViTriKe);
 
 		JPanel pnTitleAndInfo = new JPanel();
@@ -86,10 +93,14 @@ public class gui_qliDanhMuc extends JPanel implements MouseListener {
 		add(pnTitleAndInfo, BorderLayout.NORTH);
 
 		JPanel pnButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-		btnThem = new JButton("Thêm Danh Mục");
-		btnXoa = new JButton("Xóa Danh Mục");
-		btnSua = new JButton("Sửa Thông Tin");
-		btnThoat = new JButton("Thoát");
+		btnThem = new CustomButton("Thêm Danh Mục");
+		btnThem.setPreferredSize(new Dimension(180, 30));
+		btnXoa = new CustomButton("Xóa Danh Mục");
+		btnXoa.setPreferredSize(new Dimension(180, 30));
+		btnSua = new CustomButton("Sửa Thông Tin");
+		btnSua.setPreferredSize(new Dimension(180, 30));
+		btnThoat = new CustomButton("Thoát");
+		btnThoat.setPreferredSize(new Dimension(180, 30));
 
 		pnButtons.add(btnThem);
 		pnButtons.add(btnXoa);
@@ -106,7 +117,7 @@ public class gui_qliDanhMuc extends JPanel implements MouseListener {
 		String[] columnNames = { "Mã Danh Mục", "Tên Danh Mục", "Vị Trí Kệ" };
 
 		model = new DefaultTableModel(columnNames, 0);
-		table = new JTable(model);
+		table = new CustomTable(model);
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		scrollPane.setBorder(BorderFactory.createTitledBorder("Danh Sách Danh Mục"));

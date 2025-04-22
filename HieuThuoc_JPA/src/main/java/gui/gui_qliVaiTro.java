@@ -4,6 +4,9 @@ import dao.VaiTroDAO;
 import dao.impl.VaiTroDAOImpl;
 import entity.NhaSanXuat;
 import entity.VaiTro;
+import other.CustomButton;
+import other.CustomTable;
+import other.CustomTextField;
 import service.VaiTroService;
 
 import javax.swing.*;
@@ -19,9 +22,9 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
 public class gui_qliVaiTro extends JPanel implements MouseListener {
-    private JTextField txtMaVT, txtTenVT;
-    private JButton btnThem, btnXoa, btnSua;
-    private JTable table;
+    private CustomTextField txtMaVT, txtTenVT;
+    private CustomButton btnThem, btnXoa, btnSua;
+    private CustomTable table;
     private DefaultTableModel model;
     private VaiTroService VT_SERVICE;
 
@@ -53,8 +56,9 @@ public class gui_qliVaiTro extends JPanel implements MouseListener {
         gbc.gridy = 0;
         pnInfo.add(lblMaNSX, gbc);
 
-        txtMaVT = new JTextField(20);
+        txtMaVT = new CustomTextField(20);
         txtMaVT.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+        txtMaVT.setPreferredSize(new Dimension((int) txtMaVT.getPreferredSize().getWidth(), 30));
         gbc.gridx = 1;
         pnInfo.add(txtMaVT, gbc);
 
@@ -64,8 +68,9 @@ public class gui_qliVaiTro extends JPanel implements MouseListener {
         gbc.gridy = 1;
         pnInfo.add(lblTenNSX, gbc);
 
-        txtTenVT = new JTextField(20);
+        txtTenVT = new CustomTextField(20);
         txtTenVT.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+        txtTenVT.setPreferredSize(new Dimension((int) txtTenVT.getPreferredSize().getWidth(), 30));
         gbc.gridx = 1;
         pnInfo.add(txtTenVT, gbc);
 
@@ -74,13 +79,13 @@ public class gui_qliVaiTro extends JPanel implements MouseListener {
 
         JPanel pnButtons = new JPanel();
 
-        btnThem = new JButton("Thêm Vai Trò");
+        btnThem = new CustomButton("Thêm Vai Trò");
         btnThem.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnThem.setPreferredSize(new Dimension(180, 40));
-        btnXoa = new JButton("Xóa Vai Trò");
+        btnXoa = new CustomButton("Xóa Vai Trò");
         btnXoa.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnXoa.setPreferredSize(new Dimension(170, 40));
-        btnSua = new JButton("Sửa Vai Trò");
+        btnSua = new CustomButton("Sửa Vai Trò");
         btnSua.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnSua.setPreferredSize(new Dimension(170, 40));
 
@@ -92,7 +97,7 @@ public class gui_qliVaiTro extends JPanel implements MouseListener {
 
         String[] columnNames = {"Mã Vai Trò", "Tên Vai Trò"};
         model = new DefaultTableModel(columnNames, 0);
-        table = new JTable(model);
+        table = new CustomTable(model);
         table.setFont(new Font("Times New Roman", Font.PLAIN, 15));
         table.setRowHeight(25);
 
@@ -204,8 +209,8 @@ public class gui_qliVaiTro extends JPanel implements MouseListener {
     }
 
     private void setEnableEdit(boolean enable){
-        txtMaVT.setEditable(enable);
-        txtTenVT.setEditable(enable);
+        txtMaVT.setEnabled(enable);
+        txtTenVT.setEnabled(enable);
         btnThem.setEnabled(enable);
         btnXoa.setEnabled(enable);
         btnSua.setEnabled(enable);
@@ -222,7 +227,7 @@ public class gui_qliVaiTro extends JPanel implements MouseListener {
             }
             return;
         }
-        txtMaVT.setEditable(false);
+        txtMaVT.setEnabled(false);
         int row = table.getSelectedRow();
         if (row >= 0) {
             txtMaVT.setText(model.getValueAt(row, 0).toString());

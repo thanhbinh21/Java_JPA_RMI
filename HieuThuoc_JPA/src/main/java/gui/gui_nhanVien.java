@@ -21,6 +21,10 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.toedter.calendar.JDateChooser;
+import other.CustomButton;
+import other.CustomComboBox;
+import other.CustomTable;
+import other.CustomTextField;
 import service.NhanVienService;
 
 import javax.swing.JTextField;
@@ -50,14 +54,14 @@ import javax.swing.JSeparator;
 public class gui_nhanVien extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField txt_maNV;
-	private JTextField txt_tenNV;
-	private JTextField txt_sDT;
-	private JTextField txt_namSinh;
-	private JTextField txt_ngayVaoLam;
-	private JComboBox cbo;
+	private CustomTextField txt_maNV;
+	private CustomTextField txt_tenNV;
+	private CustomTextField txt_sDT;
+	private CustomTextField txt_namSinh;
+	private CustomTextField txt_ngayVaoLam;
+	private CustomComboBox cbo;
 	private DefaultTableModel model;
-	private JTable table;
+	private CustomTable table;
 	private NhanVienService NV_SERVICE;
 	private ArrayList<NhanVien> list;
 	private JDateChooser datechooser;
@@ -86,7 +90,7 @@ public class gui_nhanVien extends JPanel implements MouseListener {
 		lbl_1.setBounds(176, 85, 150, 35);
 		add(lbl_1);
 		
-		txt_maNV = new JTextField();
+		txt_maNV = new CustomTextField();
 		txt_maNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txt_maNV.setBounds(336, 85, 300, 35);
 		add(txt_maNV);
@@ -117,20 +121,20 @@ public class gui_nhanVien extends JPanel implements MouseListener {
 		lbl_6.setBounds(752, 255, 150, 35);
 		add(lbl_6);
 		
-		txt_tenNV = new JTextField();
+		txt_tenNV = new CustomTextField();
 		
 		txt_tenNV.setColumns(10);
 		txt_tenNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txt_tenNV.setBounds(336, 168, 300, 35);
 		add(txt_tenNV);
 		
-		txt_sDT = new JTextField();
+		txt_sDT = new CustomTextField();
 		txt_sDT.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txt_sDT.setColumns(10);
 		txt_sDT.setBounds(336, 255, 300, 35);
 		add(txt_sDT);
 		
-		txt_namSinh = new JTextField();
+		txt_namSinh = new CustomTextField();
 		txt_namSinh.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		txt_namSinh.setColumns(10);
 		txt_namSinh.setBounds(910, 168, 300, 35);
@@ -142,7 +146,7 @@ public class gui_nhanVien extends JPanel implements MouseListener {
 		datechooser.setBounds(910, 255, 300, 35);
 		add(datechooser);
 		
-		cbo = new JComboBox();
+		cbo = new CustomComboBox();
 		cbo.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		cbo.setModel(new DefaultComboBoxModel(new String[] {"Nam", "Nữ"}));
 		cbo.setBounds(910, 85, 300, 35);
@@ -160,7 +164,7 @@ public class gui_nhanVien extends JPanel implements MouseListener {
 		String[] columnNames = { "Mã nhân viên", "Tên nhân viên", "Số điện thoại", "Giới tính", "Năm sinh", "Ngày vào làm" };
 		model = new DefaultTableModel(columnNames,0);
 		
-		table = new JTable();
+		table = new CustomTable();
 		table.setModel(model);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -168,7 +172,7 @@ public class gui_nhanVien extends JPanel implements MouseListener {
 		add(scrollPane);
 		
 		
-		JButton btn_themNV = new JButton("Thêm Nhân Viên");
+		CustomButton btn_themNV = new CustomButton("Thêm Nhân Viên");
 		btn_themNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btn_themNV.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -262,7 +266,7 @@ public class gui_nhanVien extends JPanel implements MouseListener {
 		btn_themNV.setBounds(325, 314, 150, 35);
 		add(btn_themNV);
 		
-		JButton btn_suaNV = new JButton("Sửa Thông Tin");
+		CustomButton btn_suaNV = new CustomButton("Sửa Thông Tin");
 		btn_suaNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btn_suaNV.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -401,7 +405,7 @@ public class gui_nhanVien extends JPanel implements MouseListener {
 //		btn_xoaNV.setBounds(752, 314, 150, 35);
 //		add(btn_xoaNV);
 		
-		JButton btn_ex = new JButton("Export");
+		CustomButton btn_ex = new CustomButton("Export");
 		btn_ex.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btn_ex.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
