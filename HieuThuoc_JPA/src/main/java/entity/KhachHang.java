@@ -5,15 +5,18 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
-@Setter
+
 @Getter
+@Setter
+
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
+@ToString(exclude = {"hoaDons", "phieuDatThuocs"})
 @Entity
 @Table(name = "KhachHang")
-@Data
 public class KhachHang implements Serializable {
     @Id
     @Column(name = "ma_khach_hang", columnDefinition = "varchar(45)")
@@ -27,8 +30,25 @@ public class KhachHang implements Serializable {
     private boolean gioiTinh;
     @Column(name = "ngay_tham_gia", nullable = false)
     private LocalDate ngayThamGia;
+
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<HoaDon> hoaDons;
+    
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PhieuDatThuoc> phieuDatThuocs;
+
+    public KhachHang(String maKH, String tenKH, String dienThoai, boolean gioiTinhBoolean, LocalDate ngayThamGia) {
+        this.id = maKH;
+        this.hoTen = tenKH;
+        this.soDienThoai = dienThoai;
+        this.gioiTinh = gioiTinhBoolean;
+        this.ngayThamGia = ngayThamGia;
+    }
+
+    public KhachHang() {
+
+    }
+
+
+
 }

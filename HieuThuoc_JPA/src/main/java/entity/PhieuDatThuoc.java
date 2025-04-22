@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
+@ToString(exclude = {"chiTietPhieuDatThuocs"})
 @Entity
 @Table(name = "PhieuDatThuoc")
 public class PhieuDatThuoc implements Serializable {
@@ -31,6 +31,20 @@ public class PhieuDatThuoc implements Serializable {
     private NhanVien nhanVien;
     @Column(name = "trang_Thai", nullable = false)
     private boolean trangThai;
+
+    public PhieuDatThuoc(String idHD, Timestamp thoiGian, NhanVien nhanVien, KhachHang khachHang, boolean b) {
+        this.id = idHD;
+        this.thoiGian = thoiGian;
+        this.nhanVien = nhanVien;
+        this.khachHang = khachHang;
+        this.trangThai = b;
+    }
+    public PhieuDatThuoc() {
+
+    }
     @OneToMany(mappedBy = "phieuDatThuoc", cascade = CascadeType.ALL)
     private Set<ChiTietPhieuDatThuoc> chiTietPhieuDatThuocs;
+
+
+
 }

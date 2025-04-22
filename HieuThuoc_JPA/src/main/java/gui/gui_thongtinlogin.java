@@ -1,103 +1,14 @@
 
-//package gui;
-//
-//import entity.TaiKhoan;
-//
-//import javax.swing.JPanel;
-//import javax.swing.JLabel;
-//import java.awt.Font;
-//import java.awt.SystemColor;
-//import java.text.SimpleDateFormat;
-//
-//import javax.swing.JTextField;
-//
-//import java.awt.Color;
-//
-//public class gui_thongtinlogin extends JPanel {
-//
-//    private static final long serialVersionUID = 1L;
-//    private JTextField textFieldMANV;
-//    private JTextField textFieldTEN;
-//    private JTextField textFieldSDT;
-//    private JTextField textFieldNGAYVAOLAM;
-//
-//    /**
-//     * Create the panel.
-//     */
-//    public gui_thongtinlogin(TaiKhoan taiKhoan) {
-//        setBackground(SystemColor.textInactiveText);
-//        setLayout(null);
-//
-//        JLabel lblNewLabel = new JLabel("THÔNG TIN CÁ NHÂN");
-//        lblNewLabel.setForeground(new Color(255, 255, 0));
-//        lblNewLabel.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 20));
-//        lblNewLabel.setBounds(209, 10, 233, 46);
-//        add(lblNewLabel);
-//
-//        JLabel lblNewLabel_1 = new JLabel("MANV");
-//        lblNewLabel_1.setBackground(SystemColor.text);
-//        lblNewLabel_1.setForeground(SystemColor.text);
-//        lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-//        lblNewLabel_1.setBounds(123, 79, 57, 23);
-//        add(lblNewLabel_1);
-//
-//        textFieldMANV = new JTextField(taiKhoan.getNhanVien().getHoTen());
-//        textFieldMANV.setFont(new Font("Tahoma", Font.PLAIN, 15));
-//        textFieldMANV.setBounds(248, 75, 256, 27);
-//        add(textFieldMANV);
-//        textFieldMANV.setColumns(10);
-//
-//        JLabel lblNewLabel_1_1 = new JLabel("TÊN");
-//        lblNewLabel_1_1.setForeground(SystemColor.text);
-//        lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-//        lblNewLabel_1_1.setBounds(123, 132, 57, 23);
-//        add(lblNewLabel_1_1);
-//
-//        textFieldTEN = new JTextField(taiKhoan.getNhanVien().getHoTen());
-//        textFieldTEN.setFont(new Font("Tahoma", Font.PLAIN, 15));
-//        textFieldTEN.setColumns(10);
-//        textFieldTEN.setBounds(248, 132, 256, 27);
-//        add(textFieldTEN);
-//
-//        JLabel lblNewLabel_1_1_1 = new JLabel("SDT");
-//        lblNewLabel_1_1_1.setForeground(SystemColor.text);
-//        lblNewLabel_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-//        lblNewLabel_1_1_1.setBounds(123, 190, 57, 23);
-//        add(lblNewLabel_1_1_1);
-//
-//        textFieldSDT = new JTextField(taiKhoan.getNhanVien().getSoDienThoai());
-//        textFieldSDT.setFont(new Font("Tahoma", Font.PLAIN, 15));
-//        textFieldSDT.setColumns(10);
-//        textFieldSDT.setBounds(248, 190, 256, 27);
-//        add(textFieldSDT);
-//
-//        JLabel lblNewLabel_1_1_1_1 = new JLabel("NGÀY VÀO LÀM");
-//        lblNewLabel_1_1_1_1.setForeground(SystemColor.text);
-//        lblNewLabel_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-//        lblNewLabel_1_1_1_1.setBounds(123, 248, 115, 23);
-//        add(lblNewLabel_1_1_1_1);
-//
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//		String ngayVaoLamString = dateFormat.format(taiKhoan.getNhanVien().getNgayVaoLam());
-//
-//		textFieldNGAYVAOLAM = new JTextField(ngayVaoLamString);
-//		textFieldNGAYVAOLAM.setFont(new Font("Tahoma", Font.PLAIN, 15));
-//		textFieldNGAYVAOLAM.setBounds(248, 248, 256, 27);
-//		add(textFieldNGAYVAOLAM);
-//    }
-//}
-
 package gui;
 
 import entity.TaiKhoan;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
+import javax.swing.*;
 import java.awt.Font;
 import java.awt.SystemColor;
-import java.text.SimpleDateFormat;
-
-import javax.swing.JTextField;
+import java.awt.Cursor;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import java.awt.Color;
 import java.time.format.DateTimeFormatter;
@@ -105,10 +16,10 @@ import java.time.format.DateTimeFormatter;
 public class gui_thongtinlogin extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private JTextField textFieldMANV;
-    private JTextField textFieldTEN;
-    private JTextField textFieldSDT;
-    private JTextField textFieldNGAYVAOLAM;
+    private JLabel labelMANV;
+    private JLabel labelTEN;
+    private JLabel labelSDT;
+    private JLabel labelNGAYVAOLAM;
 
     /**
      * Create the panel.
@@ -117,62 +28,93 @@ public class gui_thongtinlogin extends JPanel {
         setBackground(SystemColor.textInactiveText);
         setLayout(null);
         
-        JLabel lblNewLabel = new JLabel("THÔNG TIN CÁ NHÂN");
-        lblNewLabel.setForeground(new Color(255, 255, 0));
-        lblNewLabel.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 20));
-        lblNewLabel.setBounds(209, 10, 233, 46);
-        add(lblNewLabel);
+        JLabel lblTitle = new JLabel("THÔNG TIN CÁ NHÂN");
+        lblTitle.setForeground(new Color(255, 255, 0));
+        lblTitle.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 20));
+        lblTitle.setBounds(209, 10, 233, 46);
+        add(lblTitle);
         
-        JLabel lblNewLabel_1 = new JLabel("MANV");
-        lblNewLabel_1.setBackground(SystemColor.text);
-        lblNewLabel_1.setForeground(SystemColor.text);
-        lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_1.setBounds(123, 79, 57, 23);
-        add(lblNewLabel_1);
+        JLabel lblMaNV = new JLabel("Mã nhân viên:");
+        lblMaNV.setBackground(SystemColor.text);
+        lblMaNV.setForeground(SystemColor.text);
+        lblMaNV.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        lblMaNV.setBounds(123, 79, 115, 23);
+        add(lblMaNV);
         
-        textFieldMANV = new JTextField(taiKhoan.getNhanVien().getHoTen());
-        textFieldMANV.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldMANV.setBounds(248, 75, 256, 27);
-        add(textFieldMANV);
-        textFieldMANV.setColumns(10);
+        labelMANV = new JLabel(taiKhoan.getNhanVien().getId());
+        labelMANV.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelMANV.setBounds(248, 75, 256, 27);
+        labelMANV.setForeground(Color.WHITE);
+        labelMANV.setOpaque(true);
+        labelMANV.setBackground(new Color(60, 60, 60));
+        labelMANV.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        add(labelMANV);
 
-        JLabel lblNewLabel_1_1 = new JLabel("TÊN");
-        lblNewLabel_1_1.setForeground(SystemColor.text);
-        lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_1_1.setBounds(123, 132, 57, 23);
-        add(lblNewLabel_1_1);
+        JLabel lblHoTen = new JLabel("Họ và tên:");
+        lblHoTen.setForeground(SystemColor.text);
+        lblHoTen.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        lblHoTen.setBounds(123, 132, 115, 23);
+        add(lblHoTen);
         
-        textFieldTEN = new JTextField(taiKhoan.getNhanVien().getHoTen());
-        textFieldTEN.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldTEN.setColumns(10);
-        textFieldTEN.setBounds(248, 132, 256, 27);
-        add(textFieldTEN);
+        labelTEN = new JLabel(taiKhoan.getNhanVien().getHoTen());
+        labelTEN.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelTEN.setBounds(248, 132, 256, 27);
+        labelTEN.setForeground(Color.WHITE);
+        labelTEN.setOpaque(true);
+        labelTEN.setBackground(new Color(60, 60, 60));
+        labelTEN.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        add(labelTEN);
         
-        JLabel lblNewLabel_1_1_1 = new JLabel("SDT");
-        lblNewLabel_1_1_1.setForeground(SystemColor.text);
-        lblNewLabel_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_1_1_1.setBounds(123, 190, 57, 23);
-        add(lblNewLabel_1_1_1);
+        JLabel lblSdt = new JLabel("Số điện thoại:");
+        lblSdt.setForeground(SystemColor.text);
+        lblSdt.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        lblSdt.setBounds(123, 190, 115, 23);
+        add(lblSdt);
         
-        textFieldSDT = new JTextField(taiKhoan.getNhanVien().getSoDienThoai());
-        textFieldSDT.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldSDT.setColumns(10);
-        textFieldSDT.setBounds(248, 190, 256, 27);
-        add(textFieldSDT);
+        labelSDT = new JLabel(taiKhoan.getNhanVien().getSoDienThoai());
+        labelSDT.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelSDT.setBounds(248, 190, 256, 27);
+        labelSDT.setForeground(Color.WHITE);
+        labelSDT.setOpaque(true);
+        labelSDT.setBackground(new Color(60, 60, 60));
+        labelSDT.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        add(labelSDT);
         
-        JLabel lblNewLabel_1_1_1_1 = new JLabel("NGÀY VÀO LÀM");
-        lblNewLabel_1_1_1_1.setForeground(SystemColor.text);
-        lblNewLabel_1_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_1_1_1_1.setBounds(123, 248, 115, 23);
-        add(lblNewLabel_1_1_1_1);
+        JLabel lblNgayVaoLam = new JLabel("Ngày vào làm:");
+        lblNgayVaoLam.setForeground(SystemColor.text);
+        lblNgayVaoLam.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        lblNgayVaoLam.setBounds(123, 248, 115, 23);
+        add(lblNgayVaoLam);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		String ngayVaoLamString = taiKhoan.getNhanVien().getNgayVaoLam().format(formatter);
+        String ngayVaoLamString = taiKhoan.getNhanVien().getNgayVaoLam().format(formatter);
 
-		textFieldNGAYVAOLAM = new JTextField(ngayVaoLamString);
-		textFieldNGAYVAOLAM.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		textFieldNGAYVAOLAM.setBounds(248, 248, 256, 27);
-		add(textFieldNGAYVAOLAM);
+        labelNGAYVAOLAM = new JLabel(ngayVaoLamString);
+        labelNGAYVAOLAM.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelNGAYVAOLAM.setBounds(248, 248, 256, 27);
+        labelNGAYVAOLAM.setForeground(Color.WHITE);
+        labelNGAYVAOLAM.setOpaque(true);
+        labelNGAYVAOLAM.setBackground(new Color(60, 60, 60));
+        labelNGAYVAOLAM.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        add(labelNGAYVAOLAM);
+        
+        JButton btnExit = new JButton("Đóng");
+        btnExit.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnExit.setForeground(Color.YELLOW);
+        btnExit.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnExit.setBounds(300, 300, 120, 40);
+        btnExit.setBackground(Color.CYAN);
+        btnExit.setFocusPainted(false);
+        btnExit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Find the parent dialog and close it
+                JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(gui_thongtinlogin.this);
+                if (dialog != null) {
+                    dialog.dispose();
+                }
+            }
+        });
+        add(btnExit);
     }
 }
 

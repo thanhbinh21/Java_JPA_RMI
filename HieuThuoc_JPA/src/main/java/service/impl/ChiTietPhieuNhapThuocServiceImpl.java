@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implements ChiTietPhieuNhapThuocService {
     private final ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO;
@@ -29,10 +29,17 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
         this.thuocDAO = thuocDAO;
     }
 
+//    @Override
+//    public ChiTietPhieuNhapThuoc findById(Long id) throws RemoteException {
+//        return chiTietPhieuNhapThuocDAO.findById(id);
+//    }
+
     @Override
     public ChiTietPhieuNhapThuoc findById(Long id) throws RemoteException {
+u
         // Not implemented - cannot convert from Long to composite ID
         throw new UnsupportedOperationException("Cannot find ChiTietPhieuNhapThuoc by Long ID. Use findByThuocAndPhieuNhapThuoc instead.");
+
     }
 
     @Override
@@ -51,6 +58,7 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
     }
 
     @Override
+
     public boolean delete(Long id) throws RemoteException {
         // Not implemented - cannot convert from Long to composite ID
         throw new UnsupportedOperationException("Cannot delete ChiTietPhieuNhapThuoc by Long ID. Use custom delete method instead.");
@@ -69,7 +77,13 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
             new ChiTietPhieuNhapThuoc.ChiTietPhieuNhapThuocID(phieuNhapThuoc, thuoc);
             
         return chiTietPhieuNhapThuocDAO.delete(compositeId);
+
     }
+
+//    @Override
+//    public boolean delete(Long id) throws RemoteException {
+//        return chiTietPhieuNhapThuocDAO.delete(id);
+//    }
 
     @Override
     public List<ChiTietPhieuNhapThuoc> findByPhieuNhapThuoc(String phieuNhapThuocId) throws RemoteException {
