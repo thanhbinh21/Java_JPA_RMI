@@ -1,6 +1,4 @@
 package gui;
-
-import dao.*;
 import dao.impl.*;
 import entity.*;
 import other.Formatter;
@@ -9,10 +7,7 @@ import other.RandomMa;
 import other.Validation;
 import service.*;
 import service.impl.*;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -20,30 +15,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class gui_BanThuoc extends JPanel {
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_8;
-	private JTextField textField_9;
-	private JTextField textField_10;
-	private JComponent table_right;
+
 	private JTextField txtMaThuoc;
 	private JTextField txtTenThuoc;
 	private JTextField txtThanhPhan;
@@ -65,7 +45,7 @@ public class gui_BanThuoc extends JPanel {
 	private ThuocService THUOC_SERVICE;
 	private KhachHangService KH_SERVICE;
 	private HoaDonService HD_SERVICE;
-	private BanThuocService BAN_THUOC_SERVICE; // Tổng hợp các nghiệp vụ bán thuốc
+	private BanThuocService BAN_THUOC_SERVICE;
 	private PhieuDatThuocService DDT_SERVICE;
 
 	private JTable tableCart;
@@ -76,10 +56,9 @@ public class gui_BanThuoc extends JPanel {
 	private JTextField txtTenDDT;
 	private JTextField txtTimeDDT;
 
-	// Constructor
+
 	public gui_BanThuoc(TaiKhoan login) {
 		this.tklogin = login;
-
 		initializeComponents();
 		initializeServices();
 		setupUI();
@@ -90,12 +69,9 @@ public class gui_BanThuoc extends JPanel {
 			e.printStackTrace();
 		}
 
-
-
 	}
 
 	private void initializeComponents() {
-		// Initialize all text fields and UI components before they are used
 		txtMaThuoc = new JTextField();
 		txtTenThuoc = new JTextField();
 		txtThanhPhan = new JTextField();
@@ -116,7 +92,6 @@ public class gui_BanThuoc extends JPanel {
 		tableCart = new JTable();
 		cboxSearch = new JComboBox();
 
-		// Set any default properties
 		txtHinhAnh.setBorder(BorderFactory.createEtchedBorder());
 	}
 
@@ -125,6 +100,7 @@ public class gui_BanThuoc extends JPanel {
 			THUOC_SERVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
 			KH_SERVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
 			HD_SERVICE = new HoaDonServiceImpl(new HoaDonDAOImpl());
+
 			BAN_THUOC_SERVICE = new BanThuocServiceImpl(new ThuocDAOImpl(), new HoaDonDAOImpl(),
 					new KhachHangDAOImpl(), new ChiTietHoaDonDAOImpl(), new DanhMucDAOImpl());
 			DDT_SERVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
@@ -153,20 +129,17 @@ public class gui_BanThuoc extends JPanel {
 		add(titlePanel, BorderLayout.NORTH);
 
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		splitPane.setResizeWeight(0.5); // Equal distribution
+		splitPane.setResizeWeight(0.5);
 		splitPane.setDividerLocation(0.5);
 		splitPane.setContinuousLayout(true);
 		add(splitPane, BorderLayout.CENTER);
 
-		// Create left panel (Product Information)
 		JPanel leftPanel = createLeftPanel();
 		splitPane.setLeftComponent(leftPanel);
 
-		// Create right panel (Order Details)
 		JPanel rightPanel = createRightPanel();
 		splitPane.setRightComponent(rightPanel);
 
-		// Set preferred size based on screen dimensions
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setPreferredSize(new Dimension((int)(screenSize.getWidth() * 0.8),
 				(int)(screenSize.getHeight() * 0.8)));
@@ -190,13 +163,11 @@ public class gui_BanThuoc extends JPanel {
 
 	private JPanel createLeftPanel() {
 		JPanel leftPanel = new JPanel();
-		leftPanel.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(0, 10, 0, 10),
-				BorderFactory.createLineBorder(Color.BLACK)
-		));
+		leftPanel.setBorder(
+				BorderFactory.createEmptyBorder(0, 10, 0, 10)
+		);
 		leftPanel.setLayout(new BorderLayout(0, 10));
 
-		// Add product header
 		JPanel panelProductHeader = createHeaderPanel("THÔNG TIN THUỐC");
 		leftPanel.add(panelProductHeader, BorderLayout.NORTH);
 
@@ -217,7 +188,7 @@ public class gui_BanThuoc extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane(contentPanel);
 		scrollPane.setBorder(null);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Smoother scrolling
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		leftPanel.add(scrollPane, BorderLayout.CENTER);
 
 		return leftPanel;
@@ -231,20 +202,16 @@ public class gui_BanThuoc extends JPanel {
 		imagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		imagePanel.setPreferredSize(new Dimension(210, 176));
 
-		// Add image label
 		txtHinhAnh.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		imagePanel.add(txtHinhAnh, BorderLayout.CENTER);
 
-		// Product details form
 		JPanel detailsPanel = new JPanel();
-		detailsPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		detailsPanel.setLayout(new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 5, 5);
 		gbc.anchor = GridBagConstraints.WEST;
 
-		// Add form components with GridBagLayout for better alignment
 		String[][] formFields = {
 				{"MATHUOC:", "txtMaThuoc"},
 				{"TENTHUOC:", "txtTenThuoc"},
@@ -275,7 +242,6 @@ public class gui_BanThuoc extends JPanel {
 			detailsPanel.add(field, gbc);
 		}
 
-		// Combine image and details
 		panel.add(imagePanel, BorderLayout.WEST);
 		panel.add(detailsPanel, BorderLayout.CENTER);
 
@@ -296,16 +262,14 @@ public class gui_BanThuoc extends JPanel {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 
-		// Add combo box with title border
 		cboxSearch.setModel(new DefaultComboBoxModel(new String[]{"Tất cả"}));
 		cboxSearch.setBorder(BorderFactory.createTitledBorder("Loại Thuốc"));
 		cboxSearch.setPreferredSize(new Dimension(160, 40));
 		cboxSearch.addActionListener(e -> loadTableTheoDanhMuc());
 		panel.add(cboxSearch);
 
-		// Add search field
 		txtSearch.setBorder(BorderFactory.createTitledBorder("Tra cứu"));
-		txtSearch.setPreferredSize(new Dimension(150, 40));
+		txtSearch.setPreferredSize(new Dimension(200, 40));
 		txtSearch.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -314,12 +278,10 @@ public class gui_BanThuoc extends JPanel {
 		});
 		panel.add(txtSearch);
 
-		// Add separator
 		JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
 		separator.setPreferredSize(new Dimension(3, 40));
 		panel.add(separator);
 
-		// Add reload button
 		JButton btnReload = new JButton("Làm mới");
 		btnReload.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/refresh.png")));
 		btnReload.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -329,14 +291,15 @@ public class gui_BanThuoc extends JPanel {
 
 		JSeparator separator1 = new JSeparator(SwingConstants.VERTICAL);
 		separator1.setPreferredSize(new Dimension(3, 40));
+
+		panel.add(Box.createHorizontalStrut(10));
 		panel.add(separator1);
-		panel.add(Box.createHorizontalStrut(50)); // Add space between components
-		// Add quantity field
-		txtSoLuong.setBorder(BorderFactory.createTitledBorder("Số lượng"));
-		txtSoLuong.setPreferredSize(new Dimension(100, 40));
+		JLabel label = new JLabel("Nhập số lượng: ");
+		label.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel.add(label);
+		txtSoLuong.setPreferredSize(new Dimension(150, 30));
 		panel.add(txtSoLuong);
 
-		// Add cart button
 		JButton btnAddCart = new JButton("THÊM");
 		btnAddCart.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/add-to-cart.png")));
 		btnAddCart.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -351,7 +314,6 @@ public class gui_BanThuoc extends JPanel {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setBorder(BorderFactory.createTitledBorder("Danh sách Thuốc"));
 
-		// Create table and scroll pane
 		table = new JTable();
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -364,8 +326,7 @@ public class gui_BanThuoc extends JPanel {
 		scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		// Set preferred size for the panel
-		panel.setPreferredSize(new Dimension(0, 200)); // Height will adapt, width will fill
+		panel.setPreferredSize(new Dimension(400, 200)); // Height will adapt, width will fill
 
 		return panel;
 	}
@@ -373,12 +334,12 @@ public class gui_BanThuoc extends JPanel {
 	private JPanel createOrderPreviewPanel() {
 		JPanel panel = new JPanel(new GridBagLayout());
 		panel.setBorder(BorderFactory.createTitledBorder("Đơn đặt thuốc từ trước"));
-
 		GridBagConstraints gbc = new GridBagConstraints();
+
 		gbc.insets = new Insets(5, 5, 5, 5);
+
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		// First row - ID and Phone
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 0.2;
@@ -404,11 +365,12 @@ public class gui_BanThuoc extends JPanel {
 
 		gbc.gridx = 4;
 		gbc.weightx = 0.1;
-		JButton btn_tkimDDT = createIconButton("/icon/search.png", "Tìm");
+		JButton btn_tkimDDT = new JButton("Tìm");
+		btn_tkimDDT.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/search.png")));
+		btn_tkimDDT.setFont(new Font("Dialog", Font.BOLD, 16));
 		btn_tkimDDT.addActionListener(e -> btnTKDDT());
 		panel.add(btn_tkimDDT, gbc);
 
-		// Second row - Name
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.weightx = 0.2;
@@ -420,7 +382,6 @@ public class gui_BanThuoc extends JPanel {
 		gbc.weightx = 0.3;
 		panel.add(txtTenDDT, gbc);
 
-		// Third row - Order Time and Details Button
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.weightx = 0.2;
@@ -447,33 +408,27 @@ public class gui_BanThuoc extends JPanel {
 
 	private JPanel createRightPanel() {
 		JPanel rightPanel = new JPanel();
-		rightPanel.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(5, 5, 5, 5),
-				BorderFactory.createLineBorder(Color.BLACK)
-		));
+		rightPanel.setBorder(
+				BorderFactory.createEmptyBorder(0, 5, 5, 5)
+
+		);
 		rightPanel.setLayout(new BorderLayout(0, 10));
 
-		// Add order details header
-		JPanel orderHeader = createHeaderPanel("CHI TIẾT HÓA ĐƠN");
+		JPanel orderHeader = createHeaderPanel("THÔNG TIN GIỎ HÀNG");
 		rightPanel.add(orderHeader, BorderLayout.NORTH);
 
-		// Create content panel
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-		// Add cart details panel
 		JPanel cartDetailsPanel = createCartDetailsPanel();
 		contentPanel.add(cartDetailsPanel);
 
-		// Add invoice header
-		JPanel invoiceHeader = createHeaderPanel("HÓA ĐƠN");
+		JPanel invoiceHeader = createHeaderPanel("THÔNG TIN HÓA ĐƠN");
 		contentPanel.add(invoiceHeader);
 
-		// Add invoice details panel
 		JPanel invoiceDetailsPanel = createInvoiceDetailsPanel();
 		contentPanel.add(invoiceDetailsPanel);
 
-		// Add content to right panel
 		JScrollPane scrollPane = new JScrollPane(contentPanel);
 		scrollPane.setBorder(null);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -497,9 +452,8 @@ public class gui_BanThuoc extends JPanel {
 
 	private JPanel createCartDetailsPanel() {
 		JPanel panel = new JPanel(new BorderLayout(0, 10));
-		panel.setBorder(BorderFactory.createTitledBorder("Chi Tiết"));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		// Create table
 		tableCart = new JTable();
 		tableCart.setModel(new DefaultTableModel(
 				new Object[][] {},
@@ -510,7 +464,6 @@ public class gui_BanThuoc extends JPanel {
 		scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		// Add delete button
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JButton btnXoa = new JButton("XÓA");
 		btnXoa.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/delete.png")));
@@ -527,24 +480,23 @@ public class gui_BanThuoc extends JPanel {
 
 	private JPanel createInvoiceDetailsPanel() {
 		JPanel panel = new JPanel(new GridBagLayout());
-		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
+//		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 10, 5, 10);
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		// Invoice ID
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.15; // Decreased label width
 		JLabel lblMaHD = new JLabel("MAHD");
 		lblMaHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblMaHD, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridwidth = 3;
-		gbc.weightx = 0.8;
+		gbc.weightx = 0.85; // Increased text field width
 		txtMaHoaDon = new JTextField();
 		txtMaHoaDon.setEditable(false);
 		txtMaHoaDon.setBackground(Color.WHITE);
@@ -552,18 +504,17 @@ public class gui_BanThuoc extends JPanel {
 		txtMaHoaDon.setText(RandomMa.maHoaDonAuto());
 		panel.add(txtMaHoaDon, gbc);
 
-		// Phone Number
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 1;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.15; // Decreased label width
 		JLabel lblSDT = new JLabel("SDT");
 		lblSDT.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblSDT, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridwidth = 2;
-		gbc.weightx = 0.6;
+		gbc.weightx = 0.7; // Increased text field width
 		txtsdt = new JTextField();
 		txtsdt.setHorizontalAlignment(SwingConstants.CENTER);
 		txtsdt.setFont(new Font("Arial", Font.BOLD, 15));
@@ -571,86 +522,70 @@ public class gui_BanThuoc extends JPanel {
 
 		gbc.gridx = 3;
 		gbc.gridwidth = 1;
-		gbc.weightx = 0.2;
-		JButton btnSearch = createIconButton("/icon/search.png", "Tìm");
+		gbc.weightx = 0.15;
+		JButton btnSearch = new JButton("");
+		btnSearch.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/search.png")));
+		btnSearch.setToolTipText("Tìm kiếm");
+		btnSearch.setFont(new Font("Dialog", Font.BOLD, 16));
 		btnSearch.addActionListener(e -> btnSearchActionPerformed());
 		panel.add(btnSearch, gbc);
 
-		// Customer Name
 		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridy = 2; // Fixed gridy value
 		gbc.gridwidth = 1;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.15; // Decreased label width
 		JLabel lblTenKH = new JLabel("TENKH");
 		lblTenKH.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblTenKH, gbc);
 
 		gbc.gridx = 1;
-		gbc.gridwidth = 2;
-		gbc.weightx = 0.6;
+		gbc.gridwidth = 3;
+		gbc.weightx = 0.85; // Increased text field width
 		txtHoTenKH = new JTextField();
 		txtHoTenKH.setHorizontalAlignment(SwingConstants.CENTER);
 		txtHoTenKH.setFont(new Font("Arial", Font.BOLD, 15));
 		panel.add(txtHoTenKH, gbc);
 
-		gbc.gridx = 3;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.2;
-		JButton btnKhachHang = createIconButton("/icon/user.png", "Xem");
-		panel.add(btnKhachHang, gbc);
-
-		// Separator
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 3; // Fixed gridy value
 		gbc.gridwidth = 4;
 		gbc.weightx = 1.0;
 		JSeparator separator = new JSeparator();
 		panel.add(separator, gbc);
 
-		// Total
 		gbc.gridx = 0;
 		gbc.gridy = 4;
 		gbc.gridwidth = 1;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.15; // Decreased label width
 		JLabel lblTongTien = new JLabel("TỔNG TIỀN");
 		lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblTongTien, gbc);
 
 		gbc.gridx = 1;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.3;
+		gbc.gridwidth = 3;
+		gbc.weightx = 0.85; // Increased text field width
 		txtTongTien = new JTextField("0.0");
 		txtTongTien.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTongTien.setFont(new Font("Arial", Font.BOLD, 15));
 		txtTongTien.setFocusable(false);
 		panel.add(txtTongTien, gbc);
 
-		gbc.gridx = 2;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.2;
-		JLabel lblVAT = new JLabel("VAT");
-		lblVAT.setHorizontalAlignment(SwingConstants.CENTER);
-		lblVAT.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		panel.add(lblVAT, gbc);
-
-		// Grand Total
 		gbc.gridx = 0;
 		gbc.gridy = 5;
 		gbc.gridwidth = 1;
-		gbc.weightx = 0.2;
+		gbc.weightx = 0.15; // Decreased label width
 		JLabel lblTongThanhToan = new JLabel("TỔNG THANH TOÁN");
 		lblTongThanhToan.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel.add(lblTongThanhToan, gbc);
 
 		gbc.gridx = 1;
-		gbc.gridwidth = 2;
-		gbc.weightx = 0.6;
+		gbc.gridwidth = 3;
+		gbc.weightx = 0.85; // Increased text field width
 		txttongHD = new JTextField();
 		txttongHD.setHorizontalAlignment(SwingConstants.CENTER);
 		txttongHD.setFont(new Font("Arial", Font.BOLD, 15));
 		panel.add(txttongHD, gbc);
 
-		// Buttons
 		gbc.gridx = 0;
 		gbc.gridy = 6;
 		gbc.gridwidth = 2;
@@ -679,6 +614,9 @@ public class gui_BanThuoc extends JPanel {
 		return panel;
 	}
 
+	private void btnKhachHangActionPerformed() {
+	}
+
 	private JButton createIconButton(String iconPath, String tooltip) {
 		JButton button = new JButton();
 		button.setIcon(new ImageIcon(gui_BanThuoc.class.getResource(iconPath)));
@@ -690,19 +628,14 @@ public class gui_BanThuoc extends JPanel {
 		return button;
 	}
 
-	// Window resize handler - now uses layout managers
 	private void handleWindowResize() {
 		revalidate();
 		repaint();
 	}
 
-	// Override Component.addNotify() to initialize components
 	@Override
 	public void addNotify() {
 		super.addNotify();
-
-		// This is called when the component is actually added to a container
-		// Good place to set size based on parent frame/window if needed
 		if (getParent() != null) {
 			Container topLevelContainer = getTopLevelAncestor();
 			if (topLevelContainer instanceof Window) {
@@ -717,8 +650,6 @@ public class gui_BanThuoc extends JPanel {
 		}
 	}
 
-	private void updateComponentsOnResize() {
-	}
 
 	public void loadTable(List<Thuoc> list) {
 		String[] header = new String[]{"STT", "Mã thuốc", "Tên thuốc", "Danh mục", "Nhà Sản Xuất", "Đơn vị tính", "Số lượng tồn", "Đơn giá", "Giảm giá"};
@@ -731,10 +662,11 @@ public class gui_BanThuoc extends JPanel {
 		double giamGia;
 		try {
 			for (Thuoc e : listThuoc) {
-				giamGia = 0; // Tạm thời để 0, cần xử lý logic khuyến mãi nếu có
+
+
 				if (e.getHanSuDung().after(new Date(System.currentTimeMillis()))) {
 					modal.addRow(new Object[]{String.valueOf(stt), e.getId(), e.getTen(), e.getDanhMuc().getTen(),
-							e.getNhaSanXuat().getTen(), e.getDonViTinh(), e.getSoLuongTon(), Formatter.FormatVND(e.getDonGia()), Formatter.formatPercentage(giamGia)});
+							e.getNhaSanXuat().getTen(), e.getDonViTinh(), e.getSoLuongTon(), Formatter.FormatVND(e.getDonGia()), Formatter.formatPercentage(e.getKhuyenMai().getPhanTramGiamGia())});
 					stt++;
 				}
 			}
@@ -782,7 +714,7 @@ public class gui_BanThuoc extends JPanel {
 		int row = table.getSelectedRow();
 		if (row >= 0) {
 			String idThuoc = (String) modal.getValueAt(row, 1);
-			String defaultImagePath = "/product-image/default-drug.png"; // Khai báo ở phạm vi ngoài try-catch
+			String defaultImagePath = "/product-image/default-drug.png";
 
 			try {
 				Thuoc e = THUOC_SERVICE.findById(idThuoc);
@@ -792,18 +724,15 @@ public class gui_BanThuoc extends JPanel {
 					ImageIcon imageIcon = null;
 
 					if (imageName != null && !imageName.trim().isEmpty()) {
-						// Load từ classpath
 						java.net.URL imageUrl = getClass().getResource(baseResourcePath + imageName);
 
 						if (imageUrl != null) {
 							imageIcon = new ImageIcon(imageUrl);
 						} else {
-							// Fallback 1: Kiểm tra file system
 							File imageFile = new File("src/main/resources/product-image/" + imageName);
 							if (imageFile.exists()) {
 								imageIcon = new ImageIcon(imageFile.getAbsolutePath());
 							} else {
-								// Fallback 2: Dùng ảnh mặc định từ classpath
 								imageIcon = new ImageIcon(getClass().getResource(defaultImagePath));
 							}
 						}
@@ -1213,8 +1142,6 @@ public class gui_BanThuoc extends JPanel {
 			e.printStackTrace();
 		}
 	}
-
-	// Các phương thức khác đã được cải tiến...
 
 	private void btnAddDDT() {
 		String selectedMaPDT = (String) cbb_DDT.getSelectedItem();
