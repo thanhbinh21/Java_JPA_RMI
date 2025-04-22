@@ -9,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> implements PhieuDatThuocDAO {
@@ -78,7 +79,7 @@ public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> 
         return false;
     }
     @Override
-    public boolean addPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc) {
+    public boolean addPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc) throws RemoteException {
         EntityTransaction transaction = null;
         try {
             transaction = em.getTransaction();

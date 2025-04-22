@@ -16,16 +16,17 @@ public class DatThuocServiceImpl extends GenericServiceImpl<PhieuDatThuoc, Strin
     private final KhachHangDAO khachHangDAO;
     private final ChiTietPhieuDatThuocDAO chiTietPhieuDatThuocDAO;
 
-    public DatThuocServiceImpl(GenericDAO<PhieuDatThuoc, String> genericDAO, PhieuDatThuocDAO phieuDatThuocDAO, ThuocDAO thuocDAO, KhachHangDAO khachHangDAO, ChiTietPhieuDatThuocDAO chiTietPhieuDatThuocDAO) throws RemoteException {
-        super(genericDAO);
+    public DatThuocServiceImpl( PhieuDatThuocDAO phieuDatThuocDAO, ThuocDAO thuocDAO, KhachHangDAO khachHangDAO, ChiTietPhieuDatThuocDAO chiTietPhieuDatThuocDAO) throws RemoteException {
+        super(phieuDatThuocDAO);
         this.phieuDatThuocDAO = phieuDatThuocDAO;
         this.thuocDAO = thuocDAO;
         this.khachHangDAO = khachHangDAO;
         this.chiTietPhieuDatThuocDAO = chiTietPhieuDatThuocDAO;
     }
 
+
     @Override
-    public boolean addPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc) {
+    public boolean addPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc) throws RemoteException {
         phieuDatThuocDAO.addPhieuDatThuoc(phieuDatThuoc);
         return false;
     }

@@ -28,10 +28,7 @@ import javax.swing.table.DefaultTableModel;
 
 import dao.*;
 import dao.impl.*;
-import entity.ChiTietPhieuDatThuoc;
-import entity.KhachHang;
-import entity.TaiKhoan;
-import entity.Thuoc;
+import entity.*;
 import other.Formatter;
 import other.MessageDialog;
 import other.RandomMa;
@@ -40,6 +37,10 @@ import service.DatThuocSevice;
 import service.KhachHangService;
 import service.PhieuDatThuocService;
 import service.ThuocService;
+import service.impl.DatThuocServiceImpl;
+import service.impl.KhachHangServiceImpl;
+import service.impl.PhieuDatThuocServiceImpl;
+import service.impl.ThuocServiceImpl;
 
 
 import javax.swing.JTabbedPane;
@@ -49,6 +50,7 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -103,7 +105,7 @@ public class gui_DatThuoc extends JPanel {
 	private DefaultTableModel modal;
 	private DefaultTableModel modalCart= new DefaultTableModel();
 
-	private List<ChiTietPhieuDatThuoc> listCTHD = new ArrayList<>();
+	private List<ChiTietPhieuDatThuoc> listCTPDT = new ArrayList<>();
 	private List<Thuoc> listThuoc = new ArrayList<>();
 	private TaiKhoan tklogin ;
 	private JTable tableCart;
@@ -132,9 +134,30 @@ public class gui_DatThuoc extends JPanel {
 	}
 
 
+	private void initializeServices(){
+		try {
+			THUOC_SEVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
+			KHACH_HANG_SEVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
+			DAT_THUOC_SEVICE = new DatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ThuocDAOImpl(), new KhachHangDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
+			PHEU_DAT_THUOC_SEVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
+			loadDanhMucThuoc();
+			formatTxt();
+		} catch (Exception e) {
+			MessageDialog.error(this, "Khởi tạo dịch vụ thất bại: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
 
 
     public gui_DatThuoc(TaiKhoan login) {
+
+		initializeServices();
+		System.out.println("DAT_THUOC_SEVICE = " + DAT_THUOC_SEVICE);
+
+		System.out.println("PHIEU_DAT_SEVICE = " + PHEU_DAT_THUOC_SEVICE);
+
+
     	setBackground(SystemColor.control);
     	tklogin = login;
     	
@@ -485,15 +508,15 @@ public class gui_DatThuoc extends JPanel {
     	panel_4_1.add(btn_tkim);
     	
     	JButton btnKhachHang = new JButton();
-//    	btnKhachHang.addActionListener(new ActionListener() {
-//    	    public void actionPerformed(ActionEvent e) {
+    	btnKhachHang.addActionListener(new ActionListener() {
+    	    public void actionPerformed(ActionEvent e) {
 //    	        gui_themKhachHang dialog = new gui_themKhachHang();
 //    	        dialog.setSize(600, 400);
 //    	        dialog.setLocationRelativeTo(null);
 //    	        dialog.setVisible(true);
-//
-//    	    }
-//    	});
+
+    	    }
+    	});
 
 
     	btnKhachHang.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/user.png")));
@@ -585,6 +608,7 @@ public class gui_DatThuoc extends JPanel {
     	//
       	loadDanhMucThuoc();
         try {
+
            listThuoc = THUOC_SEVICE.findAll();
 			System.out.printf(THUOC_SEVICE.findAll().toString());
         } catch (RemoteException e) {
@@ -605,7 +629,7 @@ public class gui_DatThuoc extends JPanel {
 		double giamGia;
 		try {
 			for (Thuoc e : listThuoc) {
-				giamGia = 0; // Tạm thời để 0, cần xử lý logic khuyến mãi nếu có
+				giamGia = 0;
 				if (e.getHanSuDung().after(new Date(System.currentTimeMillis()))) {
 					modal.addRow(new Object[]{String.valueOf(stt), e.getId(), e.getTen(), e.getDanhMuc().getTen(),
 							e.getNhaSanXuat().getTen(), e.getDonViTinh(), e.getSoLuongTon(), Formatter.FormatVND(e.getDonGia()), Formatter.formatPercentage(giamGia)});
@@ -619,21 +643,59 @@ public class gui_DatThuoc extends JPanel {
 	}
 
     private void tableMouseClicked() {
-//        int row = table.getSelectedRow();
-//        String idThuoc = modal.getValueAt(row, 1).toString();
-//        Thuoc e = THUOC_CON.selectById(idThuoc);
-//
-//        ImageIcon imageIcon = new ImageIcon(
-//                new ImageIcon(e.getHinhAnh()).getImage().getScaledInstance(txtHinhAnh.getWidth(), txtHinhAnh.getHeight(), Image.SCALE_SMOOTH));
-//        txtHinhAnh.setIcon(imageIcon);
-//       // txtHinhAnh.setIcon(imageIcon);
-//
-//        txtMaThuoc.setText(e.getMaThuoc());
-//
-//        txtTenThuoc.setText(e.getTenThuoc());
-//        txtThanhPhan.setText(e.getThanhPhan());
-//        txtDonGia.setText(String.valueOf(e.getDonGia()));
-//        txtDonGia.setText(Formatter.FormatVND(e.getDonGia()));
+		int row = table.getSelectedRow();
+		if (row >= 0) {
+			String idThuoc = (String) modal.getValueAt(row, 1);
+			String defaultImagePath = "/product-image/default-drug.png"; // Khai báo ở phạm vi ngoài try-catch
+
+			try {
+				Thuoc e = THUOC_SEVICE.findById(idThuoc);
+				if (e != null) {
+					String baseResourcePath = "/product-image/";
+					String imageName = e.getHinhAnh();
+					ImageIcon imageIcon = null;
+
+					if (imageName != null && !imageName.trim().isEmpty()) {
+						// Load từ classpath
+						java.net.URL imageUrl = getClass().getResource(baseResourcePath + imageName);
+
+						if (imageUrl != null) {
+							imageIcon = new ImageIcon(imageUrl);
+						} else {
+							// Fallback 1: Kiểm tra file system
+							File imageFile = new File("src/main/resources/product-image/" + imageName);
+							if (imageFile.exists()) {
+								imageIcon = new ImageIcon(imageFile.getAbsolutePath());
+							} else {
+								// Fallback 2: Dùng ảnh mặc định từ classpath
+								imageIcon = new ImageIcon(getClass().getResource(defaultImagePath));
+							}
+						}
+					} else {
+						imageIcon = new ImageIcon(getClass().getResource(defaultImagePath));
+					}
+
+					if (imageIcon != null && imageIcon.getImage() != null) {
+						Image scaledImage = imageIcon.getImage()
+								.getScaledInstance(txtHinhAnh.getWidth(), txtHinhAnh.getHeight(), Image.SCALE_SMOOTH);
+						txtHinhAnh.setIcon(new ImageIcon(scaledImage));
+					}
+
+					txtMaThuoc.setText(e.getId());
+					txtTenThuoc.setText(e.getTen());
+					txtThanhPhan.setText(e.getThanhPhan());
+					txtDonGia.setText(Formatter.FormatVND(e.getDonGia()));
+				}
+			} catch (Exception ex) {
+				MessageDialog.error(this, "Lỗi tải thông tin: " + ex.getMessage());
+				try {
+					ImageIcon defaultIcon = new ImageIcon(getClass().getResource(defaultImagePath));
+					txtHinhAnh.setIcon(defaultIcon);
+				} catch (Exception e) {
+					txtHinhAnh.setIcon(null);
+				}
+			}
+		}
 
     }
     private void ketQuaTimKiem() {
@@ -643,104 +705,199 @@ public class gui_DatThuoc extends JPanel {
 //        loadTable(listsearch);
     }
 
-//    private PhieuDatThuoc getInputPhieuDat() {
-//        String idHD = txtMaPDT.getText();
-//        Timestamp thoiGian = new Timestamp(System.currentTimeMillis());
-//        NhanVien nhanVien = tklogin.getNhanVien();
-//        KhachHang khachHang = KH_DAO.selectBySdt(txtsdt.getText());
-//        Thue thue;
-//	      if ("0.0".equals(txtThue.getText())) {
-//	          thue = THUE_DAO.selectById("NO");
-//	      } else {
-//	          thue = THUE_DAO.selectById("GTGT");
-//	      }
-//
-//
-//        return new PhieuDatThuoc(idHD, thoiGian, nhanVien, khachHang,false);
-//    }
+    private PhieuDatThuoc getInputPhieuDat() {
+        String idHD = txtMaPDT.getText();
+        Timestamp thoiGian = new Timestamp(System.currentTimeMillis());
+        NhanVien nhanVien = tklogin.getNhanVien();
+		try {
+			KhachHang khachHang = KHACH_HANG_SEVICE.getKhachHangBySdt(txtsdt.getText());
+			return new PhieuDatThuoc(idHD, thoiGian, nhanVien, khachHang,false);
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi lấy thông tin khách hàng: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
 
 
+    }
 
-//    private ChiTietPhieuDatThuoc getInputChiTietPhieuDat() {
-//        PhieuDatThuoc phieudat = getInputPhieuDat();
-//        Thuoc thuoc = THUOC_CON.selectById(txtMaThuoc.getText());
-//        int soLuong = Integer.parseInt(txtSoLuong.getText());
-//
-//        double donGia = thuoc.getDonGia();
-//        KhuyenMai km = null;
-//
-//        if (thuoc.getKhuyenMai() != null) {
-//            String makm = thuoc.getKhuyenMai().getMaKM();
-//            km = KM_DAO.selectById(makm);
-//            if(km.getTimeEnd()!=null &&  km.getTimeEnd().after(new Timestamp(System.currentTimeMillis())) &&  km.getTimeStart().before(new Timestamp(System.currentTimeMillis()))) {
-//            	donGia = thuoc.getDonGia()*(1-km.getPhanTram());
-//            }
-//        }
-//
-//
-//        return new ChiTietPhieuDatThuoc(phieudat, thuoc, soLuong, donGia);
-//    }
+	public void loadTableCart(List<ChiTietPhieuDatThuoc> list) {
+		modalCart = new DefaultTableModel(new Object[][]{}, new String[]{"STT", "Tên thuốc", "Số lượng", "Đơn giá "});
+
+		tableCart.setModel(modalCart);
+		modalCart.setRowCount(0);
+		listCTPDT = list;
+		int stt = 1;
+		double sum = 0;
+		for (ChiTietPhieuDatThuoc e : listCTPDT) {
+			sum = sum + e.getDonGia() * e.getSoLuong();
+			modalCart.addRow(new Object[]{
+					String.valueOf(stt),
+					e.getThuoc().getTen(),
+					e.getSoLuong(),
+					Formatter.FormatVND(e.getDonGia()),});
+			stt++;
+		}
+		txtTongTien.setText(Formatter.FormatVND(sum));
+		txttongHD.setText(Formatter.FormatVND(sum));
+	}
+
+
+    private ChiTietPhieuDatThuoc getInputChiTietPhieuDat() {
+        PhieuDatThuoc phieudat = getInputPhieuDat();
+		try {
+			Thuoc thuoc = THUOC_SEVICE.findById(txtMaThuoc.getText());
+			int soLuong = Integer.parseInt(txtSoLuong.getText());
+			double donGia = thuoc.getDonGia();
+			return new ChiTietPhieuDatThuoc(phieudat, thuoc, soLuong, donGia);
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi lấy thông tin thuốc: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+
+
+    }
 
     private void btnAddCartActionPerformed() {
-//    		if(isValidChiTietPhieuDat()) {
-//
-//	            ChiTietPhieuDatThuoc cthd = getInputChiTietPhieuDat();
-//
-//	            listCTHD.add(cthd);
-//	            loadTableCart(listCTHD);
-//
-//
-//	            Thuoc thuoc = THUOC_CON.selectById(txtMaThuoc.getText());
-//	            int updatedSoLuongTon = thuoc.getSoLuongTon() - cthd.getSoLuong();
-//	            THUOC_CON.updateSoLuongTon(thuoc, updatedSoLuongTon);
-//	            loadTable(THUOC_CON.selectAll());
-//
-//	            txtSoLuong.setText("");
-//    		}
+		if (isValidChiTietPhieuDat()) {
+
+			ChiTietPhieuDatThuoc ctpdt = getInputChiTietPhieuDat();
+			if (ctpdt != null) {
+				listCTPDT.add(ctpdt);
+				loadTableCart(listCTPDT);
+
+				try {
+					Thuoc thuoc = THUOC_SEVICE.findById(txtMaThuoc.getText());
+					int updatedSoLuongTon = thuoc.getSoLuongTon() - ctpdt.getSoLuong();
+
+					// Cập nhật số lượng tồn
+					thuoc.setSoLuongTon(updatedSoLuongTon);
+					THUOC_SEVICE.update(thuoc);
+
+					// Làm mới bảng thuốc
+					loadTable(THUOC_SEVICE.findAll());
+
+					// Reset số lượng
+					txtSoLuong.setText("");
+				} catch (Exception e) {
+					MessageDialog.error(this, "Lỗi khi cập nhật số lượng thuốc: " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		}
         	
-        }
+	}
+
+	private boolean isValidPhieuDat() {
+		if (listCTPDT.isEmpty()) {
+			MessageDialog.warring(this, "Vui lòng chọn sản phẩm!");
+			return false;
+		}
+		if (Validation.isEmpty(txtsdt.getText())) {
+			MessageDialog.warring(this, "Vui lòng nhập khách hàng!");
+			txtsdt.requestFocus();
+			return false;
+		}
+		if (Validation.isEmpty(txtHoTenKH.getText())) {
+			MessageDialog.warring(this, "Số điện thoại sai !");
+			txtsdt.requestFocus();
+			return false;
+		}
+		return true;
+	}
+	private boolean isValidChiTietPhieuDat() {
+		if (Validation.isEmpty(txtSoLuong.getText().trim())) {
+			MessageDialog.warring(this, "Số lượng không được để trống!");
+			txtSoLuong.requestFocus();
+			return false;
+		} else {
+			try {
+				Thuoc selectedThuoc = THUOC_SEVICE.findById(txtMaThuoc.getText());
+				if (selectedThuoc == null) {
+					MessageDialog.warring(this, "Vui lòng chọn sản phẩm");
+					return false;
+				}
+				int soLuongTon = selectedThuoc.getSoLuongTon();
+				int sl = Integer.parseInt(txtSoLuong.getText());
+				if (sl <= 0) {
+					MessageDialog.warring(this, "Số lượng đưa phải > 0");
+					txtSoLuong.requestFocus();
+					return false;
+				} else if (soLuongTon < sl) {
+					MessageDialog.warring(this, "Không đủ số lượng!");
+					txtSoLuong.requestFocus();
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				MessageDialog.warring(this, "Số lượng đưa phải là số!");
+				txtSoLuong.requestFocus();
+				return false;
+			} catch (Exception e) {
+				MessageDialog.error(this, "Lỗi khi kiểm tra số lượng thuốc: " + e.getMessage());
+				e.printStackTrace();
+				return false;
+			}
+		}
+		try {
+			Thuoc selectedThuoc = THUOC_SEVICE.findById(txtMaThuoc.getText());
+			for (ChiTietPhieuDatThuoc cthd : listCTPDT) {
+				if (cthd.getThuoc().equals(selectedThuoc)) {
+					MessageDialog.warring(this, "Thuốc đã tồn tại trong giỏ hàng!");
+					return false;
+				}
+			}
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi kiểm tra giỏ hàng: " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+
     private void btnSearchActionPerformed() {
-//	   	 KhachHang kh = null;
-//	   	if(Validation.isPhoneNumber(txtsdt.getText())) {
-//	   		  kh = new KhachHangDAO().selectBySdt(txtsdt.getText());
-//	   	}else {
-//	   		MessageDialog.error(this, "Kiểm tra lại số điện thoại!");
-//	   		return;
-//	   	}
-//
-//
-//	       if (kh == null) {
-//	           MessageDialog.error(this, "Không tìm thấy khách hàng!");
-//	           txtHoTenKH.setText("");
-//
-//	           txtHoTenKH.setEnabled(true);
-//
-//	       } else {
-//	           txtHoTenKH.setText(kh.getHoTen());
-//
-//	           txtHoTenKH.setEnabled(false);
-//
-//	       }
+		try {
+			String sdt = txtsdt.getText().trim();
+			if (!Validation.isPhoneNumber(sdt)) {
+				MessageDialog.error(this, "Số điện thoại không hợp lệ!");
+				txtsdt.requestFocus();
+				return;
+			}
+
+			KhachHang kh = KHACH_HANG_SEVICE.getKhachHangBySdt(sdt);
+			if (kh != null) {
+				txtHoTenKH.setText(kh.getHoTen());
+			} else {
+				MessageDialog.warring(this, "Không tìm thấy khách hàng với số điện thoại đã nhập.");
+			}
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi tìm khách hàng: " + e.getMessage());
+			e.printStackTrace();
+		}
    }
     
     private void btnDeleteCartItemActionPerformed() {
-//        if (MessageDialog.confirm(this, "Bạn có chắc muốc xóa khỏi giỏ hàng?", "Xóa thuốc khỏi giỏ hàng")) {
-//            if (listCTHD.isEmpty()) {
-//                MessageDialog.error(this, "Không có sản phẩm trong giỏ hàng!");
-//                return;
-//            }
-//
-//            ChiTietPhieuDatThuoc cthd = listCTHD.get(tableCart.getSelectedRow());
-//            listCTHD.remove(tableCart.getSelectedRow());
-//            loadTableCart(listCTHD);
-//
-//            // Update số lượng tồn
-//            Thuoc thuocCTHD = cthd.getThuoc();
-//            Thuoc thuoc = listThuoc.get(listThuoc.indexOf(thuocCTHD));
-//            int updatedSoLuongTon = thuoc.getSoLuongTon() + cthd.getSoLuong();
-//            THUOC_CON.updateSoLuongTon(thuoc, updatedSoLuongTon);
-//            loadTable(THUOC_CON.selectAll());
-//        }
+		if (MessageDialog.confirm(this, "Bạn có chắc muốn xóa khỏi giỏ hàng?", "Xóa thuốc khỏi giỏ hàng")) {
+			int selectedRow = tableCart.getSelectedRow();
+			if (selectedRow < 0 || selectedRow >= listCTPDT.size()) {
+				MessageDialog.warring(this, "Vui lòng chọn thuốc cần xóa!");
+				return;
+			}
+
+			ChiTietPhieuDatThuoc ctpdt = listCTPDT.remove(selectedRow);
+			loadTableCart(listCTPDT);
+
+			try {
+				Thuoc thuoc = THUOC_SEVICE.findById(ctpdt.getThuoc().getId());
+				thuoc.setSoLuongTon(thuoc.getSoLuongTon() + ctpdt.getSoLuong());
+				THUOC_SEVICE.update(thuoc);
+				loadTable(THUOC_SEVICE.findAll());
+			} catch (Exception e) {
+				MessageDialog.error(this, "Lỗi khi cập nhật thuốc: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
     }
 //    public List<Thuoc> getSearchTable(String text) {
 //        text = text.toLowerCase();
@@ -789,36 +946,37 @@ public class gui_DatThuoc extends JPanel {
            
     }
     private void btnThanhToanActionPerformed() {
-//        try {
-//			if(modalCart.getColumnCount()!=0 &&isValidPhieuDat()) {
-//				if (MessageDialog.confirm(this, "Xác nhận thanh toán?", "Lập hóa đơn")) {
-//			        PhieuDatThuoc hd = getInputPhieuDat();
-//			        if (hd != null) {
-//			            DDT_DAO.create(hd);
-//			            CTDDT_DAO.create(listCTHD);
-//			            loadTableCart(listCTHD);
-//			            MessageDialog.info(this, "Lập phiếu đặt thành công!");
-//
-//			            Container parent = this.getParent();
-//			            if (parent != null) {
-//			                parent.remove(this); // Xóa panel hiện tại
-//			                parent.add(new gui_DatThuoc(tklogin)); // Thêm panel mới
-//			                parent.revalidate(); // Cập nhật lại giao diện
-//			                parent.repaint();    // Vẽ lại giao diện
-//			            } else {
-//			                System.err.println("Lỗi: Không tìm thấy container cha.");
-//			            }
-//
-//			        } else {
-//			            MessageDialog.error(this, "Lỗi: Không thể lập phiếu đặt.");
-//			        }
-//			    }
-//			}else {
-//				  MessageDialog.error(this, "Chưa thêm thuốc");
-//			}
-//		} catch (NumberFormatException e) {
-//			MessageDialog.error(this, "Lỗi thanh toán , vui lòng kiểm tra lại.");
-//		}
+		try {
+			if (modalCart.getColumnCount() != 0 && isValidPhieuDat()) {
+				if (MessageDialog.confirm(this, "Xác nhận thanh toán?", "Lập phiếu đặt thuốc")) {
+					PhieuDatThuoc pdt = getInputPhieuDat();
+					if (pdt != null) {
+						DAT_THUOC_SEVICE.addPhieuDatThuoc(pdt);
+
+						MessageDialog.info(this, "Lập phiếu đặt thuốc thành công!");
+
+						if (MessageDialog.confirm(this, "Bạn có muốn in phiếu đặt thuốc không?", "In phiếu đặt thuốc")) {
+//							new other.WritePDF().printHoaDon(hd, listCTHD, 0); // in phiếu đặt chưa làm
+						}
+
+						Container parent = this.getParent();
+						if (parent != null) {
+							parent.remove(this);
+							parent.add(new gui_BanThuoc(tklogin));
+							parent.revalidate();
+							parent.repaint();
+						}
+					} else {
+						MessageDialog.error(this, "Không thể lập phiếu đặt thuốc.");
+					}
+				}
+			} else {
+				MessageDialog.error(this, "Kiểm tra lại thông tin phiếu đặt thuốc.");
+			}
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi thanh toán: " + e.getMessage());
+			e.printStackTrace();
+		}
     }
 
     public void loadDanhMucThuoc() {

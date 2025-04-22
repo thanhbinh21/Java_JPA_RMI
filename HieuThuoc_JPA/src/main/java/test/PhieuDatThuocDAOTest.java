@@ -10,13 +10,14 @@ import dao.impl.PhieuDatThuocDAOImpl;
 import dao.impl.ThuocDAOImpl;
 import entity.*;
 
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 public class PhieuDatThuocDAOTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
         PhieuDatThuocDAO phieuDatThuocDAO = new PhieuDatThuocDAOImpl();
         KhachHangDAO khachHangDAO = new KhachHangDAOImpl();
         NhanVienDAO nhanVienDAO = new NhanVienDAOImpl();
