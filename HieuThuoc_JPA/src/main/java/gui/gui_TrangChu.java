@@ -124,7 +124,7 @@ public class gui_TrangChu extends JFrame {
             } catch (RemoteException ex) {
                 handleError("Lỗi khi mở phân quyền tài khoản", ex);
             }
-        });
+        }, loginAccount.getVaiTro().getId().equals("admin"));
 
         addMenuItem(menu, "Quản lý vai trò", "/icon/user.png", e -> {
             try {
@@ -132,7 +132,7 @@ public class gui_TrangChu extends JFrame {
             } catch (RemoteException ex) {
                 handleError("Lỗi khi mở quản lý vai trò", ex);
             }
-        });
+        }, loginAccount.getVaiTro().getId().equals("admin"));
 
         addMenuItem(menu, "Hướng dẫn sử dụng", "/icon/symbols.png", null);
         menu.addSeparator();
@@ -155,7 +155,7 @@ public class gui_TrangChu extends JFrame {
             } catch (RemoteException ex) {
                 handleError("Lỗi khi mở quản lý nhân viên", ex);
             }
-        });
+        }, loginAccount.getVaiTro().getId().equals("admin"));
         addMenuItem(menu, "Nhà sản xuất", "/icon/decentralized.png", e -> {
             try {
                 setPanel(new gui_qliNhaSX());
@@ -312,8 +312,13 @@ public class gui_TrangChu extends JFrame {
     }
 
     private void addMenuItem(JMenu menu, String text, String iconPath, ActionListener action) {
+        addMenuItem(menu, text, iconPath, action, true);
+    }
+
+    private void addMenuItem(JMenu menu, String text, String iconPath, ActionListener action, boolean isActive) {
         JMenuItem item = new JMenuItem(text);
         item.setFont(MENU_ITEM_FONT);
+        item.setEnabled(isActive);
 
 
         item.setBackground(new Color(240, 248, 255)); // Light blue background
@@ -341,12 +346,7 @@ public class gui_TrangChu extends JFrame {
         } catch (Exception e) {
             System.err.println("Could not load icon: " + iconPath);
         }
-        
-        // set quyen 
-        if (!"admin".equals(taiKhoanService.findById(login.getId()).getVaiTro().getId())) {
-            mni_phanquyen.setEnabled(false);
-            mni_nhanvien.setEnabled(false);
-			mni_vaitro.setEnabled(false);
+
         if (action != null) {
             item.addActionListener(action);
         }
