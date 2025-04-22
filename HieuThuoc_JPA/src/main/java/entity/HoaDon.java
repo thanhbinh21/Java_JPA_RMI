@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
+@ToString(exclude = {"khachHang", "chiTietHoaDons"}) // Exclude problematic references
 @Entity
 @Table(name = "HoaDon")
 public class HoaDon implements Serializable {
@@ -46,5 +46,10 @@ public class HoaDon implements Serializable {
     }
 
     public HoaDon(String idHD, Timestamp thoiGian, NhanVien nhanVien, KhachHang khachHang) {
+        this.id = idHD;
+        this.thoiGian = thoiGian;
+        this.nhanVien = nhanVien;
+        this.khachHang = khachHang;
+        this.trangThai = true;
     }
 }

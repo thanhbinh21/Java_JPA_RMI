@@ -11,6 +11,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
+@ToString(exclude = {"hoaDon", "thuoc"}) // Exclude entity references to prevent circular references
 public class ChiTietHoaDon implements Serializable {
     @Id
     @ManyToOne

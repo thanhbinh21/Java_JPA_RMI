@@ -4,16 +4,16 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 
 @Getter
 @Setter
-@ToString
+
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
+@ToString(exclude = {"hoaDons", "phieuDatThuocs"}) // Exclude collections to prevent circular references
 @Entity
 @Table(name = "KhachHang")
 public class KhachHang implements Serializable {
@@ -29,8 +29,10 @@ public class KhachHang implements Serializable {
     private boolean gioiTinh;
     @Column(name = "ngay_tham_gia", nullable = false)
     private LocalDate ngayThamGia;
+
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<HoaDon> hoaDons;
+
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PhieuDatThuoc> phieuDatThuocs;
 

@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implements ChiTietPhieuNhapThuocService {
     private final ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO;
@@ -32,6 +32,7 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
     @Override
     public ChiTietPhieuNhapThuoc findById(Long id) throws RemoteException {
         return null;
+
     }
 
     @Override
