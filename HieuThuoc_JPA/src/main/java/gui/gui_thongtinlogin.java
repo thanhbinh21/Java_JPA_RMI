@@ -97,7 +97,7 @@ public class gui_thongtinlogin extends JPanel {
         labelNGAYVAOLAM.setBackground(new Color(60, 60, 60));
         labelNGAYVAOLAM.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
         add(labelNGAYVAOLAM);
-        
+
         JButton btnExit = new JButton("Đóng");
         btnExit.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnExit.setForeground(Color.YELLOW);

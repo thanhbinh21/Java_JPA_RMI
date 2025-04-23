@@ -29,10 +29,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import entity.ChiTietHoaDon;
-import entity.ChiTietPhieuNhapThuoc;
-import entity.HoaDon;
-import entity.PhieuNhapThuoc;
+import entity.*;
 
 
 public class WritePDF {
@@ -553,5 +550,112 @@ public class WritePDF {
 //            JOptionPane.showMessageDialog(null, "Lỗi khi ghi file " + url);
 //        }
 //    }
+public void printPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc, List<ChiTietPhieuDatThuoc> listCTPDT , double thue) {
+    String url = "";
+    try {
+        fd.setTitle("In phiếu đặt thuốc");
+        fd.setLocationRelativeTo(null);
+        url = getFile(phieuDatThuoc.getId());
+        if (url.equals("nullnull")) {
+            return;
+        }
+        url = url + ".pdf";
+        file = new FileOutputStream(url);
+        document = new Document();
+        PdfWriter writer = PdfWriter.getInstance(document, file);
+        document.open();
 
+        Paragraph company = new Paragraph("Nhà thuốc YÊN TÂM", fontBold15);
+        company.add(new Chunk(createWhiteSpace(20)));
+        Date today = new Date(System.currentTimeMillis());
+        company.add(new Chunk("Đại Học Công Nghiệp TP Hồ Chí Minh" ));
+        company.setAlignment(Element.ALIGN_LEFT);
+        document.add(company);
+        document.add(Chunk.NEWLINE);
+
+        Paragraph header = new Paragraph("THÔNG TIN PHIẾU ĐẶT THUỐC", fontBold25);
+        header.setAlignment(Element.ALIGN_CENTER);
+        document.add(header);
+
+        Paragraph paragraph1 = new Paragraph("Mã phiếu đặt thuốc: " + phieuDatThuoc.getId(), fontNormal10);
+        String kh = phieuDatThuoc.getKhachHang().getHoTen();
+        Paragraph paragraph2 = new Paragraph("Khách hàng: " + kh, fontNormal10);
+        paragraph2.add(new Chunk(createWhiteSpace(5)));
+
+        String nv = phieuDatThuoc.getNhanVien().getHoTen();
+        Paragraph paragraph3 = new Paragraph("Nhân viên : " + nv, fontNormal10);
+        paragraph3.add(new Chunk(createWhiteSpace(5)));
+
+        Paragraph paragraph4 = new Paragraph("Thời gian: " + formatDate.format(phieuDatThuoc.getThoiGian()), fontNormal10);
+        document.add(paragraph1);
+        document.add(paragraph2);
+        document.add(paragraph3);
+        document.add(paragraph4);
+        document.add(Chunk.NEWLINE);
+
+        PdfPTable table = new PdfPTable(5);
+        table.setWidthPercentage(100);
+        table.setWidths(new float[]{40f, 20f, 20f, 20f, 20f});
+
+        table.addCell(new PdfPCell(new Phrase("Tên thuốc", fontBold15)));
+        table.addCell(new PdfPCell(new Phrase("Đơn vị tính", fontBold15)));
+        table.addCell(new PdfPCell(new Phrase("Đơn giá", fontBold15)));
+        table.addCell(new PdfPCell(new Phrase("Số lượng", fontBold15)));
+        table.addCell(new PdfPCell(new Phrase("Thành tiền", fontBold15)));
+
+        double tongTien = 0;
+
+        for (ChiTietPhieuDatThuoc ctpdt : listCTPDT) {
+            table.addCell(new PdfPCell(new Phrase(ctpdt.getThuoc().getTen(), fontNormal10)));
+            table.addCell(new PdfPCell(new Phrase(ctpdt.getThuoc().getDonViTinh().toString(), fontNormal10)));
+            table.addCell(new PdfPCell(new Phrase(formatter.format(ctpdt.getDonGia()) + "đ", fontNormal10)));
+            table.addCell(new PdfPCell(new Phrase(String.valueOf(ctpdt.getSoLuong()), fontNormal10)));
+            double thanhTien = ctpdt.getDonGia() * ctpdt.getSoLuong();
+            table.addCell(new PdfPCell(new Phrase(formatter.format(thanhTien) + "đ", fontNormal10)));
+            tongTien += thanhTien;
+        }
+
+        document.add(table);
+        document.add(Chunk.NEWLINE);
+
+        Paragraph paraTongThanhToan = new Paragraph(new Phrase("Tổng thành tiền: " + formatter.format(tongTien) + "đ", fontBold15));
+        paraTongThanhToan.setIndentationLeft(300);
+        Paragraph thuetxt = new Paragraph(new Phrase("Vat: " + formatter.format(thue) +"đ" , fontBold15));
+        thuetxt.setIndentationLeft(300);
+        Paragraph sum = new Paragraph(new Phrase("Thanh toán : " + formatter.format(tongTien+thue) +"đ" , fontBold15));
+        sum.setIndentationLeft(300);
+
+        document.add(paraTongThanhToan);
+        document.add(thuetxt);
+        document.add(sum);
+
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
+
+        Paragraph paragraph = new Paragraph();
+        paragraph.setIndentationLeft(22);
+        paragraph.add(new Chunk("Người lập phiếu", fontBoldItalic15));
+        paragraph.add(new Chunk(createWhiteSpace(30)));
+        paragraph.add(new Chunk("Người giao", fontBoldItalic15));
+        paragraph.add(new Chunk(createWhiteSpace(30)));
+        paragraph.add(new Chunk("Khách hàng", fontBoldItalic15));
+
+        Paragraph sign = new Paragraph();
+        sign.setIndentationLeft(20);
+        sign.add(new Chunk("(Ký và ghi rõ họ tên)", fontNormal10));
+        sign.add(new Chunk(createWhiteSpace(25)));
+        sign.add(new Chunk("(Ký và ghi rõ họ tên)", fontNormal10));
+        sign.add(new Chunk(createWhiteSpace(23)));
+        sign.add(new Chunk("(Ký và ghi rõ họ tên)", fontNormal10));
+
+        document.add(paragraph);
+        document.add(sign);
+        document.close();
+        writer.close();
+        openFile(url);
+
+    } catch (DocumentException | FileNotFoundException ex) {
+        JOptionPane.showMessageDialog(null, "Lỗi khi ghi file " + url);
+    }
+}
 }

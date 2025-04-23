@@ -1,86 +1,36 @@
 package gui;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Image;
-import java.awt.SystemColor;
-import java.awt.Window;
-import java.awt.Color;
-import java.awt.Container;
-
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import java.awt.Dimension;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-
-
-import dao.*;
 import dao.impl.*;
 import entity.*;
 import other.Formatter;
 import other.MessageDialog;
 import other.RandomMa;
 import other.Validation;
-import service.DatThuocSevice;
-import service.KhachHangService;
-import service.PhieuDatThuocService;
-import service.ThuocService;
-import service.impl.DatThuocServiceImpl;
-import service.impl.KhachHangServiceImpl;
-import service.impl.PhieuDatThuocServiceImpl;
-import service.impl.ThuocServiceImpl;
-
-
-import javax.swing.JTabbedPane;
-import javax.swing.border.BevelBorder;
-import javax.swing.JSeparator;
-import javax.swing.UIManager;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.awt.event.ActionEvent;
-import java.awt.BorderLayout;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import service.*;
+import service.impl.*;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.rmi.RemoteException;
+
+import java.sql.Timestamp;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 
 public class gui_DatThuoc extends JPanel {
-    private JTextField textField_5;
-    private JTextField textField_6;
-    private JTextField textField_8;
-    private JTextField textField_9;
-    private JTextField textField_10;
-	private JComponent table_right;
 	private JTextField txtMaThuoc;
 	private JTextField txtTenThuoc;
 	private JTextField txtThanhPhan;
@@ -88,24 +38,19 @@ public class gui_DatThuoc extends JPanel {
 	private JTextField txtSearch;
 	private JTextField txtSoLuong;
 	private JTable table;
-
 	private JTextField txtMaPDT;
-	private JTextField txtsdt; 
-	
+	private JTextField txtsdt;
 	private JTextField txtHoTenKH;
 	private JTextField txtTongTien;
  	JLabel txtHinhAnh = new JLabel("");
+	private DefaultTableModel modal;
+	private DefaultTableModel modalCart= new DefaultTableModel();
 
 	private ThuocService THUOC_SEVICE;
 	private KhachHangService KHACH_HANG_SEVICE;
 	private DatThuocSevice DAT_THUOC_SEVICE;
 	private PhieuDatThuocService PHEU_DAT_THUOC_SEVICE;
-
-
-
-
-	private DefaultTableModel modal;
-	private DefaultTableModel modalCart= new DefaultTableModel();
+	private NhanVienService NHAN_VIEN_SECICE;
 
 	private List<ChiTietPhieuDatThuoc> listCTPDT = new ArrayList<>();
 	private List<Thuoc> listThuoc = new ArrayList<>();
@@ -113,31 +58,10 @@ public class gui_DatThuoc extends JPanel {
 	private JTable tableCart;
 	private JComboBox cboxSearch;
 	private JTextField txttongHD;
-	private JTextField txtThue;
-
-
-	public static void main(String[] args) {
-		// Tạo tài khoản demo
-		TaiKhoan tkDemo = new TaiKhoan();
-		tkDemo.setId("admin");
-		tkDemo.setPassword("123456");
-
-		// Tạo và hiển thị giao diện
-		SwingUtilities.invokeLater(() -> {
-			JFrame frame = new JFrame("Đặt Thuốc Siêu Xịn");
-			gui_DatThuoc panel = new gui_DatThuoc(tkDemo);
-
-			frame.setContentPane(panel);
-			frame.setSize(800, 600);
-			frame.setLocationRelativeTo(null);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setVisible(true);
-		});
-	}
-
 
 	private void initializeServices(){
 		try {
+
 //			THUOC_SEVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
 //			KHACH_HANG_SEVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
 //			DAT_THUOC_SEVICE = new DatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ThuocDAOImpl(), new KhachHangDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
@@ -156,475 +80,490 @@ public class gui_DatThuoc extends JPanel {
 		}
 
 	}
+	private void initializeComponents() {
+		txtMaThuoc = new JTextField();
+		txtTenThuoc = new JTextField();
+		txtThanhPhan = new JTextField();
+		txtDonGia = new JTextField();
+		txtSearch = new JTextField();
+		txtSoLuong = new JTextField();
+		txtMaPDT = new JTextField();
+		txtsdt = new JTextField();
+		txtHoTenKH = new JTextField();
+		txtTongTien = new JTextField();
+		txttongHD = new JTextField();
+
+		table = new JTable();
+		tableCart = new JTable();
+		cboxSearch = new JComboBox();
+
+		txtHinhAnh.setBorder(BorderFactory.createEtchedBorder());
+	}
 
 
     public gui_DatThuoc(TaiKhoan login) {
 
+		this.tklogin = login;
+		System.out.printf(login.toString());
+		initializeComponents();
 		initializeServices();
-		System.out.println("DAT_THUOC_SEVICE = " + DAT_THUOC_SEVICE);
-
-		System.out.println("PHIEU_DAT_SEVICE = " + PHEU_DAT_THUOC_SEVICE);
-
-
-    	setBackground(SystemColor.control);
-    	tklogin = login;
-    	
-    	setLayout(null);
-    	setSize(1400,800);
-    	JPanel panel = new JPanel();
-    	panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-    	panel.setBounds(10, 59, 708, 654);
-    	add(panel);
-    	panel.setLayout(null);
-    	
-    	JPanel panel_2 = new JPanel();
-    	panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
-    	panel_2.setBackground(SystemColor.activeCaption);
-    	panel_2.setBounds(174, 10, 411, 35);
-    	panel.add(panel_2);
-    	panel_2.setLayout(new BorderLayout(0, 0));
-    	
-    	JLabel lblNewLabel_1_1_1 = new JLabel("THÔNG TIN THUỐC");
-    	lblNewLabel_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-    	lblNewLabel_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 15));
-    	panel_2.add(lblNewLabel_1_1_1);
-    	lblNewLabel_1_1_1.setForeground(Color.BLACK);
-    	lblNewLabel_1_1_1.setBackground(Color.BLACK);
-    	
-    	JPanel panel_3 = new JPanel();
-    	panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-    	panel_3.setBounds(20, 55, 210, 176);
-    	panel.add(panel_3);
-    	panel_3.setLayout(null);
-    	
-   
-    	txtHinhAnh.setBounds(10, 10, 190, 161);
-    	panel_3.add(txtHinhAnh);
-    	
-    	JPanel panel_4 = new JPanel();
-    	panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
-    	panel_4.setBounds(284, 55, 384, 176);
-    	panel.add(panel_4);
-    	panel_4.setLayout(null);
-    	
-    	JLabel lblNewLabel_2 = new JLabel("MATHUOC:");
-    	lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2.setBounds(10, 10, 84, 27);
-    	panel_4.add(lblNewLabel_2);
-    	
-    	JLabel lblNewLabel_2_1 = new JLabel("TENTHUOC:");
-    	lblNewLabel_2_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_1.setBounds(10, 47, 84, 27);
-    	panel_4.add(lblNewLabel_2_1);
-    	
-    	JLabel lblNewLabel_2_2 = new JLabel("THANHPHAN:");
-    	lblNewLabel_2_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_2.setBounds(10, 84, 107, 27);
-    	panel_4.add(lblNewLabel_2_2);
-    	
-    	JLabel lblNewLabel_2_3 = new JLabel("DONGIA:");
-    	lblNewLabel_2_3.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_3.setBounds(10, 139, 84, 27);
-    	panel_4.add(lblNewLabel_2_3);
-    	
-    	txtMaThuoc = new JTextField();
-    	txtMaThuoc.setHorizontalAlignment(SwingConstants.CENTER);
-    	txtMaThuoc.setBounds(128, 16, 215, 19);
-    	panel_4.add(txtMaThuoc);
-    	txtMaThuoc.setColumns(10);
-    	
-    	txtTenThuoc = new JTextField();
-    	txtTenThuoc.setFont(new Font("Tahoma", Font.BOLD, 10));
-    	txtTenThuoc.setHorizontalAlignment(SwingConstants.CENTER);
-    	txtTenThuoc.setColumns(10);
-    	txtTenThuoc.setBounds(128, 53, 215, 19);
-    	panel_4.add(txtTenThuoc);
-    	
-    	txtThanhPhan = new JTextField();
-    	txtThanhPhan.setHorizontalAlignment(SwingConstants.CENTER);
-    	txtThanhPhan.setColumns(10);
-    	txtThanhPhan.setBounds(128, 90, 215, 42);
-    	panel_4.add(txtThanhPhan);
-    	
-    	txtDonGia = new JTextField();
-    	txtDonGia.setFont(new Font("Tahoma", Font.BOLD, 10));
-    	txtDonGia.setHorizontalAlignment(SwingConstants.CENTER);
-    	txtDonGia.setColumns(10);
-    	txtDonGia.setBounds(128, 145, 215, 19);
-    	 txtDonGia.setText("0.0");
-         txtDonGia.setFocusable(false);
-    	panel_4.add(txtDonGia);
-    	
-    	JPanel panel_5 = new JPanel();
-    	panel_5.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Danh s\u00E1ch Thu\u1ED1c", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-    	panel_5.setBounds(21, 332, 647, 312);
-    	panel.add(panel_5);
-    	panel_5.setLayout(null);
-    	
-    	JScrollPane scrollPane = new JScrollPane();
-    
-    	scrollPane.setBounds(20, 24, 603, 266);
-    	panel_5.add(scrollPane);
-    	
-    	table = new JTable();
-    	table.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	table.addMouseListener(new MouseAdapter() {
-    		@Override
-    		public void mouseClicked(MouseEvent e) {
-    			tableMouseClicked();
-    		}
-    	});
-    
-    
-    	scrollPane.setViewportView(table);
-    	JPanel panel_6 = new JPanel();
-    	panel_6.setBounds(21, 241, 647, 81);
-    	panel.add(panel_6);
-    	panel_6.setLayout(null);
-    	
-    	 cboxSearch = new JComboBox();
-    	 cboxSearch.addActionListener(new ActionListener() {
-    	 	public void actionPerformed(ActionEvent e) {
-    	 		loadTableTheoDanhMuc();
-    	 	}
-    	 });
-    	 cboxSearch.setBackground(SystemColor.text);
-    	 cboxSearch.setModel(new DefaultComboBoxModel(new String[] {"Tất cả"}));
-    	 cboxSearch.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Lo\u1EA1i Thu\u1ED1c", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-    	
-    	cboxSearch.setBounds(10, 24, 160, 42);
-    	panel_6.add(cboxSearch);
-    	//
-  
-    	//
-    	txtSearch = new JTextField("");
-    	txtSearch.addKeyListener(new KeyAdapter() {
-    		@Override
-    		public void keyReleased(KeyEvent e) {
-    			ketQuaTimKiem();
-    		}
-    	});
-    	
-    	txtSearch.setBorder(new TitledBorder(null, "Tra c\u1EE9u", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-    	txtSearch.setDragEnabled(true);
-    	
-    	txtSearch.setToolTipText("Tra cứu");
-    	txtSearch.setBounds(180, 24, 128, 42);
-    	panel_6.add(txtSearch);
-    	txtSearch.setColumns(10);
-    	
-    	JSeparator separator = new JSeparator();
-    	separator.setFont(new Font("Arial", Font.PLAIN, 20));
-    	separator.setOrientation(SwingConstants.VERTICAL);
-    	separator.setBounds(375, 16, 2, 55);
-    	panel_6.add(separator);
-    	
-    	JButton btnAddCart = new JButton();
-    	btnAddCart.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			btnAddCartActionPerformed();
-    		}
-    	});
-    	
-    	btnAddCart.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/add-to-cart.png")));
-    	btnAddCart.setText("THÊM");
-    	btnAddCart.setPreferredSize(new Dimension(120, 40));
-    	btnAddCart.setForeground(SystemColor.desktop);
-    	btnAddCart.setFont(new Font("Dialog", Font.BOLD, 16));
-    	btnAddCart.setFocusable(false);
-    	btnAddCart.setFocusPainted(false);
-    	btnAddCart.setBorderPainted(false);
-    	btnAddCart.setBackground(SystemColor.activeCaptionBorder);
-    	btnAddCart.setBounds(520, 24, 117, 36);
-    	panel_6.add(btnAddCart);
-    	
-    	JButton btnReload = new JButton();
-    	btnReload.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			btnReloadActionPerformed();
-    		}
-    	});
-    	btnReload.setBackground(SystemColor.activeCaptionBorder);
-    	btnReload.setBounds(318, 24, 47, 42);
-    	panel_6.add(btnReload);
-    	btnReload.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/refresh.png")));
-    	btnReload.setToolTipText("Làm mới");
-    	btnReload.setPreferredSize(new Dimension(40, 40));
-    	btnReload.setHorizontalTextPosition(SwingConstants.CENTER);
-    	btnReload.setFocusable(false);
-    	btnReload.setFocusPainted(false);
-    	btnReload.setBorderPainted(false);
-    	btnReload.setBorder(null);
-    	
-    	txtSoLuong = new JTextField();
-    	txtSoLuong.setFont(new Font("Tahoma", Font.BOLD, 10));
-    	txtSoLuong.setBorder(new TitledBorder(null, "S\u1ED1 l\u01B0\u1EE3ng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-    	txtSoLuong.setBounds(387, 21, 123, 40);
-    	panel_6.add(txtSoLuong);
-    	txtSoLuong.setColumns(10);
-    	
-    	JPanel panel_1 = new JPanel();
-    	panel_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-    	panel_1.setBounds(744, 59, 646, 654);
-    	add(panel_1);
-    	panel_1.setLayout(null);
-    	
-    	JPanel panel_2_1 = new JPanel();
-    	panel_2_1.setBackground(SystemColor.activeCaption);
-    	panel_2_1.setBounds(142, 10, 411, 35);
-    	panel_1.add(panel_2_1);
-    	
-    	JLabel lblNewLabel_1_1_1_1 = new JLabel("CHI TIẾT PHIẾU ĐẶT");
-    	lblNewLabel_1_1_1_1.setForeground(Color.BLACK);
-    	lblNewLabel_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 15));
-    	lblNewLabel_1_1_1_1.setBackground(Color.BLACK);
-    	panel_2_1.add(lblNewLabel_1_1_1_1);
-    	
-    	JPanel panel_5_1 = new JPanel();
-    	panel_5_1.setLayout(null);
-    	panel_5_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Chi Ti\u1EBFt", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-    	panel_5_1.setBounds(42, 55, 594, 194);
-    	panel_1.add(panel_5_1);
-    	
-    	JScrollPane scrollPane_1 = new JScrollPane();
-    	scrollPane_1.setBounds(10, 25, 574, 107);
-    	panel_5_1.add(scrollPane_1);
-    	
-    	tableCart = new JTable();
-    	tableCart.setModel(new DefaultTableModel(new Object[][] {}, new String[] {"STT", "Tên thuốc", "Số lượng", "Đơn giá"}));
-   
-    	
-    	scrollPane_1.setViewportView(tableCart);
-    	
-    	JPanel panel_8 = new JPanel();
-    	panel_8.setBounds(471, 145, 93, 39);
-    	panel_5_1.add(panel_8);
-    	panel_8.setLayout(null);
-    	
-    	JButton btnXoa = new JButton();
-    	btnXoa.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/trash.png")));
-    	btnXoa.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			btnDeleteCartItemActionPerformed();
-    		}
-    	});
-    	btnXoa.setText("XÓA");
-    	btnXoa.setPreferredSize(new Dimension(120, 40));
-    	btnXoa.setForeground(SystemColor.desktop);
-    	btnXoa.setFont(new Font("Dialog", Font.BOLD, 16));
-    	btnXoa.setFocusable(false);
-    	btnXoa.setFocusPainted(false);
-    	btnXoa.setBorderPainted(false);
-    	btnXoa.setBackground(SystemColor.activeCaptionBorder);
-    	btnXoa.setBounds(-11, 0, 117, 44);
-    	panel_8.add(btnXoa);
-    	
-    	JPanel panel_2_1_1 = new JPanel();
-    	panel_2_1_1.setBackground(SystemColor.activeCaption);
-    	panel_2_1_1.setBounds(142, 259, 411, 35);
-    	panel_1.add(panel_2_1_1);
-    	
-    	JLabel lblNewLabel_1_1_1_1_1 = new JLabel("PHIẾU ĐẶT");
-    	lblNewLabel_1_1_1_1_1.setForeground(Color.BLACK);
-    	lblNewLabel_1_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 15));
-    	lblNewLabel_1_1_1_1_1.setBackground(Color.BLACK);
-    	panel_2_1_1.add(lblNewLabel_1_1_1_1_1);
-    	
-    	JPanel panel_4_1 = new JPanel();
-    	panel_4_1.setLayout(null);
-    	panel_4_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-    	panel_4_1.setBounds(42, 316, 594, 328);
-    	panel_1.add(panel_4_1);
-    	
-    	JLabel lblNewLabel_2_4 = new JLabel("Mã PDT");
-    	lblNewLabel_2_4.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_4.setBounds(33, 14, 84, 27);
-    	panel_4_1.add(lblNewLabel_2_4);
-    	
-    	JLabel lblNewLabel_2_1_1 = new JLabel("SDT");
-    	lblNewLabel_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_1_1.setBounds(33, 54, 84, 27);
-    	panel_4_1.add(lblNewLabel_2_1_1);
-    	
-    	JLabel lblNewLabel_2_2_1 = new JLabel("TENKH");
-    	lblNewLabel_2_2_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_2_1.setBounds(33, 98, 107, 27);
-    	panel_4_1.add(lblNewLabel_2_2_1);
-    	
-    	JLabel lblNewLabel_2_3_1 = new JLabel("TỔNG TIỀN");
-    	lblNewLabel_2_3_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_3_1.setBounds(33, 171, 84, 27);
-    	panel_4_1.add(lblNewLabel_2_3_1);
-    	
-    	txtMaPDT = new JTextField();
-    	
-    	txtMaPDT.setEditable(false);
-    	txtMaPDT.setBackground(new Color(255, 255, 255));
-    	txtMaPDT.setFont(new Font("Arial", Font.BOLD, 15));
-    	txtMaPDT.setColumns(10);
-    	txtMaPDT.setBounds(128, 16, 359, 27);
-    	
-    	
-    	
-    	txtMaPDT.setEnabled(false);
-    	panel_4_1.add(txtMaPDT);
-   
-    	txtsdt = new JTextField();
-    	txtsdt.setHorizontalAlignment(SwingConstants.CENTER);
-    	txtsdt.setFont(new Font("Arial", Font.BOLD, 15));
-    	txtsdt.setColumns(10);
-    	txtsdt.setBounds(128, 53, 359, 34);
-    	panel_4_1.add(txtsdt);
-    	
-    	txtHoTenKH = new JTextField();
-    	txtHoTenKH.setHorizontalAlignment(SwingConstants.CENTER);
-    	txtHoTenKH.setFont(new Font("Arial", Font.BOLD, 15));
-    	txtHoTenKH.setColumns(10);
-    	txtHoTenKH.setBounds(127, 97, 360, 34);
-    	panel_4_1.add(txtHoTenKH);
-    	
-    	txtTongTien = new JTextField("0.0");
-    	txtTongTien.setHorizontalAlignment(SwingConstants.CENTER);
-    	txtTongTien.setFont(new Font("Arial", Font.BOLD, 15));
-    	
-    	txtTongTien.setFocusable(false);
-    	txtTongTien.setColumns(10);
-    	txtTongTien.setBounds(127, 168, 186, 34);
-    	panel_4_1.add(txtTongTien);
-    	
-    	JLabel lblNewLabel_3 = new JLabel("-------------------------------------------------------------------------------");
-    	lblNewLabel_3.setBounds(161, 141, 326, 13);
-    	panel_4_1.add(lblNewLabel_3);
-    	
-    	JButton btn_tkim = new JButton();
-    	btn_tkim.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			btnSearchActionPerformed();
-    			
-    		}
-    	});
-    	btn_tkim.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/search.png")));
-    	btn_tkim.setToolTipText("Tìm");
-    	btn_tkim.setPreferredSize(new Dimension(40, 40));
-    	btn_tkim.setHorizontalTextPosition(SwingConstants.CENTER);
-    	btn_tkim.setFocusable(false);
-    	btn_tkim.setFocusPainted(false);
-    	btn_tkim.setBorderPainted(false);
-    	btn_tkim.setBorder(null);
-    	btn_tkim.setBackground(SystemColor.activeCaptionBorder);
-    	btn_tkim.setBounds(516, 42, 40, 40);
-    	panel_4_1.add(btn_tkim);
-    	
-    	JButton btnKhachHang = new JButton();
-    	btnKhachHang.addActionListener(new ActionListener() {
-    	    public void actionPerformed(ActionEvent e) {
-//    	        gui_themKhachHang dialog = new gui_themKhachHang();
-//    	        dialog.setSize(600, 400);
-//    	        dialog.setLocationRelativeTo(null);
-//    	        dialog.setVisible(true);
-
-    	    }
-    	});
-
-
-    	btnKhachHang.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/user.png")));
-    	btnKhachHang.setToolTipText("Xem ");
-    	btnKhachHang.setPreferredSize(new Dimension(40, 40));
-    	btnKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
-    	btnKhachHang.setFocusable(false);
-    	btnKhachHang.setFocusPainted(false);
-    	btnKhachHang.setBorderPainted(false);
-    	btnKhachHang.setBorder(null);
-    	btnKhachHang.setBackground(SystemColor.activeCaptionBorder);
-    	btnKhachHang.setBounds(516, 98, 40, 40);
-    	panel_4_1.add(btnKhachHang);
-    	
-    	JLabel lblNewLabel_2_3_1_1 = new JLabel("VAT");
-    	lblNewLabel_2_3_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-    	lblNewLabel_2_3_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_3_1_1.setBounds(304, 171, 69, 27);
-    	panel_4_1.add(lblNewLabel_2_3_1_1);
-    	
-    	JButton btnLuuhd = new JButton();
-    	btnLuuhd.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/bill.png")));
-    	btnLuuhd.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			btnThanhToanActionPerformed();
-    		}
-    	});
-    	btnLuuhd.setText("ĐẶT THUỐC");
-    	btnLuuhd.setPreferredSize(new Dimension(120, 40));
-    	btnLuuhd.setForeground(SystemColor.desktop);
-    	btnLuuhd.setFont(new Font("Dialog", Font.BOLD, 16));
-    	btnLuuhd.setFocusable(false);
-    	btnLuuhd.setFocusPainted(false);
-    	btnLuuhd.setBorderPainted(false);
-    	btnLuuhd.setBackground(SystemColor.activeCaptionBorder);
-    	btnLuuhd.setBounds(323, 271, 164, 44);
-    	panel_4_1.add(btnLuuhd);
-    	
-    	JLabel lblNewLabel_2_3_1_2 = new JLabel("TỔNG THANH TOÁN");
-    	lblNewLabel_2_3_1_2.setVerticalAlignment(SwingConstants.BOTTOM);
-    	lblNewLabel_2_3_1_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
-    	lblNewLabel_2_3_1_2.setBounds(33, 222, 172, 27);
-    	panel_4_1.add(lblNewLabel_2_3_1_2);
-    	
-    	txttongHD = new JTextField("");
-    	txttongHD.setHorizontalAlignment(SwingConstants.CENTER);
-    	txttongHD.setFont(new Font("Arial", Font.BOLD, 15));
-    	txttongHD.setColumns(10);
-    	txttongHD.setBounds(215, 212, 272, 34);
-    	panel_4_1.add(txttongHD);
-    	
-    	txtThue = new JTextField("");
-    	txtThue.setFont(new Font("Arial", Font.BOLD, 15));
-    	txtThue.setColumns(10);
-    	txtThue.setBounds(373, 168, 114, 34);
-    	panel_4_1.add(txtThue);
-    	
-    	JLabel lblNewLabel = new JLabel("ĐẶT THUỐC");
-    	lblNewLabel.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/fulfillment.png")));
-    	lblNewLabel.setForeground(SystemColor.desktop);
-    	lblNewLabel.setBackground(Color.GREEN);
-    	lblNewLabel.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 35));
-    	lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    	lblNewLabel.setBounds(581, 10, 296, 39);
-    	add(lblNewLabel);
-        //
-    	//
-    	txtMaPDT.setText(RandomMa.maPhieuDatAuto());
-    	
-    	JButton btnHuyHD = new JButton();
-    	btnHuyHD.setIcon(new ImageIcon(gui_DatThuoc.class.getResource("/icon/return.png")));
-    	btnHuyHD.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			btnHuyActionPerformed();
-    		}
-    	
-    		
-    	});
-    	btnHuyHD.setText("HỦY ");
-    	btnHuyHD.setPreferredSize(new Dimension(120, 40));
-    	btnHuyHD.setForeground(new Color(255, 0, 0));
-    	btnHuyHD.setFont(new Font("Dialog", Font.BOLD, 16));
-    	btnHuyHD.setFocusable(false);
-    	btnHuyHD.setFocusPainted(false);
-    	btnHuyHD.setBorderPainted(false);
-    	btnHuyHD.setBackground(SystemColor.activeCaptionBorder);
-    	btnHuyHD.setBounds(33, 271, 150, 44);
-    	panel_4_1.add(btnHuyHD);
-    	//
-      	loadDanhMucThuoc();
-        try {
-
-           listThuoc = THUOC_SEVICE.findAll();
-			System.out.printf(THUOC_SEVICE.findAll().toString());
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-        loadTable(listThuoc);
+		setupUI();
+		try {
+			loadTable(THUOC_SEVICE.findAll());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
     }
+	private void setupUI() {
+		setLayout(new BorderLayout());
+
+		JPanel titlePanel = createTitlePanel();
+		add(titlePanel, BorderLayout.NORTH);
+
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPane.setResizeWeight(0.5);
+		splitPane.setDividerLocation(0.5);
+		splitPane.setContinuousLayout(true);
+		add(splitPane, BorderLayout.CENTER);
+
+		JPanel leftPanel = createLeftPanel();
+		splitPane.setLeftComponent(leftPanel);
+
+		JPanel rightPanel = createRightPanel();
+		splitPane.setRightComponent(rightPanel);
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setPreferredSize(new Dimension((int)(screenSize.getWidth() * 0.8),
+				(int)(screenSize.getHeight() * 0.8)));
+
+		revalidate();
+		repaint();
+	}
+
+	private JPanel createTitlePanel() {
+		JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+		JLabel lblMainTitle = new JLabel("ĐĂT THUỐC");
+		lblMainTitle.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/bill.png")));
+		lblMainTitle.setForeground(new Color(0, 0, 0));
+		lblMainTitle.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 35));
+
+		titlePanel.add(lblMainTitle);
+		return titlePanel;
+	}
+
+	private JPanel createLeftPanel() {
+		JPanel leftPanel = new JPanel();
+		leftPanel.setBorder(
+				BorderFactory.createEmptyBorder(0, 10, 0, 10)
+		);
+		leftPanel.setLayout(new BorderLayout(0, 10));
+
+		JPanel panelProductHeader = createHeaderPanel("THÔNG TIN THUỐC");
+		leftPanel.add(panelProductHeader, BorderLayout.NORTH);
+
+		JPanel contentPanel = new JPanel();
+		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+		JPanel productDetailsPanel = createProductDetailsPanel();
+		contentPanel.add(productDetailsPanel);
+
+		JPanel searchPanel = createSearchPanel();
+		contentPanel.add(searchPanel);
+
+		JPanel productListPanel = createProductListPanel();
+		contentPanel.add(productListPanel);
+
+//		JPanel orderPreviewPanel = createOrderPreviewPanel();
+//		contentPanel.add(orderPreviewPanel);
+
+		JScrollPane scrollPane = new JScrollPane(contentPanel);
+		scrollPane.setBorder(null);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		leftPanel.add(scrollPane, BorderLayout.CENTER);
+
+		return leftPanel;
+	}
+
+	private JPanel createProductDetailsPanel() {
+		JPanel panel = new JPanel(new BorderLayout(10, 0));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		JPanel imagePanel = new JPanel(new BorderLayout());
+		imagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		imagePanel.setPreferredSize(new Dimension(210, 176));
+
+		txtHinhAnh.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		imagePanel.add(txtHinhAnh, BorderLayout.CENTER);
+
+		JPanel detailsPanel = new JPanel();
+		detailsPanel.setLayout(new GridBagLayout());
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.anchor = GridBagConstraints.WEST;
+
+		String[][] formFields = {
+				{"MATHUOC:", "txtMaThuoc"},
+				{"TENTHUOC:", "txtTenThuoc"},
+				{"THANHPHAN:", "txtThanhPhan"},
+				{"DONGIA:", "txtDonGia"}
+		};
+
+		for (int i = 0; i < formFields.length; i++) {
+			gbc.gridx = 0;
+			gbc.gridy = i;
+			gbc.weightx = 0.2;
+			gbc.fill = GridBagConstraints.NONE;
+
+			JLabel label = new JLabel(formFields[i][0]);
+			label.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			detailsPanel.add(label, gbc);
+
+			gbc.gridx = 1;
+			gbc.weightx = 0.8;
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+
+			JTextField field = getTextField(formFields[i][1]);
+			field.setHorizontalAlignment(SwingConstants.CENTER);
+			if (field == txtDonGia) {
+				field.setText("0.0");
+				field.setFocusable(false);
+			}
+			detailsPanel.add(field, gbc);
+		}
+
+		panel.add(imagePanel, BorderLayout.WEST);
+		panel.add(detailsPanel, BorderLayout.CENTER);
+
+		return panel;
+	}
+
+	private JTextField getTextField(String fieldName) {
+		switch (fieldName) {
+			case "txtMaThuoc": return txtMaThuoc;
+			case "txtTenThuoc": return txtTenThuoc;
+			case "txtThanhPhan": return txtThanhPhan;
+			case "txtDonGia": return txtDonGia;
+			default: return new JTextField();
+		}
+	}
+
+	private JPanel createSearchPanel() {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+
+		cboxSearch.setModel(new DefaultComboBoxModel(new String[]{"Tất cả"}));
+		cboxSearch.setBorder(BorderFactory.createTitledBorder("Loại Thuốc"));
+		cboxSearch.setPreferredSize(new Dimension(160, 40));
+		cboxSearch.addActionListener(e -> loadTableTheoDanhMuc());
+		panel.add(cboxSearch);
+
+		txtSearch.setBorder(BorderFactory.createTitledBorder("Tra cứu"));
+		txtSearch.setPreferredSize(new Dimension(200, 40));
+		txtSearch.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				ketQuaTimKiem();
+			}
+		});
+		panel.add(txtSearch);
+
+		JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
+		separator.setPreferredSize(new Dimension(3, 40));
+		panel.add(separator);
+
+		JButton btnReload = new JButton("Làm mới");
+		btnReload.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/refresh.png")));
+		btnReload.setFont(new Font("Dialog", Font.BOLD, 16));
+		btnReload.setFocusable(false);
+		btnReload.addActionListener(e -> btnReloadActionPerformed());
+		panel.add(btnReload);
+
+		JSeparator separator1 = new JSeparator(SwingConstants.VERTICAL);
+		separator1.setPreferredSize(new Dimension(3, 40));
+
+		panel.add(Box.createHorizontalStrut(10));
+		panel.add(separator1);
+		JLabel label = new JLabel("Nhập số lượng: ");
+		label.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel.add(label);
+		txtSoLuong.setPreferredSize(new Dimension(150, 30));
+		panel.add(txtSoLuong);
+
+		JButton btnAddCart = new JButton("THÊM");
+		btnAddCart.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/add-to-cart.png")));
+		btnAddCart.setFont(new Font("Dialog", Font.BOLD, 16));
+		btnAddCart.setFocusable(false);
+		btnAddCart.addActionListener(e -> {
+            try {
+                btnAddCartActionPerformed();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+		panel.add(btnAddCart);
+
+		return panel;
+	}
+
+	private JPanel createProductListPanel() {
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.setBorder(BorderFactory.createTitledBorder("Danh sách Thuốc"));
+
+		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				tableMouseClicked();
+			}
+		});
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		panel.add(scrollPane, BorderLayout.CENTER);
+
+		panel.setPreferredSize(new Dimension(400, 200)); // Height will adapt, width will fill
+
+		return panel;
+	}
+
+
+	private JPanel createRightPanel() {
+		JPanel rightPanel = new JPanel();
+		rightPanel.setBorder(
+				BorderFactory.createEmptyBorder(0, 5, 5, 5)
+
+		);
+		rightPanel.setLayout(new BorderLayout(0, 10));
+
+		JPanel orderHeader = createHeaderPanel("THÔNG TIN GIỎ HÀNG");
+		rightPanel.add(orderHeader, BorderLayout.NORTH);
+
+		JPanel contentPanel = new JPanel();
+		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+		JPanel cartDetailsPanel = createCartDetailsPanel();
+		contentPanel.add(cartDetailsPanel);
+
+		JPanel invoiceHeader = createHeaderPanel("THÔNG TIN PHIẾU ĐẶT");
+		contentPanel.add(invoiceHeader);
+
+		JPanel invoiceDetailsPanel = createInvoiceDetailsPanel();
+		contentPanel.add(invoiceDetailsPanel);
+
+		JScrollPane scrollPane = new JScrollPane(contentPanel);
+		scrollPane.setBorder(null);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		rightPanel.add(scrollPane, BorderLayout.CENTER);
+
+		return rightPanel;
+	}
+
+	private JPanel createHeaderPanel(String title) {
+		JPanel panel = new JPanel();
+		panel.setBackground(SystemColor.activeCaption);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+		JLabel label = new JLabel(title);
+		label.setForeground(Color.BLACK);
+		label.setFont(new Font("Tahoma", Font.BOLD, 15));
+		panel.add(label);
+
+		return panel;
+	}
+
+	private JPanel createCartDetailsPanel() {
+		JPanel panel = new JPanel(new BorderLayout(0, 10));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		tableCart = new JTable();
+		tableCart.setModel(new DefaultTableModel(
+				new Object[][] {},
+				new String[] {"STT", "Tên thuốc", "Số lượng", "Đơn giá đã giảm"}
+		));
+
+		JScrollPane scrollPane = new JScrollPane(tableCart);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		panel.add(scrollPane, BorderLayout.CENTER);
+
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JButton btnXoa = new JButton("XÓA");
+		btnXoa.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/delete.png")));
+		btnXoa.setFont(new Font("Dialog", Font.BOLD, 16));
+		btnXoa.setFocusable(false);
+		btnXoa.addActionListener(e -> btnDeleteCartItemActionPerformed());
+		buttonPanel.add(btnXoa);
+
+		panel.add(buttonPanel, BorderLayout.SOUTH);
+		panel.setPreferredSize(new Dimension(0, 200));
+
+		return panel;
+	}
+
+	private JPanel createInvoiceDetailsPanel() {
+		JPanel panel = new JPanel(new GridBagLayout());
+//		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(5, 10, 5, 10);
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 0.15; // Decreased label width
+		JLabel lblMaHD = new JLabel("MAPDT");
+		lblMaHD.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel.add(lblMaHD, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridwidth = 3;
+		gbc.weightx = 0.85; // Increased text field width
+		txtMaPDT = new JTextField();
+		txtMaPDT.setEditable(false);
+		txtMaPDT.setBackground(Color.WHITE);
+		txtMaPDT.setFont(new Font("Arial", Font.BOLD, 15));
+		txtMaPDT.setText(RandomMa.maPhieuDatAuto());
+		panel.add(txtMaPDT, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.15; // Decreased label width
+		JLabel lblSDT = new JLabel("SDT");
+		lblSDT.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel.add(lblSDT, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridwidth = 2;
+		gbc.weightx = 0.7; // Increased text field width
+		txtsdt = new JTextField();
+		txtsdt.setHorizontalAlignment(SwingConstants.CENTER);
+		txtsdt.setFont(new Font("Arial", Font.BOLD, 15));
+		panel.add(txtsdt, gbc);
+
+		gbc.gridx = 3;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.15;
+		JButton btnSearch = new JButton("");
+		btnSearch.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/search.png")));
+		btnSearch.setToolTipText("Tìm kiếm");
+		btnSearch.setFont(new Font("Dialog", Font.BOLD, 16));
+		btnSearch.addActionListener(e -> btnSearchActionPerformed());
+		panel.add(btnSearch, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 2; // Fixed gridy value
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.15; // Decreased label width
+		JLabel lblTenKH = new JLabel("TENKH");
+		lblTenKH.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel.add(lblTenKH, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridwidth = 3;
+		gbc.weightx = 0.85; // Increased text field width
+		txtHoTenKH = new JTextField();
+		txtHoTenKH.setHorizontalAlignment(SwingConstants.CENTER);
+		txtHoTenKH.setFont(new Font("Arial", Font.BOLD, 15));
+		panel.add(txtHoTenKH, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 3; // Fixed gridy value
+		gbc.gridwidth = 4;
+		gbc.weightx = 1.0;
+		JSeparator separator = new JSeparator();
+		panel.add(separator, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.15; // Decreased label width
+		JLabel lblTongTien = new JLabel("TỔNG TIỀN");
+		lblTongTien.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel.add(lblTongTien, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridwidth = 3;
+		gbc.weightx = 0.85; // Increased text field width
+		txtTongTien = new JTextField("0.0");
+		txtTongTien.setHorizontalAlignment(SwingConstants.CENTER);
+		txtTongTien.setFont(new Font("Arial", Font.BOLD, 15));
+		txtTongTien.setFocusable(false);
+		panel.add(txtTongTien, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.15; // Decreased label width
+		JLabel lblTongThanhToan = new JLabel("TỔNG THANH TOÁN");
+		lblTongThanhToan.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		panel.add(lblTongThanhToan, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridwidth = 3;
+		gbc.weightx = 0.85; // Increased text field width
+		txttongHD = new JTextField();
+		txttongHD.setHorizontalAlignment(SwingConstants.CENTER);
+		txttongHD.setFont(new Font("Arial", Font.BOLD, 15));
+		panel.add(txttongHD, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 6;
+		gbc.gridwidth = 2;
+		gbc.weightx = 0.5;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.WEST;
+		JButton btnHuyHD = new JButton("HỦY");
+		btnHuyHD.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/return.png")));
+		btnHuyHD.setFont(new Font("Dialog", Font.BOLD, 16));
+		btnHuyHD.setForeground(Color.RED);
+		btnHuyHD.setFocusable(false);
+		btnHuyHD.addActionListener(e -> btnHuyActionPerformed());
+		panel.add(btnHuyHD, gbc);
+
+		gbc.gridx = 2;
+		gbc.gridwidth = 2;
+		gbc.weightx = 0.5;
+		gbc.anchor = GridBagConstraints.EAST;
+		JButton btnThanhToan = new JButton("ĐẶT THUỐC");
+		btnThanhToan.setIcon(new ImageIcon(gui_BanThuoc.class.getResource("/icon/bill.png")));
+		btnThanhToan.setFont(new Font("Dialog", Font.BOLD, 16));
+		btnThanhToan.setFocusable(false);
+		btnThanhToan.addActionListener(e -> btnThanhToanActionPerformed());
+		panel.add(btnThanhToan, gbc);
+
+		return panel;
+	}
+
+
+	private void handleWindowResize() {
+		revalidate();
+		repaint();
+	}
+
+	@Override
+	public void addNotify() {
+		super.addNotify();
+		if (getParent() != null) {
+			Container topLevelContainer = getTopLevelAncestor();
+			if (topLevelContainer instanceof Window) {
+				Window window = (Window) topLevelContainer;
+				window.addComponentListener(new ComponentAdapter() {
+					@Override
+					public void componentResized(ComponentEvent e) {
+						handleWindowResize();
+					}
+				});
+			}
+		}
+	}
+
+
+
 
 	public void loadTable(List<Thuoc> list) {
 		String[] header = new String[]{"STT", "Mã thuốc", "Tên thuốc", "Danh mục", "Nhà Sản Xuất", "Đơn vị tính", "Số lượng tồn", "Đơn giá", "Giảm giá"};
@@ -707,16 +646,27 @@ public class gui_DatThuoc extends JPanel {
 
     }
     private void ketQuaTimKiem() {
-//        modal.setRowCount(0);
-//        String search = txtSearch.getText().toLowerCase().trim();
-//        List<Thuoc> listsearch = getSearchTable(search);
-//        loadTable(listsearch);
+		modal.setRowCount(0);
+		String search = txtSearch.getText().toLowerCase().trim();
+		try {
+			List<Thuoc> listsearch = THUOC_SEVICE.searchThuoc(search);
+			loadTable(listsearch);
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi tìm kiếm thuốc: " + e.getMessage());
+			e.printStackTrace();
+		}
     }
 
-    private PhieuDatThuoc getInputPhieuDat() {
+	private NhanVien getNhanVienbyID() throws RemoteException {
+		NhanVien nhanVien = NHAN_VIEN_SECICE.findById(tklogin.getId());
+		return nhanVien ;
+	}
+
+
+    private PhieuDatThuoc getInputPhieuDat() throws RemoteException {
         String idHD = txtMaPDT.getText();
         Timestamp thoiGian = new Timestamp(System.currentTimeMillis());
-        NhanVien nhanVien = tklogin.getNhanVien();
+        NhanVien nhanVien = getNhanVienbyID();
 		try {
 			KhachHang khachHang = KHACH_HANG_SEVICE.getKhachHangBySdt(txtsdt.getText());
 			return new PhieuDatThuoc(idHD, thoiGian, nhanVien, khachHang,false);
@@ -751,7 +701,7 @@ public class gui_DatThuoc extends JPanel {
 	}
 
 
-    private ChiTietPhieuDatThuoc getInputChiTietPhieuDat() {
+    private ChiTietPhieuDatThuoc getInputChiTietPhieuDat() throws RemoteException {
         PhieuDatThuoc phieudat = getInputPhieuDat();
 		try {
 			Thuoc thuoc = THUOC_SEVICE.findById(txtMaThuoc.getText());
@@ -767,7 +717,7 @@ public class gui_DatThuoc extends JPanel {
 
     }
 
-    private void btnAddCartActionPerformed() {
+    private void btnAddCartActionPerformed() throws RemoteException {
 		if (isValidChiTietPhieuDat()) {
 
 			ChiTietPhieuDatThuoc ctpdt = getInputChiTietPhieuDat();
@@ -925,47 +875,85 @@ public class gui_DatThuoc extends JPanel {
 
  
     private void btnReloadActionPerformed() {
+		try {
+			txtSearch.setText("");
+			cboxSearch.setSelectedIndex(0);
+			loadTable(THUOC_SEVICE.findAll());
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi làm mới danh sách thuốc: " + e.getMessage());
+		}
 
     }
     private void btnHuyActionPerformed() {
+		if (MessageDialog.confirm(this, "Xác nhận hủy đặt thuốc?", "Hủy đặt thuốc")) {
+			try {
+				for (ChiTietPhieuDatThuoc ctpdt : listCTPDT) {
+					Thuoc thuoc = THUOC_SEVICE.findById(ctpdt.getThuoc().getId());
+					thuoc.setSoLuongTon(thuoc.getSoLuongTon() + ctpdt.getSoLuong());
+					THUOC_SEVICE.update(thuoc);
+				}
+				deteleAllTxt();
 
+				Window parentWindow = SwingUtilities.getWindowAncestor(this);
+				if (parentWindow != null) {
+					parentWindow.dispose();
+				}
+				new gui_TrangChu(tklogin).setVisible(true);
+			} catch (Exception e) {
+				MessageDialog.error(this, "Lỗi khi hoàn tác thuốc: " + e.getMessage());
+			}
+		}
     }
-    private void deteleAllTxt() {
-//    	txtDonGia.setText("");
-//    	txtHinhAnh.setText("");
-//    	txtHoTenKH.setText("");
-//    	txtMaThuoc.setText("");
-//    	txtsdt.setText("");
-//    	txtSearch.setText("");
-//    	txtSoLuong.setText("");
-//    	txtTenThuoc.setText("");
-//    	txtThanhPhan.setText("");
-//    	txtThue.setText("");
-//    	txttongHD.setText("");
-//    	txtTongTien.setText("");
-//    	txtHinhAnh.setText("");;
-//    	txtHinhAnh.setIcon(null);
-//
-//           loadTable(THUOC_CON.selectAll());
-//
-//           if(modalCart.getColumnCount()!=0) {
-//        	   modalCart.setRowCount(0);
-//           }
-           
-    }
+	private void deteleAllTxt() {
+		txtDonGia.setText("");
+		txtHinhAnh.setText("");
+		txtHoTenKH.setText("");
+		txtMaThuoc.setText("");
+		txtsdt.setText("");
+		txtSearch.setText("");
+		txtSoLuong.setText("");
+		txtTenThuoc.setText("");
+		txtThanhPhan.setText("");
+		txttongHD.setText("");
+		txtTongTien.setText("");
+		txtHinhAnh.setIcon(null);
+
+		try {
+			loadTable(THUOC_SEVICE.findAll());
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi làm mới danh sách thuốc: " + e.getMessage());
+		}
+		if (modalCart.getColumnCount() != 0) {
+			modalCart.setRowCount(0);
+		}
+	}
+
+
     private void btnThanhToanActionPerformed() {
 		try {
 			if (modalCart.getColumnCount() != 0 && isValidPhieuDat()) {
 				if (MessageDialog.confirm(this, "Xác nhận thanh toán?", "Lập phiếu đặt thuốc")) {
 					PhieuDatThuoc pdt = getInputPhieuDat();
+
 					if (pdt != null) {
-						DAT_THUOC_SEVICE.addPhieuDatThuoc(pdt);
+						boolean saveSuccess = DAT_THUOC_SEVICE.addPhieuDatThuoc(pdt, listCTPDT);
+
+						if (!saveSuccess) {
+							MessageDialog.error(this, "Không thể lưu phiếu đặt vào cơ sở dữ liệu!");
+							return;
+						}
 
 						MessageDialog.info(this, "Lập phiếu đặt thuốc thành công!");
 
-						if (MessageDialog.confirm(this, "Bạn có muốn in phiếu đặt thuốc không?", "In phiếu đặt thuốc")) {
-//							new other.WritePDF().printHoaDon(hd, listCTHD, 0); // in phiếu đặt chưa làm
+						if (MessageDialog.confirm(this, "Bạn có muốn in phiếu đặt không?", "In phiếu đặt thuốc")) {
+							new other.WritePDF().printPhieuDatThuoc(pdt, listCTPDT, 0);
 						}
+
+						// Reset UI and navigate
+						txtMaPDT.setText(RandomMa.maPhieuNhapAuto());
+						listCTPDT.clear();
+						loadTableCart(listCTPDT);
+						deteleAllTxt();
 
 						Container parent = this.getParent();
 						if (parent != null) {
@@ -978,15 +966,13 @@ public class gui_DatThuoc extends JPanel {
 						MessageDialog.error(this, "Không thể lập phiếu đặt thuốc.");
 					}
 				}
-			} else {
-				MessageDialog.error(this, "Kiểm tra lại thông tin phiếu đặt thuốc.");
+
 			}
-		} catch (Exception e) {
+		}catch(Exception e){
 			MessageDialog.error(this, "Lỗi khi thanh toán: " + e.getMessage());
 			e.printStackTrace();
 		}
-    }
-
+	}
     public void loadDanhMucThuoc() {
         try {
             List<DanhMuc> danhMucList = THUOC_SEVICE.getAllDanhMuc();
