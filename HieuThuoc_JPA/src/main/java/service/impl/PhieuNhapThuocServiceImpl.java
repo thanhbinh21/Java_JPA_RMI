@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -195,5 +196,56 @@ public class PhieuNhapThuocServiceImpl extends UnicastRemoteObject implements Ph
         }
         
         return allUpdated;
+    }
+
+    /**
+     * Search for receipts based on multiple criteria
+     * 
+     * @param receiptId the receipt ID (can be partial)
+     * @param supplierName the supplier name (can be partial)
+     * @param fromDate the start date (optional)
+     * @param toDate the end date (optional)
+     * @return list of matching receipts
+     */
+    public List<PhieuNhapThuoc> searchPhieuNhap(String receiptId, String supplierName, LocalDateTime fromDate, LocalDateTime toDate) throws Exception {
+        try {
+            List<PhieuNhapThuoc> allReceipts = findAll();
+            List<PhieuNhapThuoc> filteredReceipts = new ArrayList<>();
+            
+            for (PhieuNhapThuoc receipt : allReceipts) {
+                boolean matches = true;
+                
+                // Check receipt ID
+                if (!receiptId.isEmpty() && !receipt.getId().toLowerCase().contains(receiptId.toLowerCase())) {
+                    matches = false;
+                }
+                
+                // Check supplier name
+                if (matches && !supplierName.isEmpty() && 
+                    (receipt.getNhaCungCap() == null || 
+                    !receipt.getNhaCungCap().getTen().toLowerCase().contains(supplierName.toLowerCase()))) {
+                    matches = false;
+                }
+                
+                // Check date range
+                if (matches && fromDate != null && 
+                    (receipt.getThoiGian() == null || receipt.getThoiGian().isBefore(fromDate))) {
+                    matches = false;
+                }
+                
+                if (matches && toDate != null && 
+                    (receipt.getThoiGian() == null || receipt.getThoiGian().isAfter(toDate))) {
+                    matches = false;
+                }
+                
+                if (matches) {
+                    filteredReceipts.add(receipt);
+                }
+            }
+            
+            return filteredReceipts;
+        } catch (Exception e) {
+            throw new Exception("Error searching receipts: " + e.getMessage());
+        }
     }
 } 
