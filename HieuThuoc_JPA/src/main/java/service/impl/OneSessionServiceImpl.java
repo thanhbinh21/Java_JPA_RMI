@@ -36,6 +36,7 @@ public class OneSessionServiceImpl extends UnicastRemoteObject implements OneSes
     private VaiTroService vaiTroService;
     private DanhMucService danhMucService;
     private ChiTietHoaDonService chiTietHoaDonService;
+    private DatThuocSevice datThuocService;
 
     public OneSessionServiceImpl(EntityManager em) throws RemoteException {
         this.em = em;
@@ -72,6 +73,8 @@ public class OneSessionServiceImpl extends UnicastRemoteObject implements OneSes
         vaiTroService = new VaiTroServiceImpl(vaiTroDAO);
         danhMucService = new DanhMucServiceImpl(danhMucDAO);
         chiTietHoaDonService = new ChiTietHoaDonServiceImpl(chiTietHoaDonDAO);
+        datThuocService = new DatThuocServiceImpl(phieuDatThuocDAO, thuocDAO, khachHangDAO, chiTietPhieuDatThuocDAO);
+
     }
 
     @Override

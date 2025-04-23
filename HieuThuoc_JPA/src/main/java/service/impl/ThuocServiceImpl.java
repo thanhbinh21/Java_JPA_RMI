@@ -9,7 +9,9 @@ import entity.KhuyenMai;
 import entity.NhaSanXuat;
 import entity.Thuoc;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import service.ThuocService;
 
 public class ThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implements ThuocService {
@@ -27,8 +29,6 @@ public class ThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implemen
         this.khuyenMaiDAO = khuyenMaiDAO;
     }
 
-
-
     @Override
     public List<DanhMuc> getAllDanhMuc() throws RemoteException {
         return danhMucDAO.findAll();
@@ -41,12 +41,40 @@ public class ThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implemen
 
     @Override
     public List<Thuoc> searchThuoc(String keyword) throws RemoteException {
-        return List.of();
+        try {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                return findAll();
+            }
+            
+            String searchTerm = keyword.toLowerCase().trim();
+            
+            // Search across multiple fields
+            return findAll().stream()
+                .filter(thuoc -> 
+                    (thuoc.getId() != null && thuoc.getId().toLowerCase().contains(searchTerm)) ||
+                    (thuoc.getTen() != null && thuoc.getTen().toLowerCase().contains(searchTerm)) ||
+                    (thuoc.getThanhPhan() != null && thuoc.getThanhPhan().toLowerCase().contains(searchTerm))
+                )
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RemoteException("Error searching for medicines: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public List<Object[]> getMaTenThuoc() throws RemoteException {
-        return List.of();
+        try {
+            List<Thuoc> thuocList = findAll();
+            List<Object[]> result = new ArrayList<>();
+            
+            for (Thuoc thuoc : thuocList) {
+                result.add(new Object[]{thuoc.getId(), thuoc.getTen()});
+            }
+            
+            return result;
+        } catch (Exception e) {
+            throw new RemoteException("Error retrieving medicine IDs and names: " + e.getMessage(), e);
+        }
     }
 
     public List<Thuoc> getThuocByTenDanhMuc(String tenDM) throws RemoteException {
@@ -65,7 +93,6 @@ public class ThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implemen
     @Override
     public DanhMuc findDanhMucById(String danhMucStr) throws RemoteException {
         try {
-            // Assuming you have a DAO method to find DanhMuc by ID
             return danhMucDAO.findById(danhMucStr);
         } catch (Exception e) {
             throw new RemoteException("Error finding DanhMuc by ID: " + e.getMessage(), e);
@@ -81,4 +108,102 @@ public class ThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implemen
         }
     }
 
+    @Override
+    public List<Thuoc> findByCategory(String categoryId) throws RemoteException {
+        try {
+            DanhMuc danhMuc = danhMucDAO.findById(categoryId);
+            if (danhMuc == null) {
+                return List.of();
+            }
+            return thuocDAO.selectByDanhMuc(danhMuc);
+        } catch (Exception e) {
+            throw new RemoteException("Error finding medicines by category: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Thuoc> findByManufacturer(String manufacturerId) throws RemoteException {
+        try {
+            NhaSanXuat nhaSanXuat = nhaSanXuatDAO.findById(manufacturerId);
+            if (nhaSanXuat == null) {
+                return List.of();
+            }
+            
+            // Filter medicines by manufacturer
+            return findAll().stream()
+                .filter(thuoc -> 
+                    thuoc.getNhaSanXuat() != null && 
+                    thuoc.getNhaSanXuat().getId().equals(manufacturerId)
+                )
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RemoteException("Error finding medicines by manufacturer: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Thuoc> findByCategoryAndManufacturer(String categoryId, String manufacturerId) throws RemoteException {
+        try {
+            DanhMuc danhMuc = danhMucDAO.findById(categoryId);
+            NhaSanXuat nhaSanXuat = nhaSanXuatDAO.findById(manufacturerId);
+            
+            if (danhMuc == null || nhaSanXuat == null) {
+                return List.of();
+            }
+            
+            // Filter by both category and manufacturer
+            return findAll().stream()
+                .filter(thuoc -> 
+                    thuoc.getDanhMuc() != null && 
+                    thuoc.getDanhMuc().getId().equals(categoryId) &&
+                    thuoc.getNhaSanXuat() != null && 
+                    thuoc.getNhaSanXuat().getId().equals(manufacturerId)
+                )
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RemoteException("Error finding medicines by category and manufacturer: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Thuoc> findByName(String searchValue) throws RemoteException {
+        try {
+            if (searchValue == null || searchValue.trim().isEmpty()) {
+                return findAll();
+            }
+            
+            String searchTerm = searchValue.toLowerCase().trim();
+            
+            // Search by name
+            return findAll().stream()
+                .filter(thuoc -> 
+                    thuoc.getTen() != null && 
+                    thuoc.getTen().toLowerCase().contains(searchTerm)
+                )
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RemoteException("Error finding medicines by name: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Thuoc> findByIngredient(String searchValue) throws RemoteException {
+        try {
+            if (searchValue == null || searchValue.trim().isEmpty()) {
+                return findAll();
+            }
+            
+            String searchTerm = searchValue.toLowerCase().trim();
+            
+            // Search by ingredient
+            return findAll().stream()
+                .filter(thuoc -> 
+                    thuoc.getThanhPhan() != null && 
+                    thuoc.getThanhPhan().toLowerCase().contains(searchTerm)
+                )
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RemoteException("Error finding medicines by ingredient: " + e.getMessage(), e);
+        }
+    }
 }

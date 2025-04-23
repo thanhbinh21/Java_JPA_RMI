@@ -67,11 +67,11 @@ public class gui_DatThuoc extends JPanel {
 //			DAT_THUOC_SEVICE = new DatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ThuocDAOImpl(), new KhachHangDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
 //			PHEU_DAT_THUOC_SEVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
 			Registry registry = LocateRegistry.getRegistry(8989);
-			THUOC_SEVICE = (ThuocService) registry.lookup("THUOC_SERVICE");
-			KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KHACH_HANG_SERVICE");
-			DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DAT_THUOC_SERVICE");
-			PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PHIEU_DAT_THUOC_SERVICE");
-
+			THUOC_SEVICE = (ThuocService) registry.lookup("ThuocService");
+			KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KhachHangService");
+			DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DatThuocSevice");
+			PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PhieuDatThuocService");
+			NHAN_VIEN_SECICE = (NhanVienService) registry.lookup("NhanVienService");
 			loadDanhMucThuoc();
 			//formatTxt();
 		} catch (Exception e) {

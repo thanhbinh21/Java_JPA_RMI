@@ -1,29 +1,14 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 
 import dao.NhaSanXuatDAO;
@@ -35,11 +20,37 @@ import other.CustomTextField;
 import service.NhaSanXuatService;
 
 public class gui_qliNhaSX extends JPanel implements MouseListener {
-	private CustomTextField txtMaNSX, txtTenNSX;
+
+    private CustomTextField txtMaNSX, txtTenNSX;
     private CustomButton btnThem, btnXoa, btnSua;
     private CustomTable table;
     private DefaultTableModel model;
     private NhaSanXuatService NSX_SERVICE;
+
+    // Define colors and fonts for styling
+    private static final Color BACKGROUND_COLOR = new Color(240, 248, 255);
+    private static final Color TITLE_COLOR = new Color(70, 130, 180);
+    private static final Color BUTTON_BG = new Color(100, 149, 237);
+    private static final Color BUTTON_TEXT = Color.WHITE;
+    private static final Font LABEL_FONT = new Font("SansSerif", Font.PLAIN, 14);
+    private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 14);
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Quản Lý Nhà Sản Xuất");
+            gui_qliNhaSX panel = null;
+            try {
+                panel = new gui_qliNhaSX();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            frame.setContentPane(panel);
+            frame.setSize(1200, 800);
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });
+    }
 
     public gui_qliNhaSX() throws RemoteException {
         try {
@@ -50,19 +61,62 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
             ex.printStackTrace();
         }
 
-        setLayout(new BorderLayout(5, 5));
-        setSize(1200, 800);
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBackground(BACKGROUND_COLOR);
 
+        // Title Panel
+        JPanel pnTitle = createTitlePanel();
+        add(pnTitle, BorderLayout.NORTH);
+
+        // Center Panel with info form and buttons
+        JPanel pnCenter = new JPanel(new BorderLayout(10, 0));
+        pnCenter.setBackground(BACKGROUND_COLOR);
+
+        // Info Panel
+        JPanel pnInfo = createInfoPanel();
+        pnCenter.add(pnInfo, BorderLayout.NORTH);
+
+        // Buttons Panel
+        JPanel pnButtons = createButtonPanel();
+        pnCenter.add(pnButtons, BorderLayout.CENTER);
+
+        add(pnCenter, BorderLayout.EAST);
+
+        // Table Panel
+        JScrollPane scrollPane = createTablePanel();
+        scrollPane.setPreferredSize(new Dimension(700, 500));
+        add(scrollPane, BorderLayout.CENTER);
+
+        DocDuLieuDatabaseVaoTable();
+        attachListeners();
+    }
+
+    private JPanel createTitlePanel() {
+        JPanel pnTitle = new JPanel();
+        pnTitle.setBackground(BACKGROUND_COLOR);
         JLabel lblTitle = new JLabel("QUẢN LÝ NHÀ SẢN XUẤT", JLabel.CENTER);
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 22));
-        lblTitle.setForeground(Color.RED);
-        add(lblTitle, BorderLayout.NORTH);
+        lblTitle.setFont(new Font("Times New Roman", Font.BOLD, 28));
+        lblTitle.setForeground(TITLE_COLOR);
+        pnTitle.add(lblTitle);
+        pnTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        return pnTitle;
+    }
 
+    private JPanel createInfoPanel() {
         JPanel pnInfo = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 2);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        pnInfo.setBackground(BACKGROUND_COLOR);
+        pnInfo.setBorder(BorderFactory.createTitledBorder(
+                new LineBorder(Color.GRAY), "Thông Tin Nhà Sản Xuất",
+                TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
+                LABEL_FONT, TITLE_COLOR));
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Mã NSX
         JLabel lblMaNSX = new JLabel("Mã Nhà Sản Xuất:");
         lblMaNSX.setFont(new Font("Times New Roman", Font.PLAIN, 15));
         gbc.gridx = 0;
@@ -71,10 +125,12 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
 
         txtMaNSX = new CustomTextField(20);
         txtMaNSX.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-        txtMaNSX.setPreferredSize(new Dimension((int) txtMaNSX.getPreferredSize().getWidth(), 30));
+        txtMaNSX.setPreferredSize(new Dimension(200, 30));
         gbc.gridx = 1;
+        gbc.gridy = 0;
         pnInfo.add(txtMaNSX, gbc);
 
+        // Tên NSX
         JLabel lblTenNSX = new JLabel("Tên Nhà Sản Xuất:");
         lblTenNSX.setFont(new Font("Times New Roman", Font.PLAIN, 15));
         gbc.gridx = 0;
@@ -83,21 +139,26 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
 
         txtTenNSX = new CustomTextField(20);
         txtTenNSX.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-        txtTenNSX.setPreferredSize(new Dimension((int) txtTenNSX.getPreferredSize().getWidth(), 30));
+        txtTenNSX.setPreferredSize(new Dimension(200, 30));
         gbc.gridx = 1;
+        gbc.gridy = 1;
         pnInfo.add(txtTenNSX, gbc);
 
-        pnInfo.setBorder(BorderFactory.createTitledBorder("Thông Tin"));
-        add(pnInfo, BorderLayout.WEST);
+        return pnInfo;
+    }
 
-        JPanel pnButtons = new JPanel(); 
+    private JPanel createButtonPanel() {
+        JPanel pnButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        pnButtons.setBackground(BACKGROUND_COLOR);
 
         btnThem = new CustomButton("Thêm Nhà Sản Xuất");
         btnThem.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnThem.setPreferredSize(new Dimension(180, 40));
+
         btnXoa = new CustomButton("Xóa Nhà Sản Xuất");
         btnXoa.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnXoa.setPreferredSize(new Dimension(170, 40));
+
         btnSua = new CustomButton("Sửa Thông Tin");
         btnSua.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnSua.setPreferredSize(new Dimension(170, 40));
@@ -106,8 +167,11 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
         pnButtons.add(btnXoa);
         pnButtons.add(btnSua);
 
-        add(pnButtons, BorderLayout.SOUTH);
+        pnButtons.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        return pnButtons;
+    }
 
+    private JScrollPane createTablePanel() {
         String[] columnNames = {"Mã Nhà Sản Xuất", "Tên Nhà Sản Xuất"};
         model = new DefaultTableModel(columnNames, 0);
         table = new CustomTable(model);
@@ -115,15 +179,15 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
         table.setRowHeight(25);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Danh Sách Nhà Sản Xuất"));
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBorder(BorderFactory.createTitledBorder(
+                new LineBorder(Color.GRAY), "Danh Sách Nhà Sản Xuất",
+                TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
+                LABEL_FONT, TITLE_COLOR));
+        return scrollPane;
+    }
 
-        DocDuLieuDatabaseVaoTable();
-
+    private void attachListeners() {
         table.addMouseListener(this);
-        pnInfo.addMouseListener(this);
-        pnButtons.addMouseListener(this);
-        scrollPane.addMouseListener(this);
 
         btnThem.addActionListener(new ActionListener() {
             @Override
@@ -136,26 +200,19 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
                         JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin");
                         return;
                     }
-                    if (!maNSX.matches("NSX\\d+")) {
-                        JOptionPane.showMessageDialog(null, "Mã nhà sản xuất phải bắt đầu bằng kí tự NSX theo sau là các kí tự số!");
-                        return;
-                    }
-                    if (NSX_SERVICE.findById(maNSX) != null) {
-                        JOptionPane.showMessageDialog(null, "Mã nhà sản xuất này đã tồn tại. Vui lòng nhập mã khác.");
-                        return;
-                    }
 
                     NhaSanXuat nsx = new NhaSanXuat(maNSX, tenNSX);
-                    try {
-                        NSX_SERVICE.save(nsx);
-                        model.addRow(new Object[]{nsx.getId(), nsx.getTen()});
-                        JOptionPane.showMessageDialog(null, "Đã thêm nhà sản xuất");
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Lỗi khi thêm nhà sản xuất");
-                        ex.printStackTrace();
+
+                    if (NSX_SERVICE.save(nsx)) {
+                        DocDuLieuDatabaseVaoTable();
+                        JOptionPane.showMessageDialog(null, "Thêm nhà sản xuất thành công");
+                        clearFields();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Thêm nhà sản xuất thất bại");
                     }
-                } catch (RemoteException ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
                 }
             }
         });
@@ -166,21 +223,29 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
                 try {
                     int row = table.getSelectedRow();
                     if (row == -1) {
-                        JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng để xóa");
+                        JOptionPane.showMessageDialog(null, "Vui lòng chọn một nhà sản xuất để xóa");
                         return;
                     }
-                    String maNhaSanXuat = (String) model.getValueAt(row, 0);
-                    if (NSX_SERVICE.delete(maNhaSanXuat)) {
-                        model.removeRow(row);
-                        txtMaNSX.setEnabled(true);
-                        txtMaNSX.setText(null);
-                        txtTenNSX.setText(null);
-                        JOptionPane.showMessageDialog(null, "Đã xóa nhà sản xuất");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Lỗi khi xóa nhà sản xuất");
+
+                    String maNSX = model.getValueAt(row, 0).toString();
+                    String tenNSX = model.getValueAt(row, 1).toString();
+
+                    int confirm = JOptionPane.showConfirmDialog(null,
+                            "Bạn có chắc chắn muốn xóa nhà sản xuất " + tenNSX + "?",
+                            "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        if (NSX_SERVICE.delete(maNSX)) {
+                            DocDuLieuDatabaseVaoTable();
+                            clearFields();
+                            JOptionPane.showMessageDialog(null, "Xóa nhà sản xuất thành công");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Xóa nhà sản xuất thất bại");
+                        }
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi xóa nhà sản xuất: " + ex.getMessage());
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
                 }
             }
         });
@@ -191,54 +256,57 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
                 try {
                     int row = table.getSelectedRow();
                     if (row == -1) {
-                        JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng để sửa");
+                        JOptionPane.showMessageDialog(null, "Vui lòng chọn một nhà sản xuất để sửa");
                         return;
                     }
 
                     String maNSX = txtMaNSX.getText().trim();
                     String tenNSX = txtTenNSX.getText().trim();
 
-                    if (maNSX.isEmpty() || tenNSX.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin");
+                    if (tenNSX.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Tên nhà sản xuất không được để trống");
                         return;
                     }
 
                     NhaSanXuat nsx = new NhaSanXuat(maNSX, tenNSX);
 
                     if (NSX_SERVICE.update(nsx)) {
-                        model.setValueAt(maNSX, row, 0);
-                        model.setValueAt(tenNSX, row, 1);
-                        JOptionPane.showMessageDialog(null, "Đã cập nhật nhà sản xuất");
+                        DocDuLieuDatabaseVaoTable();
+                        JOptionPane.showMessageDialog(null, "Cập nhật nhà sản xuất thành công");
                     } else {
-                        JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật nhà sản xuất");
+                        JOptionPane.showMessageDialog(null, "Cập nhật nhà sản xuất thất bại");
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi cập nhật nhà sản xuất: " + ex.getMessage());
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
                 }
             }
         });
     }
 
-    private void DocDuLieuDatabaseVaoTable() throws RemoteException {
-        ArrayList<NhaSanXuat> list = new ArrayList<>(NSX_SERVICE.findAll());
-        model.setRowCount(0);
-        for (NhaSanXuat nsx : list) {
-            model.addRow(new Object[]{nsx.getId(), nsx.getTen()});
+    private void DocDuLieuDatabaseVaoTable() {
+        try {
+            model.setRowCount(0);
+            List<NhaSanXuat> list = NSX_SERVICE.findAll();
+            for (NhaSanXuat nsx : list) {
+                model.addRow(new Object[]{nsx.getId(), nsx.getTen()});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu: " + e.getMessage());
         }
+    }
+
+    private void clearFields() {
+        txtMaNSX.setText("");
+        txtTenNSX.setText("");
+        table.clearSelection();
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(!table.equals(e.getSource())) {
-            txtMaNSX.setEnabled(true);
-            table.getSelectionModel().clearSelection();
-            if(e.getClickCount() == 2) {
-                txtMaNSX.setText(null);
-                txtTenNSX.setText(null);
-            }
-            return;
-        }
-        txtMaNSX.setEnabled(false);
+        if (e.getSource() != table) return;
+        
         int row = table.getSelectedRow();
         if (row >= 0) {
             txtMaNSX.setText(model.getValueAt(row, 0).toString());

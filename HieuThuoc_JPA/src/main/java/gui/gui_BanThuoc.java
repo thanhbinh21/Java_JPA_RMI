@@ -1050,36 +1050,36 @@ public class gui_BanThuoc extends JPanel {
 					System.out.println(listCTHD);;
 					boolean saveSuccess = BAN_THUOC_SERVICE.createHoaDon(hd, listCTHD);
 
-						if (!saveSuccess) {
-							MessageDialog.error(this, "Không thể lưu hóa đơn vào cơ sở dữ liệu!");
-							return;
-						}
-
-						MessageDialog.info(this, "Lập hóa đơn thành công!");
-
-						if (MessageDialog.confirm(this, "Bạn có muốn in hóa đơn không?", "In hóa đơn")) {
-							new other.WritePDF().printHoaDon(hd, listCTHD, 0);
-						}
-
-						// Reset UI and navigate
-						txtMaHoaDon.setText(RandomMa.maHoaDonAuto());
-						listCTHD.clear();
-						loadTableCart(listCTHD);
-						deteleAllTxt();
-
-						Container parent = this.getParent();
-						if (parent != null) {
-							parent.remove(this);
-							parent.add(new gui_BanThuoc(tklogin));
-							parent.revalidate();
-							parent.repaint();
-						}
-					} else {
-						MessageDialog.error(this, "Không thể lập hóa đơn.");
+					if (!saveSuccess) {
+						MessageDialog.error(this, "Không thể lưu hóa đơn vào cơ sở dữ liệu!");
+						return;
 					}
+
+					MessageDialog.info(this, "Lập hóa đơn thành công!");
+
+					if (MessageDialog.confirm(this, "Bạn có muốn in hóa đơn không?", "In hóa đơn")) {
+						new other.WritePDF().printHoaDon(hd, listCTHD, 1.1);
+					}
+
+					// Reset UI and navigate
+					txtMaHoaDon.setText(RandomMa.maHoaDonAuto());
+					listCTHD.clear();
+					loadTableCart(listCTHD);
+					deteleAllTxt();
+
+					Container parent = this.getParent();
+					if (parent != null) {
+						parent.remove(this);
+						parent.add(new gui_BanThuoc(tklogin));
+						parent.revalidate();
+						parent.repaint();
+					}
+				} else {
+					MessageDialog.error(this, "Không thể lập hóa đơn.");
 				}
 			}
-		 catch (Exception e) {
+		}
+		catch (Exception e) {
 			MessageDialog.error(this, "Lỗi khi thanh toán: " + e.getMessage());
 			e.printStackTrace();
 		}
