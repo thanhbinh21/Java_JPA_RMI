@@ -119,10 +119,12 @@ public class GUI_PhieuNhapThuoc extends JFrame implements ActionListener {
             ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO = new ChiTietPhieuNhapThuocDAOImpl();
             DanhMucDAO danhMucDAO = new DanhMucDAOImpl();
             NhanVienDAO nhanVienDAO = new NhanVienDAOImpl();
+            KhuyenMaiDAO khuyenMaiDAO = new KhuyenMaiDAOImpl();
+            NhaSanXuatDAO nhaSanXuatDAO = new NhaSanXuatDAOImpl();
             
             // Initialize services
             nhaCungCapService = new NhaCungCapServiceImpl(nhaCungCapDAO);
-            thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO);
+            thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO, nhaSanXuatDAO,khuyenMaiDAO);
             phieuNhapThuocService = new PhieuNhapThuocServiceImpl(
                     phieuNhapThuocDAO, nhaCungCapDAO, nhanVienDAO, chiTietPhieuNhapThuocDAO, thuocDAO);
             chiTietPhieuNhapThuocService = new ChiTietPhieuNhapThuocServiceImpl(

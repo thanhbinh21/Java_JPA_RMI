@@ -21,8 +21,6 @@ public class RMIServer {
     public static void main(String[] args) {
         try {
             Registry registry = LocateRegistry.createRegistry(8989);
-
-            // Khởi tạo các DAO
             ThuocDAO thuocDAO = new ThuocDAOImpl();
             DanhMucDAO danhMucDAO = new DanhMucDAOImpl();
             KhachHangDAO khachHangDAO = new KhachHangDAOImpl();
@@ -33,18 +31,16 @@ public class RMIServer {
             NhanVienDAO nhanVienDAO = new NhanVienDAOImpl();
             PhieuDatThuocDAO phieuDatThuocDAO = new PhieuDatThuocDAOImpl();
             ChiTietPhieuDatThuocDAO chiTietPhieuDatThuocDAO = new ChiTietPhieuDatThuocDAOImpl();
-
-
+            KhuyenMaiDAO khuyenMaiDAO = new KhuyenMaiDAOImpl();
             NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAOImpl();
             PhieuNhapThuocDAO phieuNhapThuocDAO = new PhieuNhapThuocDAOImpl();
             ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO = new ChiTietPhieuNhapThuocDAOImpl();
-
             VaiTroDAO vaiTroDAO = new VaiTroDAOImpl();
 
 
 
             // Tạo các instance của remote object implementations trực tiếp
-            ThuocService thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO);
+            ThuocService thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO, nhaSanXuatDAO, khuyenMaiDAO);
             BanThuocService banThuocService = new BanThuocServiceImpl(thuocDAO, hoaDonDAO, khachHangDAO, chiTietHoaDonDAO, danhMucDAO);
             KhachHangService khachHangService = new KhachHangServiceImpl(khachHangDAO);
             HoaDonService hoaDonService = new HoaDonServiceImpl(hoaDonDAO);

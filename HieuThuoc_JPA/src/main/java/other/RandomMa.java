@@ -49,5 +49,10 @@ public class RandomMa {
     }
 
 
-
+    public static String maThuocAuto() {
+        // Generate IDs in format TH-yyyyMMdd-XXXXX
+        java.time.LocalDate now = java.time.LocalDate.now();
+        String datePart = String.format("%d%02d%02d", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+        return "TH-" + datePart + "-" + getRandomId();
+    }
 }

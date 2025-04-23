@@ -52,6 +52,8 @@ import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -136,10 +138,16 @@ public class gui_DatThuoc extends JPanel {
 
 	private void initializeServices(){
 		try {
-			THUOC_SEVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
-			KHACH_HANG_SEVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
-			DAT_THUOC_SEVICE = new DatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ThuocDAOImpl(), new KhachHangDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
-			PHEU_DAT_THUOC_SEVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
+//			THUOC_SEVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
+//			KHACH_HANG_SEVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
+//			DAT_THUOC_SEVICE = new DatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ThuocDAOImpl(), new KhachHangDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
+//			PHEU_DAT_THUOC_SEVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
+			Registry registry = LocateRegistry.getRegistry(8989);
+			THUOC_SEVICE = (ThuocService) registry.lookup("THUOC_SERVICE");
+			KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KHACH_HANG_SERVICE");
+			DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DAT_THUOC_SERVICE");
+			PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PHIEU_DAT_THUOC_SERVICE");
+
 			loadDanhMucThuoc();
 			//formatTxt();
 		} catch (Exception e) {
