@@ -5,15 +5,19 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 
 @Getter
 @Setter
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
-@ToString(exclude = {"hoaDons", "phieuDatThuocs"}) // Exclude collections to prevent circular references
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"hoaDons", "phieuDatThuocs"})
+
 @Entity
 @Table(name = "KhachHang")
 public class KhachHang implements Serializable {
@@ -47,6 +51,7 @@ public class KhachHang implements Serializable {
     public KhachHang() {
 
     }
+
 
 
 }

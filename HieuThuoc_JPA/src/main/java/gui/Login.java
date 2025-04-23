@@ -25,6 +25,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import dao.impl.TaiKhoanDAOImpl;
+import other.CustomButton;
+import other.CustomTextField;
 import service.TaiKhoanService;
 import service.impl.TaiKhoanServiceImpl;
 import entity.TaiKhoan;
@@ -152,7 +154,6 @@ public class Login extends JFrame implements ActionListener {
         btn_eye.setBorderPainted(false);
         btn_eye.setContentAreaFilled(false);
         passwordPanel.add(btn_eye);
-
         // Xử lý sự kiện ấn nút con mắt
         btn_eye.addActionListener(new ActionListener() {
             @Override

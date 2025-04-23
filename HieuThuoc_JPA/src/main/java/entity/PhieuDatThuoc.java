@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
+@ToString(exclude = {"chiTietPhieuDatThuocs"})
 @Entity
 @Table(name = "PhieuDatThuoc")
 public class PhieuDatThuoc implements Serializable {

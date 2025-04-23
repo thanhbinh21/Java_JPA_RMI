@@ -29,12 +29,15 @@ import javax.swing.table.DefaultTableModel;
 import dao.NhaSanXuatDAO;
 import dao.impl.NhaSanXuatDAOImpl;
 import entity.NhaSanXuat;
+import other.CustomButton;
+import other.CustomTable;
+import other.CustomTextField;
 import service.NhaSanXuatService;
 
 public class gui_qliNhaSX extends JPanel implements MouseListener {
-	private JTextField txtMaNSX, txtTenNSX;
-    private JButton btnThem, btnXoa, btnSua;
-    private JTable table;
+	private CustomTextField txtMaNSX, txtTenNSX;
+    private CustomButton btnThem, btnXoa, btnSua;
+    private CustomTable table;
     private DefaultTableModel model;
     private NhaSanXuatService NSX_SERVICE;
 
@@ -66,8 +69,9 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
         gbc.gridy = 0;
         pnInfo.add(lblMaNSX, gbc);
 
-        txtMaNSX = new JTextField(20);
+        txtMaNSX = new CustomTextField(20);
         txtMaNSX.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+        txtMaNSX.setPreferredSize(new Dimension((int) txtMaNSX.getPreferredSize().getWidth(), 30));
         gbc.gridx = 1;
         pnInfo.add(txtMaNSX, gbc);
 
@@ -77,8 +81,9 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
         gbc.gridy = 1;
         pnInfo.add(lblTenNSX, gbc);
 
-        txtTenNSX = new JTextField(20);
+        txtTenNSX = new CustomTextField(20);
         txtTenNSX.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+        txtTenNSX.setPreferredSize(new Dimension((int) txtTenNSX.getPreferredSize().getWidth(), 30));
         gbc.gridx = 1;
         pnInfo.add(txtTenNSX, gbc);
 
@@ -87,13 +92,13 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
 
         JPanel pnButtons = new JPanel(); 
 
-        btnThem = new JButton("Thêm Nhà Sản Xuất");
+        btnThem = new CustomButton("Thêm Nhà Sản Xuất");
         btnThem.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnThem.setPreferredSize(new Dimension(180, 40));
-        btnXoa = new JButton("Xóa Nhà Sản Xuất");
+        btnXoa = new CustomButton("Xóa Nhà Sản Xuất");
         btnXoa.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnXoa.setPreferredSize(new Dimension(170, 40));
-        btnSua = new JButton("Sửa Thông Tin");
+        btnSua = new CustomButton("Sửa Thông Tin");
         btnSua.setFont(new Font("Times New Roman", Font.BOLD, 15));
         btnSua.setPreferredSize(new Dimension(170, 40));
 
@@ -105,7 +110,7 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
 
         String[] columnNames = {"Mã Nhà Sản Xuất", "Tên Nhà Sản Xuất"};
         model = new DefaultTableModel(columnNames, 0);
-        table = new JTable(model);
+        table = new CustomTable(model);
         table.setFont(new Font("Times New Roman", Font.PLAIN, 15));
         table.setRowHeight(25);
 
