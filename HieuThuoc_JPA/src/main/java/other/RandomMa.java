@@ -55,4 +55,11 @@ public class RandomMa {
         String datePart = String.format("%d%02d%02d", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
         return "TH-" + datePart + "-" + getRandomId();
     }
+
+    public static String maNVAuto() {
+        // Generate IDs in format NV-yyyyMMdd-XXXXX
+        java.time.LocalDate now = java.time.LocalDate.now();
+        String datePart = String.format("%d%02d%02d", now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+        return "NV-" + datePart + "-" + getRandomId();
+    }
 }

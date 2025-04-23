@@ -25,6 +25,7 @@ dependencies {
     implementation('org.glassfish.jaxb:jaxb-runtime:4.0.3')
     //
     implementation fileTree(dir: 'lib', include: ['*.jar'])
+
     //
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.1'
     //

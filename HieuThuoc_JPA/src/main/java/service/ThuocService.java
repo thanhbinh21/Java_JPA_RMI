@@ -19,4 +19,14 @@ public interface ThuocService extends GenericService<Thuoc, String> {
     DanhMuc findDanhMucById(String danhMucStr) throws RemoteException;
 
     KhuyenMai findKhuyenMaiById(String khuyenMaiStr) throws RemoteException;
+
+    List<Thuoc> findByCategory(String id) throws RemoteException;
+
+    List<Thuoc> findByManufacturer(String id) throws RemoteException;
+
+    List<Thuoc> findByCategoryAndManufacturer(String id, String id1) throws RemoteException;
+
+    List<Thuoc> findByName(String searchValue) throws RemoteException;
+
+    List<Thuoc> findByIngredient(String searchValue) throws RemoteException;
 }

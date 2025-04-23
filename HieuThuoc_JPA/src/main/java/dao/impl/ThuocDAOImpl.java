@@ -5,6 +5,8 @@ import entity.DanhMuc;
 import entity.Thuoc;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+
+import java.sql.Date;
 import java.util.List;
 
 public class ThuocDAOImpl extends GenericDAOImpl<Thuoc, String> implements ThuocDAO {
@@ -38,6 +40,11 @@ public class ThuocDAOImpl extends GenericDAOImpl<Thuoc, String> implements Thuoc
     public Thuoc getReference(String id) {
         // Get a reference to the entity without loading its collections
         return em.getReference(Thuoc.class, id);
+    }
+
+    @Override
+    public List<Thuoc> findSoldMedicines(Date ngayBatDau, Date ngayKetThuc) {
+        return List.of();
     }
 
 //    @Override
