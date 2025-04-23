@@ -146,8 +146,8 @@ public class gui_TrangChu extends JFrame {
     private void addCatalogMenu() throws RemoteException {
         JMenu menu = createMenu("Danh Mục", "/icon/classified-document.png");
 
-        addMenuItem(menu, "Khách hàng", "/icon/client.png", e -> setPanel(new gui_qliKhachHang()));
-        addMenuItem(menu, "Thuốc", "/icon/medicine.png", e -> setPanel(new gui_qliThuoc()));
+        addMenuItem(menu, "Khách hàng", "/icon/client.png", e -> setPanel(new gui_qliKhachHang(loginAccount)));
+        addMenuItem(menu, "Thuốc", "/icon/medicine.png", e -> setPanel(new gui_qliThuoc(loginAccount)));
         addMenuItem(menu, "Nhà cung cấp", "/icon/supplier.png", e -> setPanel(new gui_qliNCC()));
         addMenuItem(menu, "Nhân viên", "/icon/employees.png", e -> {
             try {
@@ -171,7 +171,7 @@ public class gui_TrangChu extends JFrame {
             }
         });
         addMenuItem(menu, "Khuyến mãi", "/icon/tag.png", e -> {
-            // Add implementation when available
+            setPanel(new gui_qliKhuyenMai());
         });
 
         menuBar.add(menu);
@@ -198,7 +198,7 @@ public class gui_TrangChu extends JFrame {
         JMenu menu = createMenu("Tìm Kiếm", "/icon/search.png");
 
         addMenuItem(menu, "Khách hàng", "/icon/client.png", e -> {
-            // Add implementation when available
+           
         });
         addMenuItem(menu, "Thuốc", "/icon/medicine.png", e -> {
             // Add implementation when available
