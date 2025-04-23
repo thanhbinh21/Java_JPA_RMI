@@ -204,7 +204,7 @@ public class gui_TrangChu extends JFrame {
         addMenuItem(menu, "Hóa đơn", "/icon/bill.png", e -> {
             // Add implementation when available
         });
-        addMenuItem(menu, "Phiếu đặt", "/icon/fulfillment.png", e -> {
+        addMenuItem(menu, "Phiếu đặt", "/icon/fulfillment.png", e -> { setPanel(new gui_timKiemPhieuDatThuoc());
             // Add implementation when available
         });
         addMenuItem(menu, "Phiếu nhập", "/icon/import.png", e -> {

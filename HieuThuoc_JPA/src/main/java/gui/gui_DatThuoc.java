@@ -53,28 +53,6 @@ public class gui_DatThuoc extends JPanel {
 	private JTable tableCart;
 	private JComboBox cboxSearch;
 	private JTextField txttongHD;
-	private JTextField txtThue;
-
-
-	public static void main(String[] args) {
-		// Tạo tài khoản demo
-		TaiKhoan tkDemo = new TaiKhoan();
-		tkDemo.setId("admin");
-		tkDemo.setPassword("123456");
-
-		// Tạo và hiển thị giao diện
-		SwingUtilities.invokeLater(() -> {
-			JFrame frame = new JFrame("Đặt Thuốc Siêu Xịn");
-			gui_DatThuoc panel = new gui_DatThuoc(tkDemo);
-
-			frame.setContentPane(panel);
-			frame.setSize(800, 600);
-			frame.setLocationRelativeTo(null);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setVisible(true);
-		});
-	}
-
 
 	private void initializeServices(){
 		try {
