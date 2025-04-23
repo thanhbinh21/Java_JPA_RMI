@@ -935,7 +935,7 @@ public class gui_DatThuoc extends JPanel {
 						MessageDialog.info(this, "Lập phiếu đặt thuốc thành công!");
 
 						if (MessageDialog.confirm(this, "Bạn có muốn in phiếu đặt không?", "In phiếu đặt thuốc")) {
-//							new other.WritePDF().printPhieuDAtThuoc(hd, listCTHD, 0);
+							new other.WritePDF().printPhieuDatThuoc(pdt, listCTPDT, 0);
 						}
 
 						// Reset UI and navigate
