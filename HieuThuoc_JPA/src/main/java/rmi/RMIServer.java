@@ -1,3 +1,4 @@
+package rmi;
 
 import dao.impl.*;
 import dao.*;
