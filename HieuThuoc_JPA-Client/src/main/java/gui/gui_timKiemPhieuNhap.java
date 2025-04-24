@@ -18,6 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -65,20 +67,11 @@ public class gui_timKiemPhieuNhap extends JPanel implements ActionListener {
     public gui_timKiemPhieuNhap() {
         // Initialize services
         try {
-            PhieuNhapThuocDAO phieuNhapThuocDAO = new PhieuNhapThuocDAOImpl();
-            ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO = new ChiTietPhieuNhapThuocDAOImpl();
-            NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAOImpl();
-            NhanVienDAO nhanVienDAO = new NhanVienDAOImpl();
-            ThuocDAO thuocDAO = new ThuocDAOImpl();
-            
-            phieuNhapThuocService = new PhieuNhapThuocServiceImpl(
-                    phieuNhapThuocDAO, 
-                    nhaCungCapDAO, 
-                    nhanVienDAO, 
-                    chiTietPhieuNhapThuocDAO,
-                    thuocDAO);
-            chiTietPhieuNhapThuocService = new ChiTietPhieuNhapThuocServiceImpl(
-                    chiTietPhieuNhapThuocDAO, phieuNhapThuocDAO, thuocDAO);
+            Registry registry = LocateRegistry.getRegistry(8989);
+            phieuNhapThuocService = (PhieuNhapThuocService) registry.lookup("PhieuNhapThuocService");
+            chiTietPhieuNhapThuocService = (ChiTietPhieuNhapThuocService) registry.lookup("ChiTietPhieuNhapThuocService");
+
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error initializing services: " + e.getMessage());
             e.printStackTrace();

@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -110,23 +112,29 @@ public class gui_nhapThuoc extends JPanel implements ActionListener {
     private void initializeServices() {
         try {
             // Initialize DAOs
-            NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAOImpl();
-            PhieuNhapThuocDAO phieuNhapThuocDAO = new PhieuNhapThuocDAOImpl();
-            ThuocDAO thuocDAO = new ThuocDAOImpl();
-            ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO = new ChiTietPhieuNhapThuocDAOImpl();
-            DanhMucDAO danhMucDAO = new DanhMucDAOImpl();
-            NhanVienDAO nhanVienDAO = new NhanVienDAOImpl();
-            
-            // Initialize services
-            nhaCungCapService = new NhaCungCapServiceImpl(nhaCungCapDAO);
-            thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO, null, null);
-            phieuNhapThuocService = new PhieuNhapThuocServiceImpl(
-                    phieuNhapThuocDAO, nhaCungCapDAO, nhanVienDAO, chiTietPhieuNhapThuocDAO, thuocDAO);
-            chiTietPhieuNhapThuocService = new ChiTietPhieuNhapThuocServiceImpl(
-                    chiTietPhieuNhapThuocDAO, phieuNhapThuocDAO, thuocDAO);
-            
-            // Assign NhanVienDAO to the class field
-            this.nhanVienDAO = nhanVienDAO;
+//            NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAOImpl();
+//            PhieuNhapThuocDAO phieuNhapThuocDAO = new PhieuNhapThuocDAOImpl();
+//            ThuocDAO thuocDAO = new ThuocDAOImpl();
+//            ChiTietPhieuNhapThuocDAO chiTietPhieuNhapThuocDAO = new ChiTietPhieuNhapThuocDAOImpl();
+//            DanhMucDAO danhMucDAO = new DanhMucDAOImpl();
+//            NhanVienDAO nhanVienDAO = new NhanVienDAOImpl();
+//
+//            // Initialize services
+//            nhaCungCapService = new NhaCungCapServiceImpl(nhaCungCapDAO);
+//            thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO, null, null);
+//            phieuNhapThuocService = new PhieuNhapThuocServiceImpl(
+//                    phieuNhapThuocDAO, nhaCungCapDAO, nhanVienDAO, chiTietPhieuNhapThuocDAO, thuocDAO);
+//            chiTietPhieuNhapThuocService = new ChiTietPhieuNhapThuocServiceImpl(
+//                    chiTietPhieuNhapThuocDAO, phieuNhapThuocDAO, thuocDAO);
+//
+//            // Assign NhanVienDAO to the class field
+//            this.nhanVienDAO = nhanVienDAO;
+            Registry registry = LocateRegistry.getRegistry(8989);
+            nhaCungCapService = (NhaCungCapService) registry.lookup("NhaCungCapService");
+            thuocService = (ThuocService) registry.lookup("ThuocService");
+            phieuNhapThuocService = (PhieuNhapThuocService) registry.lookup("PhieuNhapThuocService");
+            chiTietPhieuNhapThuocService = (ChiTietPhieuNhapThuocService) registry.lookup("ChiTietPhieuNhapThuocService");
+
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khởi tạo dịch vụ: " + e.getMessage());
