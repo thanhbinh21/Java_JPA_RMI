@@ -22,17 +22,17 @@ public class KhachHangServiceImpl extends GenericServiceImpl<KhachHang, String> 
     }
 
     @Override
-    public List<KhachHang> findByGender(boolean genderFilter) {
-        return List.of();
+    public List<KhachHang> findByGender(boolean genderFilter) throws RemoteException {
+        return khachHangDAO.findByGender(genderFilter);
     }
 
     @Override
-    public List<KhachHang> findByName(String searchValue) {
-        return List.of();
+    public List<KhachHang> findByName(String searchValue) throws RemoteException {
+        return khachHangDAO.findByName(searchValue);
     }
 
     @Override
-    public List<KhachHang> findByPhone(String searchValue) {
-        return List.of();
+    public List<KhachHang> findByPhone(String searchValue) throws RemoteException {
+        return khachHangDAO.findByPhone(searchValue);
     }
 }

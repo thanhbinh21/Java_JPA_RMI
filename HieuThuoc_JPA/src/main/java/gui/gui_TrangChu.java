@@ -185,9 +185,9 @@ public class gui_TrangChu extends JFrame {
     private void addSearchMenu() {
         JMenu menu = createMenu("Tìm Kiếm", "/icon/search.png");
 
-        addMenuItem(menu, "Khách hàng", "/icon/client.png", e -> {
-            setPanel(new gui_timKiemKhachHang());
-        });
+        // addMenuItem(menu, "Khách hàng", "/icon/client.png", e -> {
+        //     setPanel(new gui_timKiemKhachHang());
+        // });
         addMenuItem(menu, "Thuốc", "/icon/medicine.png", e -> {
             setPanel(new gui_timKiemThuoc());
         });
@@ -196,11 +196,7 @@ public class gui_TrangChu extends JFrame {
             setPanel(new gui_timKiemHoaDon());
         });
         addMenuItem(menu, "Phiếu đặt", "/icon/fulfillment.png", e -> {
-            try {
-               setPanel(new gui_timKiemPhieuDatThuoc());
-            } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
-            }
+            setPanel(new gui_timKiemPhieuDatThuoc());
             // Add implementation when available
         });
         addMenuItem(menu, "Phiếu nhập", "/icon/import.png", e -> {
@@ -208,7 +204,7 @@ public class gui_TrangChu extends JFrame {
            setPanel(new gui_timKiemPhieuNhap());
 
         });
-
+     
 
 
         menuBar.add(menu);
@@ -218,15 +214,16 @@ public class gui_TrangChu extends JFrame {
     private void addStatisticsMenu() {
         JMenu menu = createMenu("Thống Kê", "/icon/bar-graph.png");
 
+    
         addMenuItem(menu, "Doanh thu", "/icon/revenue.png", e -> {
             // Add implementation when available
             setPanel(new gui_thongKeDoanhThu(loginAccount));
         });
-        
-        addMenuItem(menu, "Thuốc hết hạn", "/icon/expired.png", e -> {
-            // Show medicine expiry statistics screen
+        addMenuItem(menu, "Thuốc cận hạn", "/icon/expired.png", e -> {
+            // Add implementation when available
             setPanel(new gui_ThongKeHanSuDung(loginAccount));
         });
+   
 
         menuBar.add(menu);
         menuBar.add(Box.createHorizontalStrut(10));

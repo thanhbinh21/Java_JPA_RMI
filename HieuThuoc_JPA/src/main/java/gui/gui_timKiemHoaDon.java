@@ -94,7 +94,7 @@ public class gui_timKiemHoaDon extends JPanel {
         pnlTop.setBackground(BACKGROUND_COLOR);
         pnlTop.add(pnlTitle, BorderLayout.NORTH);
         pnlTop.add(pnlSearch, BorderLayout.CENTER);
-        //pnlTop.add(pnlFilter, BorderLayout.SOUTH);
+        pnlTop.add(pnlFilter, BorderLayout.SOUTH);
         
         add(pnlTop, BorderLayout.NORTH);
         add(pnlResults, BorderLayout.CENTER);
@@ -241,8 +241,7 @@ public class gui_timKiemHoaDon extends JPanel {
         tblResults.setRowHeight(30);
         tblResults.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         tblResults.getTableHeader().setReorderingAllowed(false);
-        tblResults.getTableHeader().setBackground(BUTTON_BG);
-        tblResults.getTableHeader().setForeground(Color.WHITE);
+
         
         // Set column widths
         tblResults.getColumnModel().getColumn(0).setMaxWidth(60);
@@ -392,16 +391,23 @@ public class gui_timKiemHoaDon extends JPanel {
                 case "Năm nay":
                     startDate = LocalDate.now().withDayOfYear(1);
                     break;
+                default:
+                    return hoaDonService.findAll();
             }
             
             if (startDate != null) {
-                return hoaDonService.findAll();
+                return hoaDonService.findByDateRange(startDate, endDate);
             }
-            return hoaDonService.findByDateRange(startDate, endDate);
-
+            
+            return hoaDonService.findAll();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return null;
+            JOptionPane.showMessageDialog(this, 
+                "Lỗi khi lọc hóa đơn: " + ex.getMessage(), 
+                "Lỗi", 
+                JOptionPane.ERROR_MESSAGE);
+            // Return an empty list instead of null to avoid NullPointerException
+            return List.of();
         }
     }
 
@@ -426,8 +432,6 @@ public class gui_timKiemHoaDon extends JPanel {
                     HoaDon hoaDon = hoaDonService.findById(maHD);
                     if (hoaDon != null) {
                         results = List.of(hoaDon);
-                    } else {
-                        results = List.of(); // Empty list if not found
                     }
                     break;
                 case "Tên khách hàng":
@@ -447,13 +451,8 @@ public class gui_timKiemHoaDon extends JPanel {
                     break;
             }
             
-            if (results == null) {
-                JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu hóa đơn từ hệ thống");
-                return;
-            }
-            
-            if (results.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn nào phù hợp với điều kiện tìm kiếm");
+            if (results == null || results.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn nào phù hợp");
                 return;
             }
             
@@ -463,7 +462,12 @@ public class gui_timKiemHoaDon extends JPanel {
                 
                 // Calculate total amount from line items
                 double tongTien = 0;
-                if (hoaDon.getChiTietHoaDons() != null) {
+                try {
+                    // Use the service method which we've fixed to handle null collections safely
+                    tongTien = hoaDonService.calculateTotalAmount(hoaDon.getId());
+                } catch (Exception e) {
+                    System.err.println("Error calculating total for invoice " + hoaDon.getId() + ": " + e.getMessage());
+                    // Fallback to direct calculation only if service call fails
                     tongTien = hoaDon.getChiTietHoaDons().stream()
                         .mapToDouble(cthd -> cthd.getSoLuong() * cthd.getDonGia())
                         .sum();

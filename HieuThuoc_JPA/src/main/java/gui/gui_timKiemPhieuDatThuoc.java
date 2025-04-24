@@ -18,13 +18,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
@@ -65,20 +65,17 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
     private NhanVienService NHAN_VIEN_SECICE;
 
 
-    private DateTimeFormatter displayDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public gui_timKiemPhieuDatThuoc() {
 
-    public gui_timKiemPhieuDatThuoc() throws RemoteException {
-
-        Registry registry = LocateRegistry.getRegistry(8989);
         try {
-            THUOC_SEVICE = (ThuocService) registry.lookup("THUOC_SERVICE");
-            KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KHACH_HANG_SERVICE");
-            DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DAT_THUOC_SERVICE");
-            PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PHIEU_DAT_THUOC_SERVICE");
-            NHAN_VIEN_SECICE = (NhanVienService) registry.lookup("NHAN_VIEN_SERVICE");
+            Registry registry = LocateRegistry.getRegistry(8989);
+            THUOC_SEVICE = (ThuocService) registry.lookup("ThuocService");
+            KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KhachHangService");
+            DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DatThuocService");
+            PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PhieuDatThuocService");
+
         } catch (Exception e) {
-            System.err.println("Error initializing services: " + e.getMessage());
+            MessageDialog.error(this, "Khởi tạo dịch vụ thất bại: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -138,50 +135,8 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
         gbc.weightx = 1.0;
         pnlCriteria.add(txtReceiptId, gbc);
 
-        // Supplier
-        lblSupplier = new JLabel("Tên khách hàng:");
-        lblSupplier.setFont(new Font("Arial", Font.PLAIN, 14));
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 0;
-        pnlCriteria.add(lblSupplier, gbc);
 
-        txtSupplier = new JTextField(15);
-        gbc.gridx = 3;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        pnlCriteria.add(txtSupplier, gbc);
-
-        // Date From
-        lblDateFrom = new JLabel("Từ ngày:");
-        lblDateFrom.setFont(new Font("Arial", Font.PLAIN, 14));
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0;
-        pnlCriteria.add(lblDateFrom, gbc);
-
-        txtDateFrom = new JTextField(15);
-        txtDateFrom.setToolTipText("Định dạng: dd/MM/yyyy");
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        pnlCriteria.add(txtDateFrom, gbc);
-
-        // Date To
-        lblDateTo = new JLabel("Đến ngày:");
-        lblDateTo.setFont(new Font("Arial", Font.PLAIN, 14));
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.weightx = 0;
-        pnlCriteria.add(lblDateTo, gbc);
-
-        txtDateTo = new JTextField(15);
-        txtDateTo.setToolTipText("Định dạng: dd/MM/yyyy");
-        gbc.gridx = 3;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        pnlCriteria.add(txtDateTo, gbc);
-
+//
         // Button panel
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
 
@@ -302,34 +257,13 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
 
             // Get search criteria
             String receiptId = txtReceiptId.getText().trim();
-            String supplierName = txtSupplier.getText().trim();
-            LocalDateTime fromDate = null;
-            LocalDateTime toDate = null;
-
-            try {
-                if (!txtDateFrom.getText().trim().isEmpty()) {
-                    LocalDate date = LocalDate.parse(txtDateFrom.getText().trim(), displayDateFormatter);
-                    fromDate = date.atStartOfDay();
-                }
-            } catch (DateTimeParseException e) {
-                JOptionPane.showMessageDialog(this, "Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy");
-                return;
-            }
-
-            try {
-                if (!txtDateTo.getText().trim().isEmpty()) {
-                    LocalDate date = LocalDate.parse(txtDateTo.getText().trim(), displayDateFormatter);
-                    toDate = date.plusDays(1).atStartOfDay();  // Include the entire day
-                }
-            } catch (DateTimeParseException e) {
-                JOptionPane.showMessageDialog(this, "Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy");
-                return;
-            }
-
-            System.out.println("Tìm kiếm với điều kiện: Mã=" + receiptId + ", Khách nhàng=" + supplierName);
 
 
-            List<PhieuDatThuoc> receipts = List.of();
+
+            System.out.println("Tìm kiếm với điều kiện: Mã=" + receiptId );
+
+
+            List<PhieuDatThuoc> receipts = new ArrayList<>();
 
             if (receiptId.isEmpty()) {
                 System.out.println("Không có điều kiện, lấy tất cả phiếu đặt");
@@ -337,6 +271,7 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
                 receipts = PHEU_DAT_THUOC_SEVICE.findAll();
             } else {
                 PhieuDatThuoc pdt = PHEU_DAT_THUOC_SEVICE.findById(receiptId);
+
                 receipts.add(pdt);
             }
 
@@ -357,11 +292,11 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
                         : "";
 //                "Mã phiếu", "Ngày lập", "Trạng thái", "Khách hàng", "Nhân vien"
                 Object[] row = {
-                    receipt.getId(),
-                    formattedDate,
-                        receipt.isTrangThai(),
-                    receipt.getKhachHang() != null ? receipt.getKhachHang().getHoTen() : "",
-                    receipt.getNhanVien() != null ? receipt.getNhanVien().getHoTen() : ""
+                        receipt.getId(),
+                        formattedDate,
+                        receipt.isTrangThai() ? "Đã lấy":"Chưa lấy",
+                        receipt.getKhachHang() != null ? receipt.getKhachHang().getHoTen() : "",
+                        receipt.getNhanVien() != null ? receipt.getNhanVien().getHoTen() : ""
                 };
                 receiptTableModel.addRow(row);
                 System.out.println("Đã thêm phiếu đặt thuốc: " + receipt.getId());
@@ -407,9 +342,9 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
 
                 Object[] row = {
 //                        {"Thuốc", "Số Lượng", "Đơn Giá"};
-                    medicineName,
-                    detail.getSoLuong(),
-                    String.format("%,.0f", detail.getDonGia())
+                        medicineName,
+                        detail.getSoLuong(),
+                        String.format("%,.0f", detail.getDonGia())
                 };
                 detailTableModel.addRow(row);
             }
@@ -461,7 +396,7 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
                 System.out.println("Found " + allReceipts.size() + " existing receipts in database");
                 for (PhieuDatThuoc receipt : allReceipts) {
                     System.out.println("Receipt ID: " + receipt.getId() +
-                                     ", Supplier: " + (receipt.getKhachHang() != null ? receipt.getKhachHang().getHoTen() : "N/A"));
+                            ", Supplier: " + (receipt.getKhachHang() != null ? receipt.getKhachHang().getHoTen() : "N/A"));
                 }
                 searchReceipts();
                 return;
@@ -470,9 +405,9 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
             System.out.println("No receipts found in database, adding sample data for visual testing");
 
             Object[][] sampleReceipts = {
-                {"PN20240501001", "2024-05-01 10:30", "Supplier A", "Employee 1", "1,250,000"},
-                {"PN20240502002", "2024-05-02 14:15", "Supplier B", "Employee 2", "2,345,000"},
-                {"PN20240503003", "2024-05-03 09:45", "Supplier C", "Employee 1", "980,000"}
+                    {"PN20240501001", "2024-05-01 10:30", "Supplier A", "Employee 1", "1,250,000"},
+                    {"PN20240502002", "2024-05-02 14:15", "Supplier B", "Employee 2", "2,345,000"},
+                    {"PN20240503003", "2024-05-03 09:45", "Supplier C", "Employee 1", "980,000"}
             };
 
             for (Object[] row : sampleReceipts) {
@@ -483,8 +418,8 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
             detailTableModel.setRowCount(0);
 
             Object[][] sampleDetails = {
-                {"Paracetamol 500mg", 200, "5,000", "1,000,000"},
-                {"Vitamin C 1000mg", 50, "5,000", "250,000"}
+                    {"Paracetamol 500mg", 200, "5,000", "1,000,000"},
+                    {"Vitamin C 1000mg", 50, "5,000", "250,000"}
             };
 
             for (Object[] row : sampleDetails) {

@@ -7,7 +7,9 @@ import entity.NhanVien;
 import entity.ChiTietHoaDon;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import service.HoaDonService;
 
@@ -91,12 +93,30 @@ public class HoaDonServiceImpl extends GenericServiceImpl<HoaDon, String> implem
             HoaDon hoaDon = hoaDonDAO.findByIdWithDetails(hoaDonId);
             
             if (hoaDon == null) {
+                System.err.println("Warning: Invoice " + hoaDonId + " not found");
                 return 0.0;
             }
             
-            // Calculate the total amount within the session
+            // Use the collection - it should never be null due to our safety in the entity class
+            Set<ChiTietHoaDon> chiTietSet = hoaDon.getChiTietHoaDons();
+            
+            // If the collection is empty (not null), try loading directly as fallback
+            if (chiTietSet.isEmpty()) {
+                System.out.println("Debug: Invoice " + hoaDonId + " has empty chiTietHoaDons, trying direct fetch");
+                List<ChiTietHoaDon> details = hoaDonDAO.findChiTietByHoaDonId(hoaDonId);
+                if (details != null && !details.isEmpty()) {
+                    double total = 0.0;
+                    for (ChiTietHoaDon chiTiet : details) {
+                        total += chiTiet.getSoLuong() * chiTiet.getDonGia();
+                    }
+                    return total;
+                }
+                return 0.0;
+            }
+
+            // Calculate the total amount
             double total = 0.0;
-            for (ChiTietHoaDon chiTiet : hoaDon.getChiTietHoaDons()) {
+            for (ChiTietHoaDon chiTiet : chiTietSet) {
                 total += chiTiet.getSoLuong() * chiTiet.getDonGia();
             }
             

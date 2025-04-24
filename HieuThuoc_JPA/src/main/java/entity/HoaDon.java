@@ -35,14 +35,15 @@ public class HoaDon implements Serializable {
     @JoinColumn(name = "ma_khach_hang", nullable = false)
     private KhachHang khachHang;
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ChiTietHoaDon> chiTietHoaDons;
+    private Set<ChiTietHoaDon> chiTietHoaDons = new HashSet<>();
 
     public HoaDon(String id) {
         this.id = id;
+        this.chiTietHoaDons = new HashSet<>();
     }
 
     public HoaDon() {
-
+        this.chiTietHoaDons = new HashSet<>();
     }
 
     public HoaDon(String idHD, Timestamp thoiGian, NhanVien nhanVien, KhachHang khachHang) {
@@ -51,7 +52,17 @@ public class HoaDon implements Serializable {
         this.nhanVien = nhanVien;
         this.khachHang = khachHang;
         this.trangThai = true;
+        this.chiTietHoaDons = new HashSet<>();
     }
 
-
+    /**
+     * Helper method to get ChiTietHoaDons safely, never returns null
+     * @return a non-null Set of ChiTietHoaDon objects
+     */
+    public Set<ChiTietHoaDon> getChiTietHoaDons() {
+        if (chiTietHoaDons == null) {
+            chiTietHoaDons = new HashSet<>();
+        }
+        return chiTietHoaDons;
+    }
 }
