@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'fit.iuh'
@@ -20,6 +21,10 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+application {
+    mainClass = 'gui.Login'
+}
+
 dependencies {
     implementation('org.hibernate:hibernate-core:6.3.1.Final')
     implementation('org.glassfish.jaxb:jaxb-runtime:4.0.3')
@@ -33,6 +38,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
     implementation 'net.datafaker:datafaker:2.4.2'
     //
+    // JFreeChart for statistical charts
+    implementation 'org.jfree:jfreechart:1.5.3'
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
