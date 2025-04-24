@@ -1,12 +1,15 @@
 package dao.impl;
 
 import dao.PhieuDatThuocDAO;
+import entity.ChiTietPhieuDatThuoc;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.PhieuDatThuoc;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> implements PhieuDatThuocDAO {
@@ -47,7 +50,7 @@ public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> 
     @Override
     public List<PhieuDatThuoc> findBySdt(String sdt) {
         try {
-            return em.createQuery("SELECT p FROM PhieuDatThuoc p WHERE p.khachHang.sdt = :sdt", PhieuDatThuoc.class)
+            return em.createQuery("SELECT p FROM PhieuDatThuoc p WHERE p.khachHang.soDienThoai = :sdt and p.trangThai = false ", PhieuDatThuoc.class)
                     .setParameter("sdt", sdt)
                     .getResultList();
         } catch (Exception e) {
@@ -74,5 +77,31 @@ public class PhieuDatThuocDAOImpl extends GenericDAOImpl<PhieuDatThuoc, String> 
             }
         }
         return false;
+    }
+    @Override
+    public boolean addPhieuDatThuoc(PhieuDatThuoc phieuDatThuoc) throws RemoteException {
+        EntityTransaction transaction = null;
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            em.persist(phieuDatThuoc);
+
+            if (phieuDatThuoc.getChiTietPhieuDatThuocs() != null) {
+                for (ChiTietPhieuDatThuoc chiTiet : phieuDatThuoc.getChiTietPhieuDatThuocs()) {
+                    chiTiet.setPhieuDatThuoc(phieuDatThuoc);
+                    em.persist(chiTiet);
+                }
+            }
+
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 }
