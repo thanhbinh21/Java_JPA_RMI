@@ -36,7 +36,6 @@ public class ChiTietPhieuNhapThuocServiceImpl extends UnicastRemoteObject implem
 
     @Override
     public ChiTietPhieuNhapThuoc findById(Long id) throws RemoteException {
-u
         // Not implemented - cannot convert from Long to composite ID
         throw new UnsupportedOperationException("Cannot find ChiTietPhieuNhapThuoc by Long ID. Use findByThuocAndPhieuNhapThuoc instead.");
 
