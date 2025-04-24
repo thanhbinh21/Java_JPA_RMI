@@ -94,7 +94,7 @@ public class gui_timKiemHoaDon extends JPanel {
         pnlTop.setBackground(BACKGROUND_COLOR);
         pnlTop.add(pnlTitle, BorderLayout.NORTH);
         pnlTop.add(pnlSearch, BorderLayout.CENTER);
-        //pnlTop.add(pnlFilter, BorderLayout.SOUTH);
+        pnlTop.add(pnlFilter, BorderLayout.SOUTH);
         
         add(pnlTop, BorderLayout.NORTH);
         add(pnlResults, BorderLayout.CENTER);
@@ -395,10 +395,10 @@ public class gui_timKiemHoaDon extends JPanel {
             }
             
             if (startDate != null) {
-                return hoaDonService.findAll();
+                return hoaDonService.findByDateRange(startDate, endDate);
             }
-            return hoaDonService.findByDateRange(startDate, endDate);
-
+            
+            return hoaDonService.findAll();
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -426,8 +426,6 @@ public class gui_timKiemHoaDon extends JPanel {
                     HoaDon hoaDon = hoaDonService.findById(maHD);
                     if (hoaDon != null) {
                         results = List.of(hoaDon);
-                    } else {
-                        results = List.of(); // Empty list if not found
                     }
                     break;
                 case "Tên khách hàng":
@@ -447,13 +445,8 @@ public class gui_timKiemHoaDon extends JPanel {
                     break;
             }
             
-            if (results == null) {
-                JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu hóa đơn từ hệ thống");
-                return;
-            }
-            
-            if (results.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn nào phù hợp với điều kiện tìm kiếm");
+            if (results == null || results.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn nào phù hợp");
                 return;
             }
             

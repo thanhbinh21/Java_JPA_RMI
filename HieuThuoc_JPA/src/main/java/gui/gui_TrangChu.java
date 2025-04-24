@@ -208,7 +208,7 @@ public class gui_TrangChu extends JFrame {
            setPanel(new gui_timKiemPhieuNhap());
 
         });
-
+     
 
 
         menuBar.add(menu);
@@ -218,15 +218,16 @@ public class gui_TrangChu extends JFrame {
     private void addStatisticsMenu() {
         JMenu menu = createMenu("Thống Kê", "/icon/bar-graph.png");
 
+    
         addMenuItem(menu, "Doanh thu", "/icon/revenue.png", e -> {
             // Add implementation when available
-            setPanel(new gui_thongKeDoanhThu(loginAccount));
+            setPanel(new gui_thongKeDoanhThu());
         });
-        
-        addMenuItem(menu, "Thuốc hết hạn", "/icon/expired.png", e -> {
-            // Show medicine expiry statistics screen
-            setPanel(new gui_ThongKeHanSuDung(loginAccount));
+        addMenuItem(menu, "Thuốc cận hạn", "/icon/expired.png", e -> {
+            // Add implementation when available
+            setPanel(new gui_thongKeThucCanHan());
         });
+   
 
         menuBar.add(menu);
         menuBar.add(Box.createHorizontalStrut(10));
