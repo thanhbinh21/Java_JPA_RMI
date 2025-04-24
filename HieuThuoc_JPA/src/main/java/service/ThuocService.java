@@ -5,7 +5,9 @@ import entity.KhuyenMai;
 import entity.NhaSanXuat;
 import entity.Thuoc;
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface ThuocService extends GenericService<Thuoc, String> {
     List<DanhMuc > getAllDanhMuc() throws RemoteException;
@@ -29,4 +31,12 @@ public interface ThuocService extends GenericService<Thuoc, String> {
     List<Thuoc> findByName(String searchValue) throws RemoteException;
 
     List<Thuoc> findByIngredient(String searchValue) throws RemoteException;
+    
+    // New methods for expired medicines statistics
+    List<Thuoc> findExpiredMedicines() throws RemoteException;
+    List<Thuoc> findNearlyExpiredMedicines(int daysThreshold) throws RemoteException;
+    Map<String, Integer> getExpiredMedicinesByCategory() throws RemoteException;
+    Map<String, Integer> getNearlyExpiredMedicinesByCategory(int daysThreshold) throws RemoteException;
+    int getTotalExpiredMedicines() throws RemoteException;
+    int getTotalNearlyExpiredMedicines(int daysThreshold) throws RemoteException;
 }

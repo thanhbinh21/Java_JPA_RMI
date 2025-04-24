@@ -27,7 +27,7 @@ import service.impl.ThuocServiceImpl;
 public class gui_qliThuoc extends JPanel implements MouseListener {
 
     private JTextField txtMaThuoc, txtTenThuoc, txtDonViTinh, txtThanhPhan, txtSoLuongTon, txtDonGia, txtHinhAnh, txtNhaSanXuat, txtDanhMuc, txtKhuyenMai;
-    private JButton btnThem, btnXoa, btnSua, btnThoat, btnLamMoi, btnChonAnh;
+    private JButton btnThem, btnXoa, btnSua, btnThoat, btnLamMoi, btnChonAnh, btnThongKeHetHan;
     private JDateChooser dateChooserHanSuDung;
     private JTable table;
     private DefaultTableModel model;
@@ -351,12 +351,14 @@ public class gui_qliThuoc extends JPanel implements MouseListener {
         btnXoa = createButton("Xóa Thuốc");
         btnSua = createButton("Sửa Thuốc");
         btnLamMoi = createButton("Làm Mới");
+        btnThongKeHetHan = createButton("Thống Kê Hết Hạn");
         btnThoat = createButton("Thoát");
 
         pnButtons.add(btnThem);
         pnButtons.add(btnXoa);
         pnButtons.add(btnSua);
         pnButtons.add(btnLamMoi);
+        pnButtons.add(btnThongKeHetHan);
         pnButtons.add(btnThoat);
 
         pnButtons.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -420,6 +422,7 @@ public class gui_qliThuoc extends JPanel implements MouseListener {
         btnXoa.addActionListener(e -> xoaThuoc());
         btnSua.addActionListener(e -> suaThuoc());
         btnLamMoi.addActionListener(e -> lamMoiForm());
+        btnThongKeHetHan.addActionListener(e -> moThongKeHetHan());
         btnThoat.addActionListener(e -> {
             Window parentWindow = SwingUtilities.getWindowAncestor(this);
             if (parentWindow != null) {
@@ -727,5 +730,26 @@ public class gui_qliThuoc extends JPanel implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    private void moThongKeHetHan() {
+        try {
+            Window parentWindow = SwingUtilities.getWindowAncestor(this);
+            if (parentWindow != null) {
+                parentWindow.dispose();
+            }
+            
+            JFrame frame = new JFrame("Thống Kê Thuốc Hết Hạn");
+            gui_ThongKeHanSuDung panel = new gui_ThongKeHanSuDung(loginNV);
+            frame.setContentPane(panel);
+            frame.setSize(1400, 800);
+            frame.setLocationRelativeTo(null);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi mở giao diện thống kê: " + ex.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

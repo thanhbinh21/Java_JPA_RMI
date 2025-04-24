@@ -10,7 +10,11 @@ import entity.NhaSanXuat;
 import entity.Thuoc;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import service.ThuocService;
 
@@ -204,6 +208,114 @@ public class ThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implemen
                 .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RemoteException("Error finding medicines by ingredient: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Thuoc> findExpiredMedicines() throws RemoteException {
+        try {
+            Date currentDate = new Date();
+            return findAll().stream()
+                .filter(thuoc -> 
+                    thuoc.getHanSuDung() != null && 
+                    thuoc.getHanSuDung().before(currentDate))
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RemoteException("Error finding expired medicines: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Thuoc> findNearlyExpiredMedicines(int daysThreshold) throws RemoteException {
+        try {
+            Date currentDate = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            calendar.add(Calendar.DAY_OF_MONTH, daysThreshold);
+            Date thresholdDate = calendar.getTime();
+            
+            return findAll().stream()
+                .filter(thuoc -> {
+                    if (thuoc.getHanSuDung() == null) {
+                        return false;
+                    }
+                    // Not expired yet but will expire within the threshold
+                    return thuoc.getHanSuDung().after(currentDate) && 
+                           thuoc.getHanSuDung().before(thresholdDate);
+                })
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RemoteException("Error finding nearly expired medicines: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Map<String, Integer> getExpiredMedicinesByCategory() throws RemoteException {
+        try {
+            Map<String, Integer> expiredByCategory = new HashMap<>();
+            List<Thuoc> expiredMedicines = findExpiredMedicines();
+            
+            for (Thuoc thuoc : expiredMedicines) {
+                if (thuoc.getDanhMuc() != null) {
+                    String categoryName = thuoc.getDanhMuc().getTen();
+                    if (categoryName == null) {
+                        categoryName = thuoc.getDanhMuc().getId(); // Use ID if name is null
+                    }
+                    
+                    expiredByCategory.put(
+                        categoryName, 
+                        expiredByCategory.getOrDefault(categoryName, 0) + 1
+                    );
+                }
+            }
+            
+            return expiredByCategory;
+        } catch (Exception e) {
+            throw new RemoteException("Error getting expired medicines by category: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Map<String, Integer> getNearlyExpiredMedicinesByCategory(int daysThreshold) throws RemoteException {
+        try {
+            Map<String, Integer> nearlyExpiredByCategory = new HashMap<>();
+            List<Thuoc> nearlyExpiredMedicines = findNearlyExpiredMedicines(daysThreshold);
+            
+            for (Thuoc thuoc : nearlyExpiredMedicines) {
+                if (thuoc.getDanhMuc() != null) {
+                    String categoryName = thuoc.getDanhMuc().getTen();
+                    if (categoryName == null) {
+                        categoryName = thuoc.getDanhMuc().getId(); // Use ID if name is null
+                    }
+                    
+                    nearlyExpiredByCategory.put(
+                        categoryName, 
+                        nearlyExpiredByCategory.getOrDefault(categoryName, 0) + 1
+                    );
+                }
+            }
+            
+            return nearlyExpiredByCategory;
+        } catch (Exception e) {
+            throw new RemoteException("Error getting nearly expired medicines by category: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public int getTotalExpiredMedicines() throws RemoteException {
+        try {
+            return findExpiredMedicines().size();
+        } catch (Exception e) {
+            throw new RemoteException("Error getting total expired medicines: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public int getTotalNearlyExpiredMedicines(int daysThreshold) throws RemoteException {
+        try {
+            return findNearlyExpiredMedicines(daysThreshold).size();
+        } catch (Exception e) {
+            throw new RemoteException("Error getting total nearly expired medicines: " + e.getMessage(), e);
         }
     }
 }

@@ -218,13 +218,15 @@ public class gui_TrangChu extends JFrame {
     private void addStatisticsMenu() {
         JMenu menu = createMenu("Thống Kê", "/icon/bar-graph.png");
 
-
         addMenuItem(menu, "Doanh thu", "/icon/revenue.png", e -> {
             // Add implementation when available
             setPanel(new gui_thongKeDoanhThu(loginAccount));
         });
-
-
+        
+        addMenuItem(menu, "Thuốc hết hạn", "/icon/expired.png", e -> {
+            // Show medicine expiry statistics screen
+            setPanel(new gui_ThongKeHanSuDung(loginAccount));
+        });
 
         menuBar.add(menu);
         menuBar.add(Box.createHorizontalStrut(10));
