@@ -717,7 +717,7 @@ public class gui_BanThuoc extends JPanel {
 					String.valueOf(stt),
 					e.getThuoc().getTen(),
 					e.getSoLuong(),
-					Formatter.FormatVND(e.getDonGia()),});
+					Formatter.FormatVND(e.getDonGia())});
 			stt++;
 		}
 		txtTongTien.setText(Formatter.FormatVND(sum));
@@ -889,7 +889,7 @@ public class gui_BanThuoc extends JPanel {
 		try {
 			Thuoc thuoc = THUOC_SERVICE.findById(txtMaThuoc.getText());
 			int soLuong = Integer.parseInt(txtSoLuong.getText());
-			double donGia = thuoc.getDonGia();
+			double donGia = thuoc.getDonGia()*(1 - thuoc.getKhuyenMai().getPhanTramGiamGia());
 			return new ChiTietHoaDon(hoaDon, thuoc, soLuong, donGia);
 		} catch (Exception e) {
 			MessageDialog.error(this, "Lỗi khi lấy thông tin thuốc: " + e.getMessage());

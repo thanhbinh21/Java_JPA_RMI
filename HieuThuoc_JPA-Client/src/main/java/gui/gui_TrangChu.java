@@ -19,7 +19,7 @@ public class gui_TrangChu extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane, homePanel;
     private TaiKhoan loginAccount;
-    private TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(new TaiKhoanDAOImpl());
+//    private TaiKhoanService taiKhoanService;
 
     private static final Color PRIMARY_COLOR = new Color(31, 97, 141);// Dark blue
     private static final Color SECONDARY_COLOR = new Color(240, 240, 240);// Light gray

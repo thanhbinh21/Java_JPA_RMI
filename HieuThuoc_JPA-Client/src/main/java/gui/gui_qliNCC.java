@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -54,8 +56,8 @@ public class gui_qliNCC extends JPanel implements ActionListener {
     public gui_qliNCC() {
         // Initialize service
         try {
-            NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAOImpl();
-            nhaCungCapService = new NhaCungCapServiceImpl(nhaCungCapDAO);
+            Registry registry = LocateRegistry.getRegistry(8989);
+            nhaCungCapService = (NhaCungCapService) registry.lookup("NhaCungCapService");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error initializing services: " + e.getMessage());
             e.printStackTrace();
