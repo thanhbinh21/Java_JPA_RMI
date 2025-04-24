@@ -18,6 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -69,11 +71,11 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
     public gui_timKiemPhieuDatThuoc() {
 
         try {
-            THUOC_SEVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
-            KHACH_HANG_SEVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
-            DAT_THUOC_SEVICE = new DatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ThuocDAOImpl(), new KhachHangDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
-            PHEU_DAT_THUOC_SEVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
-            NHAN_VIEN_SECICE = new NhanVienServiceImpl(new NhanVienDAOImpl());
+            Registry registry = LocateRegistry.getRegistry(8989);
+            THUOC_SEVICE = (ThuocService) registry.lookup("THUOC_SERVICE");
+            KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KHACH_HANG_SERVICE");
+            DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DAT_THUOC_SERVICE");
+            PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PHIEU_DAT_THUOC_SERVICE");
 
         } catch (Exception e) {
             MessageDialog.error(this, "Khởi tạo dịch vụ thất bại: " + e.getMessage());
