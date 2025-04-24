@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"nhaSanXuat", "danhMuc", "khuyenMai"})
+@ToString(exclude = {"nhaSanXuat", "danhMuc", "khuyenMai", "chiTietHoaDons"})
 @Entity
 @Table(name = "Thuoc")
 public class Thuoc implements Serializable {

@@ -68,4 +68,15 @@ public interface PhieuNhapThuocService extends GenericService<PhieuNhapThuoc, St
      * @throws RemoteException if RMI communication fails
      */
     boolean updateInventoryFromPhieuNhap(String phieuNhapThuocId) throws RemoteException;
+    
+    /**
+     * Search for receipts based on multiple criteria
+     * 
+     * @param receiptId the receipt ID (can be partial)
+     * @param supplierName the supplier name (can be partial)
+     * @param fromDate the start date (optional)
+     * @param toDate the end date (optional)
+     * @return list of matching receipts
+     */
+    List<PhieuNhapThuoc> searchPhieuNhap(String receiptId, String supplierName, LocalDateTime fromDate, LocalDateTime toDate) throws Exception;
 } 
