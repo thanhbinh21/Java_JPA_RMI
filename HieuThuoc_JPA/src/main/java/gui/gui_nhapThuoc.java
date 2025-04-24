@@ -119,7 +119,7 @@ public class gui_nhapThuoc extends JPanel implements ActionListener {
             
             // Initialize services
             nhaCungCapService = new NhaCungCapServiceImpl(nhaCungCapDAO);
-            thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO);
+            thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO, null, null);
             phieuNhapThuocService = new PhieuNhapThuocServiceImpl(
                     phieuNhapThuocDAO, nhaCungCapDAO, nhanVienDAO, chiTietPhieuNhapThuocDAO, thuocDAO);
             chiTietPhieuNhapThuocService = new ChiTietPhieuNhapThuocServiceImpl(

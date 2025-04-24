@@ -52,4 +52,6 @@ public class HoaDon implements Serializable {
         this.khachHang = khachHang;
         this.trangThai = true;
     }
+
+
 }

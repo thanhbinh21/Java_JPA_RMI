@@ -16,6 +16,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,13 +102,20 @@ public class gui_BanThuoc extends JPanel {
 
 	private void initializeServices() {
 		try {
-			THUOC_SERVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
-			KH_SERVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
-			HD_SERVICE = new HoaDonServiceImpl(new HoaDonDAOImpl());
+//			THUOC_SERVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
+//			KH_SERVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
+//			HD_SERVICE = new HoaDonServiceImpl(new HoaDonDAOImpl());
+//
+//			BAN_THUOC_SERVICE = new BanThuocServiceImpl(new ThuocDAOImpl(), new HoaDonDAOImpl(),
+//					new KhachHangDAOImpl(), new ChiTietHoaDonDAOImpl(), new DanhMucDAOImpl());
+//			DDT_SERVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
+			Registry registry = LocateRegistry.getRegistry(8989);
 
-			BAN_THUOC_SERVICE = new BanThuocServiceImpl(new ThuocDAOImpl(), new HoaDonDAOImpl(),
-					new KhachHangDAOImpl(), new ChiTietHoaDonDAOImpl(), new DanhMucDAOImpl());
-			DDT_SERVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
+			THUOC_SERVICE = (ThuocService) registry.lookup("ThuocService");
+			KH_SERVICE = (KhachHangService) registry.lookup("KhachHangService");
+			HD_SERVICE = (HoaDonService) registry.lookup("HoaDonService");
+			BAN_THUOC_SERVICE = (BanThuocService) registry.lookup("BanThuocService");
+			DDT_SERVICE = (PhieuDatThuocService) registry.lookup("PhieuDatThuocService");
 
 			modal = new DefaultTableModel(new Object[][]{},
 					new String[]{"STT", "Mã thuốc", "Tên thuốc", "Danh mục", "Nhà SX", "ĐVT", "Số lượng", "Đơn giá"});
@@ -1041,36 +1050,36 @@ public class gui_BanThuoc extends JPanel {
 					System.out.println(listCTHD);;
 					boolean saveSuccess = BAN_THUOC_SERVICE.createHoaDon(hd, listCTHD);
 
-						if (!saveSuccess) {
-							MessageDialog.error(this, "Không thể lưu hóa đơn vào cơ sở dữ liệu!");
-							return;
-						}
-
-						MessageDialog.info(this, "Lập hóa đơn thành công!");
-
-						if (MessageDialog.confirm(this, "Bạn có muốn in hóa đơn không?", "In hóa đơn")) {
-							new other.WritePDF().printHoaDon(hd, listCTHD, 0);
-						}
-
-						// Reset UI and navigate
-						txtMaHoaDon.setText(RandomMa.maHoaDonAuto());
-						listCTHD.clear();
-						loadTableCart(listCTHD);
-						deteleAllTxt();
-
-						Container parent = this.getParent();
-						if (parent != null) {
-							parent.remove(this);
-							parent.add(new gui_BanThuoc(tklogin));
-							parent.revalidate();
-							parent.repaint();
-						}
-					} else {
-						MessageDialog.error(this, "Không thể lập hóa đơn.");
+					if (!saveSuccess) {
+						MessageDialog.error(this, "Không thể lưu hóa đơn vào cơ sở dữ liệu!");
+						return;
 					}
+
+					MessageDialog.info(this, "Lập hóa đơn thành công!");
+
+					if (MessageDialog.confirm(this, "Bạn có muốn in hóa đơn không?", "In hóa đơn")) {
+						new other.WritePDF().printHoaDon(hd, listCTHD, 1.1);
+					}
+
+					// Reset UI and navigate
+					txtMaHoaDon.setText(RandomMa.maHoaDonAuto());
+					listCTHD.clear();
+					loadTableCart(listCTHD);
+					deteleAllTxt();
+
+					Container parent = this.getParent();
+					if (parent != null) {
+						parent.remove(this);
+						parent.add(new gui_BanThuoc(tklogin));
+						parent.revalidate();
+						parent.repaint();
+					}
+				} else {
+					MessageDialog.error(this, "Không thể lập hóa đơn.");
 				}
 			}
-		 catch (Exception e) {
+		}
+		catch (Exception e) {
 			MessageDialog.error(this, "Lỗi khi thanh toán: " + e.getMessage());
 			e.printStackTrace();
 		}

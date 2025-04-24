@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,8 +14,10 @@ import java.util.Set;
 @Getter
 @Setter
 
+
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(exclude = {"hoaDons", "phieuDatThuocs"})
+
 @Entity
 @Table(name = "KhachHang")
 public class KhachHang implements Serializable {
@@ -33,7 +36,7 @@ public class KhachHang implements Serializable {
 
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<HoaDon> hoaDons;
-    
+
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PhieuDatThuoc> phieuDatThuocs;
 

@@ -22,6 +22,8 @@ public class OneSessionServiceImpl extends UnicastRemoteObject implements OneSes
     private PhieuDatThuocDAO phieuDatThuocDAO;
     private ChiTietPhieuDatThuocDAO chiTietPhieuDatThuocDAO;
     private VaiTroDAO vaiTroDAO;
+    private NhaCungCapDAO nhaCungCapDAO;
+    private KhuyenMaiDAO khuyenMaiDAO;
 
     private ThuocService thuocService;
     private BanThuocService banThuocService;
@@ -34,6 +36,7 @@ public class OneSessionServiceImpl extends UnicastRemoteObject implements OneSes
     private VaiTroService vaiTroService;
     private DanhMucService danhMucService;
     private ChiTietHoaDonService chiTietHoaDonService;
+    private DatThuocSevice datThuocService;
 
     public OneSessionServiceImpl(EntityManager em) throws RemoteException {
         this.em = em;
@@ -57,8 +60,9 @@ public class OneSessionServiceImpl extends UnicastRemoteObject implements OneSes
         phieuDatThuocDAO = new PhieuDatThuocDAOImpl(em);
         chiTietPhieuDatThuocDAO = new ChiTietPhieuDatThuocDAOImpl(em);
         vaiTroDAO = new VaiTroDAOImpl(em);
+        khachHangDAO = new KhachHangDAOImpl(em);
 
-        thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO);
+        thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO, nhaSanXuatDAO, khuyenMaiDAO);
         banThuocService = new BanThuocServiceImpl(thuocDAO, hoaDonDAO, khachHangDAO, chiTietHoaDonDAO, danhMucDAO);
         khachHangService = new KhachHangServiceImpl(khachHangDAO);
         hoaDonService = new HoaDonServiceImpl(hoaDonDAO);
@@ -69,6 +73,8 @@ public class OneSessionServiceImpl extends UnicastRemoteObject implements OneSes
         vaiTroService = new VaiTroServiceImpl(vaiTroDAO);
         danhMucService = new DanhMucServiceImpl(danhMucDAO);
         chiTietHoaDonService = new ChiTietHoaDonServiceImpl(chiTietHoaDonDAO);
+        datThuocService = new DatThuocServiceImpl(phieuDatThuocDAO, thuocDAO, khachHangDAO, chiTietPhieuDatThuocDAO);
+
     }
 
     @Override
