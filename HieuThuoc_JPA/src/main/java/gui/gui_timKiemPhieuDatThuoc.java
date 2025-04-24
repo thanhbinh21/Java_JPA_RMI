@@ -63,19 +63,16 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
     private DatThuocSevice DAT_THUOC_SEVICE;
     private PhieuDatThuocService PHEU_DAT_THUOC_SEVICE;
     private NhanVienService NHAN_VIEN_SECICE;
-    
 
-    private DateTimeFormatter displayDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     
     public gui_timKiemPhieuDatThuoc() {
 
         try {
             Registry registry = LocateRegistry.getRegistry(8989);
-            THUOC_SEVICE = (ThuocService) registry.lookup("THUOC_SERVICE");
-            KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KHACH_HANG_SERVICE");
-            DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DAT_THUOC_SERVICE");
-            PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PHIEU_DAT_THUOC_SERVICE");
+            THUOC_SEVICE = (ThuocService) registry.lookup("ThuocService");
+            KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KhachHangService");
+            DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DatThuocService");
+            PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PhieuDatThuocService");
 
         } catch (Exception e) {
             MessageDialog.error(this, "Khởi tạo dịch vụ thất bại: " + e.getMessage());

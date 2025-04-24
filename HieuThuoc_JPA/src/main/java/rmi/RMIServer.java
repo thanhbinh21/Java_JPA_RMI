@@ -46,6 +46,7 @@ public class RMIServer {
             HoaDonService hoaDonService = new HoaDonServiceImpl(hoaDonDAO);
             TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(taiKhoanDAO);
 
+            DatThuocSevice datThuocService = new DatThuocServiceImpl(phieuDatThuocDAO,thuocDAO,khachHangDAO,chiTietPhieuDatThuocDAO);
             PhieuDatThuocService phieuDatThuocService = new PhieuDatThuocServiceImpl(phieuDatThuocDAO, chiTietPhieuDatThuocDAO);
             
             // Khởi tạo các service mới
@@ -78,6 +79,8 @@ public class RMIServer {
             registry.bind("TaiKhoanService", taiKhoanService);
             registry.bind("NhaSanXuatService", nhaSanXuatService);
             registry.bind("NhanVienService", nhanVienService);
+
+            registry.bind("DatThuocService", datThuocService);
             registry.bind("PhieuDatThuocService", phieuDatThuocService);
             registry.bind("VaiTroService", vaiTroService);
             registry.bind("DanhMucService", danhMucService);
