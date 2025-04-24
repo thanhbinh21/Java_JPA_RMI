@@ -194,15 +194,15 @@ public class gui_ThongKeHanSuDung extends JPanel {
         dataset.setValue("Đã Hết Hạn", 0);
         dataset.setValue("Sắp Hết Hạn", 0);
         dataset.setValue("Còn Hạn", 100);
-        
+
         JFreeChart chart = ChartFactory.createPieChart(
-                "Tỷ Lệ Thuốc Theo Hạn Sử Dụng", 
-                dataset, 
+                "Tỷ Lệ Thuốc Theo Hạn Sử Dụng",
+                dataset,
                 true, // Show legend
                 true, // Generate tooltips
                 false // Generate URLs
         );
-        
+
         // Customize pie chart appearance
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setBackgroundPaint(BACKGROUND_COLOR);
@@ -211,7 +211,7 @@ public class gui_ThongKeHanSuDung extends JPanel {
         plot.setSectionPaint("Đã Hết Hạn", WARNING_COLOR);
         plot.setSectionPaint("Sắp Hết Hạn", new Color(255, 165, 0)); // Orange
         plot.setSectionPaint("Còn Hạn", new Color(60, 179, 113)); // Medium sea green
-        
+
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         return chartPanel;
@@ -231,13 +231,13 @@ public class gui_ThongKeHanSuDung extends JPanel {
         tableExpired.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
         tableExpired.getTableHeader().setReorderingAllowed(false);
         tableExpired.setGridColor(Color.LIGHT_GRAY);
-        
+
         JScrollPane scrollPane = new JScrollPane(tableExpired);
         scrollPane.setBorder(BorderFactory.createTitledBorder(
                 new LineBorder(Color.GRAY), "Danh Sách Thuốc Đã Hết Hạn",
                 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
                 HEADER_FONT, WARNING_COLOR));
-        
+
         return scrollPane;
     }
 
@@ -255,13 +255,13 @@ public class gui_ThongKeHanSuDung extends JPanel {
         tableNearlyExpired.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
         tableNearlyExpired.getTableHeader().setReorderingAllowed(false);
         tableNearlyExpired.setGridColor(Color.LIGHT_GRAY);
-        
+
         JScrollPane scrollPane = new JScrollPane(tableNearlyExpired);
         scrollPane.setBorder(BorderFactory.createTitledBorder(
                 new LineBorder(Color.GRAY), "Danh Sách Thuốc Sắp Hết Hạn",
                 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
                 HEADER_FONT, new Color(255, 165, 0))); // Orange
-        
+
         return scrollPane;
     }
 
@@ -328,7 +328,7 @@ public class gui_ThongKeHanSuDung extends JPanel {
     private void loadData() {
         try {
             int daysThreshold = (Integer) spinnerDaysThreshold.getValue();
-            
+
             // Load expired medicines
             List<Thuoc> expiredMedicines = new ArrayList<>();
             try {
@@ -339,14 +339,14 @@ public class gui_ThongKeHanSuDung extends JPanel {
                 try {
                     Date currentDate = new Date();
                     expiredMedicines = THUOC_SERVICE.findAll().stream()
-                        .filter(thuoc -> thuoc.getHanSuDung() != null && thuoc.getHanSuDung().before(currentDate))
-                        .collect(Collectors.toList());
+                            .filter(thuoc -> thuoc.getHanSuDung() != null && thuoc.getHanSuDung().before(currentDate))
+                            .collect(Collectors.toList());
                 } catch (Exception ex) {
                     System.err.println("Fallback method also failed: " + ex.getMessage());
                 }
             }
             updateExpiredTable(expiredMedicines);
-            
+
             // Load nearly expired medicines
             List<Thuoc> nearlyExpiredMedicines = new ArrayList<>();
             try {
@@ -360,31 +360,31 @@ public class gui_ThongKeHanSuDung extends JPanel {
                     calendar.setTime(currentDate);
                     calendar.add(Calendar.DAY_OF_MONTH, daysThreshold);
                     Date thresholdDate = calendar.getTime();
-                    
+
                     nearlyExpiredMedicines = THUOC_SERVICE.findAll().stream()
-                        .filter(thuoc -> {
-                            if (thuoc.getHanSuDung() == null) {
-                                return false;
-                            }
-                            return thuoc.getHanSuDung().after(currentDate) && 
-                                   thuoc.getHanSuDung().before(thresholdDate);
-                        })
-                        .collect(Collectors.toList());
+                            .filter(thuoc -> {
+                                if (thuoc.getHanSuDung() == null) {
+                                    return false;
+                                }
+                                return thuoc.getHanSuDung().after(currentDate) &&
+                                        thuoc.getHanSuDung().before(thresholdDate);
+                            })
+                            .collect(Collectors.toList());
                 } catch (Exception ex) {
                     System.err.println("Fallback method also failed: " + ex.getMessage());
                 }
             }
             updateNearlyExpiredTable(nearlyExpiredMedicines, daysThreshold);
-            
+
             // Update stats
             int totalExpired = expiredMedicines.size();
             int totalNearlyExpired = nearlyExpiredMedicines.size();
             lblTotalExpired.setText(String.valueOf(totalExpired));
             lblTotalNearlyExpired.setText(String.valueOf(totalNearlyExpired));
-            
+
             // Update pie chart
             updatePieChart(totalExpired, totalNearlyExpired);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu: " + e.getMessage(),
@@ -395,19 +395,19 @@ public class gui_ThongKeHanSuDung extends JPanel {
     private void updateExpiredTable(List<Thuoc> expiredMedicines) {
         modelExpired.setRowCount(0);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        
+
         for (Thuoc thuoc : expiredMedicines) {
-            String categoryName = thuoc.getDanhMuc() != null ? 
-                    (thuoc.getDanhMuc().getTen() != null ? thuoc.getDanhMuc().getTen() : thuoc.getDanhMuc().getId()) : 
+            String categoryName = thuoc.getDanhMuc() != null ?
+                    (thuoc.getDanhMuc().getTen() != null ? thuoc.getDanhMuc().getTen() : thuoc.getDanhMuc().getId()) :
                     "N/A";
-            
+
             modelExpired.addRow(new Object[]{
-                thuoc.getId(),
-                thuoc.getTen(),
-                dateFormat.format(thuoc.getHanSuDung()),
-                categoryName,
-                thuoc.getSoLuongTon(),
-                thuoc.getDonGia()
+                    thuoc.getId(),
+                    thuoc.getTen(),
+                    dateFormat.format(thuoc.getHanSuDung()),
+                    categoryName,
+                    thuoc.getSoLuongTon(),
+                    thuoc.getDonGia()
             });
         }
     }
@@ -416,22 +416,22 @@ public class gui_ThongKeHanSuDung extends JPanel {
         modelNearlyExpired.setRowCount(0);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date currentDate = new Date();
-        
+
         for (Thuoc thuoc : nearlyExpiredMedicines) {
-            String categoryName = thuoc.getDanhMuc() != null ? 
-                    (thuoc.getDanhMuc().getTen() != null ? thuoc.getDanhMuc().getTen() : thuoc.getDanhMuc().getId()) : 
+            String categoryName = thuoc.getDanhMuc() != null ?
+                    (thuoc.getDanhMuc().getTen() != null ? thuoc.getDanhMuc().getTen() : thuoc.getDanhMuc().getId()) :
                     "N/A";
-            
+
             // Calculate days remaining
             long daysRemaining = (thuoc.getHanSuDung().getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24);
-            
+
             modelNearlyExpired.addRow(new Object[]{
-                thuoc.getId(),
-                thuoc.getTen(),
-                dateFormat.format(thuoc.getHanSuDung()),
-                categoryName,
-                daysRemaining,
-                thuoc.getSoLuongTon()
+                    thuoc.getId(),
+                    thuoc.getTen(),
+                    dateFormat.format(thuoc.getHanSuDung()),
+                    categoryName,
+                    daysRemaining,
+                    thuoc.getSoLuongTon()
             });
         }
     }
@@ -447,14 +447,14 @@ public class gui_ThongKeHanSuDung extends JPanel {
                 // Use a reasonable default
                 totalMedicines = Math.max(100, totalExpired + totalNearlyExpired + 10);
             }
-            
+
             int regularMedicines = totalMedicines - totalExpired - totalNearlyExpired;
-            
+
             // Calculate percentages (avoid division by zero)
             double expiredPercentage = totalMedicines > 0 ? (double) totalExpired / totalMedicines * 100 : 0;
             double nearlyExpiredPercentage = totalMedicines > 0 ? (double) totalNearlyExpired / totalMedicines * 100 : 0;
             double regularPercentage = totalMedicines > 0 ? (double) regularMedicines / totalMedicines * 100 : 0;
-            
+
             // Update dataset
             DefaultPieDataset dataset = new DefaultPieDataset();
             if (totalExpired > 0) {
@@ -466,16 +466,16 @@ public class gui_ThongKeHanSuDung extends JPanel {
             if (regularMedicines > 0) {
                 dataset.setValue("Còn Hạn (" + regularMedicines + ")", regularPercentage);
             }
-            
+
             // Create new chart
             JFreeChart chart = ChartFactory.createPieChart(
-                    "Tỷ Lệ Thuốc Theo Hạn Sử Dụng", 
-                    dataset, 
-                    true, 
-                    true, 
+                    "Tỷ Lệ Thuốc Theo Hạn Sử Dụng",
+                    dataset,
+                    true,
+                    true,
                     false
             );
-            
+
             // Customize chart appearance
             PiePlot plot = (PiePlot) chart.getPlot();
             plot.setBackgroundPaint(BACKGROUND_COLOR);
@@ -484,11 +484,11 @@ public class gui_ThongKeHanSuDung extends JPanel {
             plot.setSectionPaint("Đã Hết Hạn (" + totalExpired + ")", WARNING_COLOR);
             plot.setSectionPaint("Sắp Hết Hạn (" + totalNearlyExpired + ")", new Color(255, 165, 0));
             plot.setSectionPaint("Còn Hạn (" + regularMedicines + ")", new Color(60, 179, 113));
-            
+
             // Update chart panel
             pieChartPanel.setChart(chart);
             pieChartPanel.repaint();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -500,37 +500,37 @@ public class gui_ThongKeHanSuDung extends JPanel {
             fileChooser.setDialogTitle("Lưu Báo Cáo");
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             fileChooser.setSelectedFile(new File("BaoCaoThuocHetHan.txt"));
-            
+
             int result = fileChooser.showSaveDialog(this);
             if (result != JFileChooser.APPROVE_OPTION) {
                 return;
             }
-            
+
             File selectedFile = fileChooser.getSelectedFile();
             StringBuilder report = new StringBuilder();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            
+
             report.append("BÁO CÁO THUỐC HẾT HẠN VÀ SẮP HẾT HẠN\n");
             report.append("Ngày tạo báo cáo: ").append(dateFormat.format(new Date())).append("\n\n");
-            
+
             // Add summary
             report.append("TỔNG QUAN:\n");
             report.append("- Tổng số thuốc đã hết hạn: ").append(lblTotalExpired.getText()).append("\n");
             report.append("- Số ngày cảnh báo sắp hết hạn: ").append(spinnerDaysThreshold.getValue()).append("\n");
             report.append("- Tổng số thuốc sắp hết hạn: ").append(lblTotalNearlyExpired.getText()).append("\n\n");
-            
+
             // Add expired medicines
             report.append("DANH SÁCH THUỐC ĐÃ HẾT HẠN:\n");
             report.append(formatTableForReport(tableExpired)).append("\n\n");
-            
+
             // Add nearly expired medicines
             report.append("DANH SÁCH THUỐC SẮP HẾT HẠN:\n");
             report.append(formatTableForReport(tableNearlyExpired)).append("\n\n");
-            
+
             // Get category statistics
             Map<String, Integer> expiredByCategory = new HashMap<>();
             Map<String, Integer> nearlyExpiredByCategory = new HashMap<>();
-            
+
             try {
                 expiredByCategory = THUOC_SERVICE.getExpiredMedicinesByCategory();
             } catch (RemoteException e) {
@@ -542,7 +542,7 @@ public class gui_ThongKeHanSuDung extends JPanel {
                     expiredByCategory.put(category, expiredByCategory.getOrDefault(category, 0) + 1);
                 }
             }
-            
+
             try {
                 nearlyExpiredByCategory = THUOC_SERVICE.getNearlyExpiredMedicinesByCategory((Integer) spinnerDaysThreshold.getValue());
             } catch (RemoteException e) {
@@ -554,36 +554,36 @@ public class gui_ThongKeHanSuDung extends JPanel {
                     nearlyExpiredByCategory.put(category, nearlyExpiredByCategory.getOrDefault(category, 0) + 1);
                 }
             }
-            
+
             // Add category statistics
             report.append("THỐNG KÊ THEO DANH MỤC:\n");
             report.append("Danh mục thuốc đã hết hạn:\n");
             for (Map.Entry<String, Integer> entry : expiredByCategory.entrySet()) {
                 report.append("- ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
             }
-            
+
             report.append("\nDanh mục thuốc sắp hết hạn:\n");
             for (Map.Entry<String, Integer> entry : nearlyExpiredByCategory.entrySet()) {
                 report.append("- ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
             }
-            
+
             // Write report to file
             java.io.FileWriter writer = new java.io.FileWriter(selectedFile);
             writer.write(report.toString());
             writer.close();
-            
+
             JOptionPane.showMessageDialog(this, "Báo cáo đã được lưu thành công tại:\n" + selectedFile.getAbsolutePath());
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi xuất báo cáo: " + e.getMessage(),
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private String formatTableForReport(JTable table) {
         StringBuilder tableStr = new StringBuilder();
-        
+
         // Get column names
         int columnCount = table.getColumnCount();
         for (int i = 0; i < columnCount; i++) {
@@ -593,7 +593,7 @@ public class gui_ThongKeHanSuDung extends JPanel {
             }
         }
         tableStr.append("\n");
-        
+
         // Separator line
         for (int i = 0; i < columnCount; i++) {
             int colWidth = table.getColumnName(i).length();
@@ -603,7 +603,7 @@ public class gui_ThongKeHanSuDung extends JPanel {
             }
         }
         tableStr.append("\n");
-        
+
         // Table data
         for (int row = 0; row < table.getRowCount(); row++) {
             for (int col = 0; col < columnCount; col++) {
@@ -615,7 +615,7 @@ public class gui_ThongKeHanSuDung extends JPanel {
             }
             tableStr.append("\n");
         }
-        
+
         return tableStr.toString();
     }
 } 

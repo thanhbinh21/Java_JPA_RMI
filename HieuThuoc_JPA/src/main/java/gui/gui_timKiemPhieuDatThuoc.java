@@ -65,9 +65,6 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
     private NhanVienService NHAN_VIEN_SECICE;
 
 
-    private DateTimeFormatter displayDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
     public gui_timKiemPhieuDatThuoc() {
 
         try {

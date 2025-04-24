@@ -64,7 +64,7 @@ public class gui_thongKeDoanhThu extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public gui_thongKeDoanhThu() {
+	public gui_thongKeDoanhThu(TaiKhoan login) {
 		tk = login;
 		initRMIServices();
 		setSize(1400,800);

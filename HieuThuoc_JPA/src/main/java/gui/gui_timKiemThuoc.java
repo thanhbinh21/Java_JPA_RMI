@@ -119,7 +119,7 @@ public class gui_timKiemThuoc extends JPanel {
         txtSearch.setPreferredSize(new Dimension(250, 30));
 
         JButton btnSearch = new JButton("Tìm kiếm");
-      btnSearch.setFont(new Font("Arial", Font.BOLD, 14));
+        btnSearch.setFont(new Font("Arial", Font.BOLD, 14));
         btnSearch.setPreferredSize(new Dimension(120, 30));
         btnSearch.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnSearch.addActionListener(e -> performSearch());
@@ -349,31 +349,9 @@ public class gui_timKiemThuoc extends JPanel {
                 return;
             }
 
-            int stt = 1;
-            for (Thuoc thuoc : medicines) {
-                String expiryDate = thuoc.getHanSuDung() != null ? dateFormat.format(thuoc.getHanSuDung()) : "N/A";
-                String danhMuc = (thuoc.getDanhMuc() != null) ? thuoc.getDanhMuc().getTen() : "";
-                String nhaSanXuat = (thuoc.getNhaSanXuat() != null) ? thuoc.getNhaSanXuat().getTen() : "";
-
-                // Handle potential null price
-                Double price = thuoc.getDonGia();
-                Object priceValue = (price != null) ? price : 0.0;  // Or you could use null if your table allows it
-                // Or, to format here for display (less ideal, but works):
-                // String priceValue = (price != null) ? currencyFormat.format(price) : "N/A";
-
-
-                tableModel.addRow(new Object[] {
-                        stt++,
-                        thuoc.getId(),
-                        thuoc.getTen(),
-                        thuoc.getDonViTinh(),
-                        danhMuc,
-                        nhaSanXuat,
-                        thuoc.getSoLuongTon(),
-                        priceValue,  // Add the Double or formatted String
-                        expiryDate
-                });
-            }
+            // Use the common method to populate the table
+            populateTable(medicines);
+            
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu: " + ex.getMessage());
@@ -413,7 +391,7 @@ public class gui_timKiemThuoc extends JPanel {
             String searchType = (String) cboFilterType.getSelectedItem();
             String searchValue = txtSearch.getText().trim();
 
-            if (searchType == null || searchValue.isEmpty()) {
+            if (searchValue.isEmpty() && searchType.equals("Tất cả")) {
                 loadData();
                 return;
             }
@@ -423,7 +401,7 @@ public class gui_timKiemThuoc extends JPanel {
 
             switch (searchType) {
                 case "Tất cả":
-                    results = thuocService.findAll();
+                    results = thuocService.searchThuoc(searchValue);
                     break;
                 case "Mã thuốc":
                     Thuoc thuoc = thuocService.findById(searchValue);
@@ -439,15 +417,13 @@ public class gui_timKiemThuoc extends JPanel {
                 case "Thành phần":
                     results = thuocService.findByIngredient(searchValue);
                     break;
+                default:
+                    results = List.of();
             }
 
+            // Handle null or empty results early
             if (results == null) {
                 JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu thuốc từ hệ thống");
-                return;
-            }
-
-            if (results.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy thuốc nào phù hợp với điều kiện tìm kiếm");
                 return;
             }
 
@@ -456,50 +432,62 @@ public class gui_timKiemThuoc extends JPanel {
             NhaSanXuat selectedManufacturer = (NhaSanXuat) cboNhaSanXuat.getSelectedItem();
 
             if (selectedCategory != null) {
+                final String categoryId = selectedCategory.getId();
                 results = results.stream()
-                        .filter(t -> t.getDanhMuc() != null && t.getDanhMuc().getId().equals(selectedCategory.getId()))
-                        .toList();
+                    .filter(t -> t.getDanhMuc() != null && t.getDanhMuc().getId().equals(categoryId))
+                    .toList();
             }
 
             if (selectedManufacturer != null) {
+                final String manufacturerId = selectedManufacturer.getId();
                 results = results.stream()
-                        .filter(t -> t.getNhaSanXuat() != null && t.getNhaSanXuat().getId().equals(selectedManufacturer.getId()))
-                        .toList();
+                    .filter(t -> t.getNhaSanXuat() != null && t.getNhaSanXuat().getId().equals(manufacturerId))
+                    .toList();
             }
 
             if (results.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy thuốc nào phù hợp với điều kiện tìm kiếm và bộ lọc");
+                JOptionPane.showMessageDialog(this, "Không tìm thấy thuốc nào phù hợp với điều kiện tìm kiếm");
                 return;
             }
 
-            int stt = 1;
-            for (Thuoc thuoc : results) {
-                String expiryDate = thuoc.getHanSuDung() != null ? dateFormat.format(thuoc.getHanSuDung()) : "N/A";
-                String danhMuc = (thuoc.getDanhMuc() != null) ? thuoc.getDanhMuc().getTen() : "";
-                String nhaSanXuat = (thuoc.getNhaSanXuat() != null) ? thuoc.getNhaSanXuat().getTen() : "";
-
-                // Handle potential null price
-                Double price = thuoc.getDonGia();
-                Object priceValue = (price != null) ? price : 0.0;  // Or you could use null if your table allows it
-                // Or, to format here for display (less ideal, but works):
-                // String priceValue = (price != null) ? currencyFormat.format(price) : "N/A";
-
-
-                tableModel.addRow(new Object[] {
-                        stt++,
-                        thuoc.getId(),
-                        thuoc.getTen(),
-                        thuoc.getDonViTinh(),
-                        danhMuc,
-                        nhaSanXuat,
-                        thuoc.getSoLuongTon(),
-                        priceValue,  // Add the Double or formatted String
-                        expiryDate
-                });
-            }
+            // Display results in the table
+            populateTable(results);
+            
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi tìm kiếm: " + ex.getMessage());
+        }
+    }
+
+    // Helper method to populate table with medicine data
+    private void populateTable(List<Thuoc> medicines) {
+        if (medicines == null || medicines.isEmpty()) {
+            return;
+        }
+
+        int stt = 1;
+        for (Thuoc thuoc : medicines) {
+            String expiryDate = thuoc.getHanSuDung() != null ? dateFormat.format(thuoc.getHanSuDung()) : "N/A";
+            String danhMuc = (thuoc.getDanhMuc() != null) ? thuoc.getDanhMuc().getTen() : "";
+            String nhaSanXuat = (thuoc.getNhaSanXuat() != null) ? thuoc.getNhaSanXuat().getTen() : "";
+            
+            // Fix: Use the actual numeric value for the price column
+            Double donGia = thuoc.getDonGia();
+            if (donGia == null) {
+                donGia = 0.0; // Default value if price is null
+            }
+
+            tableModel.addRow(new Object[] {
+                stt++,
+                thuoc.getId(),
+                thuoc.getTen(),
+                thuoc.getDonViTinh(),
+                danhMuc,
+                nhaSanXuat,
+                thuoc.getSoLuongTon(),
+                donGia, // Using the actual Double value
+                expiryDate
+            });
         }
     }
 

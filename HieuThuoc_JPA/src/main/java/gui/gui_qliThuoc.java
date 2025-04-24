@@ -7,8 +7,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import javax.swing.*;
@@ -18,11 +16,9 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
-import dao.impl.ThuocDAOImpl;
 import entity.*;
 import other.RandomMa;
 import service.ThuocService;
-import service.impl.ThuocServiceImpl;
 
 public class gui_qliThuoc extends JPanel implements MouseListener {
 

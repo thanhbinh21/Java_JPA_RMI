@@ -42,14 +42,13 @@ public class gui_DatThuoc extends JPanel {
 	private JTextField txtsdt;
 	private JTextField txtHoTenKH;
 	private JTextField txtTongTien;
- 	JLabel txtHinhAnh = new JLabel("");
+	JLabel txtHinhAnh = new JLabel("");
 	private DefaultTableModel modal;
 	private DefaultTableModel modalCart= new DefaultTableModel();
 
 	private ThuocService THUOC_SEVICE;
 	private KhachHangService KHACH_HANG_SEVICE;
 	private DatThuocSevice DAT_THUOC_SEVICE;
-	private PhieuDatThuocService PHEU_DAT_THUOC_SEVICE;
 	private NhanVienService NHAN_VIEN_SECICE;
 
 	private List<ChiTietPhieuDatThuoc> listCTPDT = new ArrayList<>();
@@ -62,16 +61,13 @@ public class gui_DatThuoc extends JPanel {
 	private void initializeServices(){
 		try {
 
-//			THUOC_SEVICE = new ThuocServiceImpl(new ThuocDAOImpl(), new DanhMucDAOImpl());
-//			KHACH_HANG_SEVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
-//			DAT_THUOC_SEVICE = new DatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ThuocDAOImpl(), new KhachHangDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
-//			PHEU_DAT_THUOC_SEVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
+
 			Registry registry = LocateRegistry.getRegistry(8989);
 			THUOC_SEVICE = (ThuocService) registry.lookup("ThuocService");
 			KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KhachHangService");
-			DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DatThuocSevice");
-			PHEU_DAT_THUOC_SEVICE = (PhieuDatThuocService) registry.lookup("PhieuDatThuocService");
+			DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DatThuocService");
 			NHAN_VIEN_SECICE = (NhanVienService) registry.lookup("NhanVienService");
+
 			loadDanhMucThuoc();
 			//formatTxt();
 		} catch (Exception e) {
@@ -101,7 +97,7 @@ public class gui_DatThuoc extends JPanel {
 	}
 
 
-    public gui_DatThuoc(TaiKhoan login) {
+	public gui_DatThuoc(TaiKhoan login) {
 
 		this.tklogin = login;
 		System.out.printf(login.toString());
@@ -114,7 +110,7 @@ public class gui_DatThuoc extends JPanel {
 			e.printStackTrace();
 		}
 
-    }
+	}
 	private void setupUI() {
 		setLayout(new BorderLayout());
 
@@ -298,12 +294,12 @@ public class gui_DatThuoc extends JPanel {
 		btnAddCart.setFont(new Font("Dialog", Font.BOLD, 16));
 		btnAddCart.setFocusable(false);
 		btnAddCart.addActionListener(e -> {
-            try {
-                btnAddCartActionPerformed();
-            } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+			try {
+				btnAddCartActionPerformed();
+			} catch (RemoteException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
 		panel.add(btnAddCart);
 
 		return panel;
@@ -589,7 +585,7 @@ public class gui_DatThuoc extends JPanel {
 		}
 	}
 
-    private void tableMouseClicked() {
+	private void tableMouseClicked() {
 		int row = table.getSelectedRow();
 		if (row >= 0) {
 			String idThuoc = (String) modal.getValueAt(row, 1);
@@ -644,8 +640,8 @@ public class gui_DatThuoc extends JPanel {
 			}
 		}
 
-    }
-    private void ketQuaTimKiem() {
+	}
+	private void ketQuaTimKiem() {
 		modal.setRowCount(0);
 		String search = txtSearch.getText().toLowerCase().trim();
 		try {
@@ -655,7 +651,7 @@ public class gui_DatThuoc extends JPanel {
 			MessageDialog.error(this, "Lỗi khi tìm kiếm thuốc: " + e.getMessage());
 			e.printStackTrace();
 		}
-    }
+	}
 
 	private NhanVien getNhanVienbyID() throws RemoteException {
 		NhanVien nhanVien = NHAN_VIEN_SECICE.findById(tklogin.getId());
@@ -663,10 +659,10 @@ public class gui_DatThuoc extends JPanel {
 	}
 
 
-    private PhieuDatThuoc getInputPhieuDat() throws RemoteException {
-        String idHD = txtMaPDT.getText();
-        Timestamp thoiGian = new Timestamp(System.currentTimeMillis());
-        NhanVien nhanVien = getNhanVienbyID();
+	private PhieuDatThuoc getInputPhieuDat() throws RemoteException {
+		String idHD = txtMaPDT.getText();
+		Timestamp thoiGian = new Timestamp(System.currentTimeMillis());
+		NhanVien nhanVien = getNhanVienbyID();
 		try {
 			KhachHang khachHang = KHACH_HANG_SEVICE.getKhachHangBySdt(txtsdt.getText());
 			return new PhieuDatThuoc(idHD, thoiGian, nhanVien, khachHang,false);
@@ -677,7 +673,7 @@ public class gui_DatThuoc extends JPanel {
 		}
 
 
-    }
+	}
 
 	public void loadTableCart(List<ChiTietPhieuDatThuoc> list) {
 		modalCart = new DefaultTableModel(new Object[][]{}, new String[]{"STT", "Tên thuốc", "Số lượng", "Đơn giá "});
@@ -701,8 +697,8 @@ public class gui_DatThuoc extends JPanel {
 	}
 
 
-    private ChiTietPhieuDatThuoc getInputChiTietPhieuDat() throws RemoteException {
-        PhieuDatThuoc phieudat = getInputPhieuDat();
+	private ChiTietPhieuDatThuoc getInputChiTietPhieuDat() throws RemoteException {
+		PhieuDatThuoc phieudat = getInputPhieuDat();
 		try {
 			Thuoc thuoc = THUOC_SEVICE.findById(txtMaThuoc.getText());
 			int soLuong = Integer.parseInt(txtSoLuong.getText());
@@ -715,9 +711,9 @@ public class gui_DatThuoc extends JPanel {
 		}
 
 
-    }
+	}
 
-    private void btnAddCartActionPerformed() throws RemoteException {
+	private void btnAddCartActionPerformed() throws RemoteException {
 		if (isValidChiTietPhieuDat()) {
 
 			ChiTietPhieuDatThuoc ctpdt = getInputChiTietPhieuDat();
@@ -744,7 +740,7 @@ public class gui_DatThuoc extends JPanel {
 				}
 			}
 		}
-        	
+
 	}
 
 	private boolean isValidPhieuDat() {
@@ -814,7 +810,7 @@ public class gui_DatThuoc extends JPanel {
 	}
 
 
-    private void btnSearchActionPerformed() {
+	private void btnSearchActionPerformed() {
 		try {
 			String sdt = txtsdt.getText().trim();
 			if (!Validation.isPhoneNumber(sdt)) {
@@ -833,9 +829,9 @@ public class gui_DatThuoc extends JPanel {
 			MessageDialog.error(this, "Lỗi khi tìm khách hàng: " + e.getMessage());
 			e.printStackTrace();
 		}
-   }
-    
-    private void btnDeleteCartItemActionPerformed() {
+	}
+
+	private void btnDeleteCartItemActionPerformed() {
 		if (MessageDialog.confirm(this, "Bạn có chắc muốn xóa khỏi giỏ hàng?", "Xóa thuốc khỏi giỏ hàng")) {
 			int selectedRow = tableCart.getSelectedRow();
 			if (selectedRow < 0 || selectedRow >= listCTPDT.size()) {
@@ -856,7 +852,7 @@ public class gui_DatThuoc extends JPanel {
 				e.printStackTrace();
 			}
 		}
-    }
+	}
 //    public List<Thuoc> getSearchTable(String text) {
 //        text = text.toLowerCase();
 //        List result = new ArrayList<Thuoc>();
@@ -873,8 +869,8 @@ public class gui_DatThuoc extends JPanel {
 //        return result;
 //    }
 
- 
-    private void btnReloadActionPerformed() {
+
+	private void btnReloadActionPerformed() {
 		try {
 			txtSearch.setText("");
 			cboxSearch.setSelectedIndex(0);
@@ -883,8 +879,8 @@ public class gui_DatThuoc extends JPanel {
 			MessageDialog.error(this, "Lỗi khi làm mới danh sách thuốc: " + e.getMessage());
 		}
 
-    }
-    private void btnHuyActionPerformed() {
+	}
+	private void btnHuyActionPerformed() {
 		if (MessageDialog.confirm(this, "Xác nhận hủy đặt thuốc?", "Hủy đặt thuốc")) {
 			try {
 				for (ChiTietPhieuDatThuoc ctpdt : listCTPDT) {
@@ -903,7 +899,7 @@ public class gui_DatThuoc extends JPanel {
 				MessageDialog.error(this, "Lỗi khi hoàn tác thuốc: " + e.getMessage());
 			}
 		}
-    }
+	}
 	private void deteleAllTxt() {
 		txtDonGia.setText("");
 		txtHinhAnh.setText("");
@@ -929,7 +925,7 @@ public class gui_DatThuoc extends JPanel {
 	}
 
 
-    private void btnThanhToanActionPerformed() {
+	private void btnThanhToanActionPerformed() {
 		try {
 			if (modalCart.getColumnCount() != 0 && isValidPhieuDat()) {
 				if (MessageDialog.confirm(this, "Xác nhận thanh toán?", "Lập phiếu đặt thuốc")) {
@@ -973,67 +969,61 @@ public class gui_DatThuoc extends JPanel {
 			e.printStackTrace();
 		}
 	}
-    public void loadDanhMucThuoc() {
-        try {
-            List<DanhMuc> danhMucList = THUOC_SEVICE.getAllDanhMuc();
-            
-            DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) cboxSearch.getModel();
-            model.removeAllElements();
-            model.addElement("Tất cả");
-            
-            if (danhMucList != null) {
-                for (DanhMuc dm : danhMucList) {
-                    if (dm != null && dm.getTen() != null) {
-                        model.addElement(dm.getTen());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            MessageDialog.error(this, "Lỗi khi tải danh mục thuốc: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-    
-    public void loadTableTheoDanhMuc() {
-        try {
-            String selectedDanhMuc = (String) cboxSearch.getSelectedItem();
-            if (selectedDanhMuc == null) {
-                return;
-            }
-            
-            List<Thuoc> filteredList;
-            if (selectedDanhMuc.equals("Tất cả")) {
-                filteredList = THUOC_SEVICE.findAll();
-            } else {
-                filteredList = THUOC_SEVICE.getThuocByTenDanhMuc(selectedDanhMuc);
-            }
-            
-            if (filteredList != null) {
-                loadTable(filteredList);
-            }
-        } catch (Exception e) {
-            MessageDialog.error(this, "Lỗi khi tải thuốc theo danh mục: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+	public void loadDanhMucThuoc() {
+		try {
+			List<DanhMuc> danhMucList = THUOC_SEVICE.getAllDanhMuc();
 
-    private void formatTxt() {
-        String txtDonGiaFormat = Formatter.FormatVND(Double.parseDouble(txtDonGia.getText()));
-        txtDonGia.setText(txtDonGiaFormat);
-        String txtTongFormat = Formatter.FormatVND(Double.parseDouble(txtTongTien.getText()));
-        txtTongTien.setText(txtTongFormat);
-    }
-    
-    public void setPanel(JPanel newPanel) {
-        getRootPane().removeAll();
-        getRootPane().add(newPanel);
-        revalidate();
-        repaint();
-    }
+			DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) cboxSearch.getModel();
+			model.removeAllElements();
+			model.addElement("Tất cả");
+
+			if (danhMucList != null) {
+				for (DanhMuc dm : danhMucList) {
+					if (dm != null && dm.getTen() != null) {
+						model.addElement(dm.getTen());
+					}
+				}
+			}
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi tải danh mục thuốc: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void loadTableTheoDanhMuc() {
+		try {
+			String selectedDanhMuc = (String) cboxSearch.getSelectedItem();
+			if (selectedDanhMuc == null) {
+				return;
+			}
+
+			List<Thuoc> filteredList;
+			if (selectedDanhMuc.equals("Tất cả")) {
+				filteredList = THUOC_SEVICE.findAll();
+			} else {
+				filteredList = THUOC_SEVICE.getThuocByTenDanhMuc(selectedDanhMuc);
+			}
+
+			if (filteredList != null) {
+				loadTable(filteredList);
+			}
+		} catch (Exception e) {
+			MessageDialog.error(this, "Lỗi khi tải thuốc theo danh mục: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	private void formatTxt() {
+		String txtDonGiaFormat = Formatter.FormatVND(Double.parseDouble(txtDonGia.getText()));
+		txtDonGia.setText(txtDonGiaFormat);
+		String txtTongFormat = Formatter.FormatVND(Double.parseDouble(txtTongTien.getText()));
+		txtTongTien.setText(txtTongFormat);
+	}
+
+	public void setPanel(JPanel newPanel) {
+		getRootPane().removeAll();
+		getRootPane().add(newPanel);
+		revalidate();
+		repaint();
+	}
 }
-
-
-
-
-
-

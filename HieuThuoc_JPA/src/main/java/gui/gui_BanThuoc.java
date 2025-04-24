@@ -905,10 +905,25 @@ public class gui_BanThuoc extends JPanel {
 	private void btnAddCartActionPerformed() {
 		if (isValidChiTietHoaDon()) {
 			ChiTietHoaDon cthd = getInputChiTietHoaDon();
-			System.out.println(cthd.getThuoc());
 			if (cthd != null) {
-				listCTHD.add(cthd);
-				System.out.println(cthd);
+				String maThuocMoi = cthd.getThuoc().getId();
+				boolean daTonTai = false;
+
+				for (ChiTietHoaDon item : listCTHD) {
+					if (item.getThuoc().getId().equals(maThuocMoi)) {
+						// Tăng số lượng
+						item.setSoLuong(item.getSoLuong() + cthd.getSoLuong());
+						daTonTai = true;
+						break;
+					}
+				}
+
+				// Nếu thuốc chưa có trong giỏ thì thêm mới
+				if (!daTonTai) {
+					listCTHD.add(cthd);
+				}
+
+				// Cập nhật bảng giỏ hàng
 				loadTableCart(listCTHD);
 
 				try {
@@ -931,6 +946,7 @@ public class gui_BanThuoc extends JPanel {
 			}
 		}
 	}
+
 
 	private void btnSearchActionPerformed() {
 		try {
