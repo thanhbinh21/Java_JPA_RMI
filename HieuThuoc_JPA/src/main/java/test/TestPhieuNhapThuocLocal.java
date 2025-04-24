@@ -42,7 +42,7 @@ public class TestPhieuNhapThuocLocal {
                     phieuNhapThuocDAO, nhaCungCapDAO, nhanVienDAO, chiTietPhieuNhapThuocDAO, thuocDAO);
             ChiTietPhieuNhapThuocService chiTietPhieuNhapThuocService = new ChiTietPhieuNhapThuocServiceImpl(
                     chiTietPhieuNhapThuocDAO, phieuNhapThuocDAO, thuocDAO);
-            ThuocService thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO);
+            ThuocService thuocService = new ThuocServiceImpl(thuocDAO, danhMucDAO, null, null);
             
             System.out.println("=== MEDICINE IMPORT TEST (LOCAL) ===");
             
@@ -127,7 +127,7 @@ public class TestPhieuNhapThuocLocal {
                 System.out.println("Import receipt saved: " + (saved ? "SUCCESS" : "FAILED"));
             } catch (Exception e) {
                 System.err.println("Error saving receipt: " + e.getMessage());
-                e.printStackTrace();
+                //e.printStackTrace();
                 System.out.println("Import receipt saved: FAILED (with exception)");
             }
             
@@ -181,7 +181,7 @@ public class TestPhieuNhapThuocLocal {
             
         } catch (Exception e) {
             System.err.println("Error in TestPhieuNhapThuocLocal: " + e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 }

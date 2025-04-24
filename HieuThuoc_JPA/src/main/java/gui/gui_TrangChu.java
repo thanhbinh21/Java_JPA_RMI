@@ -25,7 +25,7 @@ public class gui_TrangChu extends JFrame {
     private JPanel contentPane, homePanel;
     private TaiKhoan loginAccount;
     private TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl(new TaiKhoanDAOImpl());
-    
+
     private static final Color PRIMARY_COLOR = new Color(31, 97, 141);// Dark blue
     private static final Color SECONDARY_COLOR = new Color(240, 240, 240);// Light gray
     private static final Font MENU_FONT = new Font("Segoe UI", Font.BOLD, 16);
@@ -43,11 +43,11 @@ public class gui_TrangChu extends JFrame {
     private void initializeUI() {
         setTitle("Hệ Thống Quản Lý Nhà Thuốc Yên Tâm");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
-        
+
         setLocationRelativeTo(null);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon/QuanLyNhaThuoc.png")));
 
@@ -89,13 +89,13 @@ public class gui_TrangChu extends JFrame {
         menuBar.setBackground(new Color(0, 87, 183));
         menuBar.setBorder(BorderFactory.createEmptyBorder(3, 10, 3, 10));
         menuBar.setOpaque(true);
-        
+
         JLabel logoLabel = new JLabel("YÊN TÂM");
         logoLabel.setForeground(Color.ORANGE);
         logoLabel.setFont(new Font("Segoe UI", Font.BOLD, 25));
         logoLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 15));
         menuBar.add(logoLabel);
-        
+
         JSeparator separator = new JSeparator(JSeparator.VERTICAL);
         separator.setPreferredSize(new Dimension(2, 30));
         separator.setForeground(Color.WHITE);
@@ -124,7 +124,7 @@ public class gui_TrangChu extends JFrame {
             } catch (RemoteException ex) {
                 handleError("Lỗi khi mở phân quyền tài khoản", ex);
             }
-        });
+        }, loginAccount.getVaiTro().getId().equals("admin"));
 
         addMenuItem(menu, "Quản lý vai trò", "/icon/user.png", e -> {
             try {
@@ -132,11 +132,11 @@ public class gui_TrangChu extends JFrame {
             } catch (RemoteException ex) {
                 handleError("Lỗi khi mở quản lý vai trò", ex);
             }
-        });
+        }, loginAccount.getVaiTro().getId().equals("admin"));
 
         addMenuItem(menu, "Hướng dẫn sử dụng", "/icon/symbols.png", null);
         menu.addSeparator();
-        
+
         addMenuItem(menu, "Đăng xuất", "/icon/logout.png", this::handleLogout);
 
         menuBar.add(menu);
@@ -146,8 +146,8 @@ public class gui_TrangChu extends JFrame {
     private void addCatalogMenu() throws RemoteException {
         JMenu menu = createMenu("Danh Mục", "/icon/classified-document.png");
 
-        addMenuItem(menu, "Khách hàng", "/icon/client.png", e -> setPanel(new gui_qliKhachHang()));
-        addMenuItem(menu, "Thuốc", "/icon/medicine.png", e -> setPanel(new gui_qliThuoc()));
+        addMenuItem(menu, "Khách hàng", "/icon/client.png", e -> setPanel(new gui_qliKhachHang(loginAccount)));
+        addMenuItem(menu, "Thuốc", "/icon/medicine.png", e -> setPanel(new gui_qliThuoc(loginAccount)));
         addMenuItem(menu, "Nhà cung cấp", "/icon/supplier.png", e -> setPanel(new gui_qliNCC()));
         addMenuItem(menu, "Nhân viên", "/icon/employees.png", e -> {
             try {
@@ -155,7 +155,7 @@ public class gui_TrangChu extends JFrame {
             } catch (RemoteException ex) {
                 handleError("Lỗi khi mở quản lý nhân viên", ex);
             }
-        });
+        }, loginAccount.getVaiTro().getId().equals("admin"));
         addMenuItem(menu, "Nhà sản xuất", "/icon/decentralized.png", e -> {
             try {
                 setPanel(new gui_qliNhaSX());
@@ -171,7 +171,7 @@ public class gui_TrangChu extends JFrame {
             }
         });
         addMenuItem(menu, "Khuyến mãi", "/icon/tag.png", e -> {
-            // Add implementation when available
+            setPanel(new gui_qliKhuyenMai());
         });
 
         menuBar.add(menu);
@@ -182,7 +182,9 @@ public class gui_TrangChu extends JFrame {
         JMenu menu = createMenu("Xử Lý", "/icon/profit.png");
         addMenuItem(menu, "Bán thuốc", "/icon/medicine.png", e -> setPanel(new gui_BanThuoc(loginAccount)));
         addMenuItem(menu, "Trả thuốc", "/icon/bill.png", e -> setPanel(new gui_TraThuoc(loginAccount)));
+
         addMenuItem(menu, "Đặt thuốc", "/icon/fulfillment.png", e -> setPanel( new gui_DatThuoc(loginAccount)));
+
         addMenuItem(menu, "Nhập thuốc", "/icon/import.png", e -> setPanel(new gui_nhapThuoc(loginAccount)));
         addMenuItem(menu, "Tạo khuyến mãi", "/icon/tag.png", e -> {
             // Add implementation when available
@@ -196,7 +198,7 @@ public class gui_TrangChu extends JFrame {
         JMenu menu = createMenu("Tìm Kiếm", "/icon/search.png");
 
         addMenuItem(menu, "Khách hàng", "/icon/client.png", e -> {
-            // Add implementation when available
+           
         });
         addMenuItem(menu, "Thuốc", "/icon/medicine.png", e -> {
             // Add implementation when available
@@ -209,6 +211,8 @@ public class gui_TrangChu extends JFrame {
         });
         addMenuItem(menu, "Phiếu nhập", "/icon/import.png", e -> {
             // Add implementation when available
+           setPanel(new gui_timKiemPhieuNhap());
+
         });
         addMenuItem(menu, "Nhà cung cấp", "/icon/supplier.png", e -> {
             // Add implementation when available
@@ -267,7 +271,7 @@ public class gui_TrangChu extends JFrame {
         } catch (Exception e) {
             System.err.println("Could not load user icon");
         }
-        
+
         lblUserIcon.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lblUserIcon.addMouseListener(new MouseAdapter() {
             @Override
@@ -288,7 +292,7 @@ public class gui_TrangChu extends JFrame {
         profileDialog.setSize(600, 400);
         profileDialog.setLocationRelativeTo(this);
         profileDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        
+
         profileDialog.add(new gui_thongtinlogin(loginAccount));
         profileDialog.setVisible(true);
     }
@@ -298,7 +302,7 @@ public class gui_TrangChu extends JFrame {
         menu.setFont(MENU_FONT);
         menu.setForeground(Color.BLACK);
 		menu.setOpaque(false);
-        
+
         try {
             ImageIcon icon = new ImageIcon(getClass().getResource(iconPath));
             Image img = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -306,33 +310,38 @@ public class gui_TrangChu extends JFrame {
         } catch (Exception e) {
             System.err.println("Could not load icon: " + iconPath);
         }
-        
+
         return menu;
     }
 
     private void addMenuItem(JMenu menu, String text, String iconPath, ActionListener action) {
+        addMenuItem(menu, text, iconPath, action, true);
+    }
+
+    private void addMenuItem(JMenu menu, String text, String iconPath, ActionListener action, boolean isActive) {
         JMenuItem item = new JMenuItem(text);
         item.setFont(MENU_ITEM_FONT);
-        
+        item.setEnabled(isActive);
+
 
         item.setBackground(new Color(240, 248, 255)); // Light blue background
         item.setForeground(new Color(0, 51, 102)); // Dark blue text
         item.setOpaque(true);
-        
+
         item.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 item.setBackground(new Color(135, 206, 250)); // Sky blue when hovered
                 item.setForeground(Color.WHITE);
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 item.setBackground(new Color(240, 248, 255)); // Back to light blue
                 item.setForeground(new Color(0, 51, 102)); // Back to dark blue text
             }
         });
-        
+
         try {
             ImageIcon icon = new ImageIcon(getClass().getResource(iconPath));
             Image img = icon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
@@ -340,11 +349,11 @@ public class gui_TrangChu extends JFrame {
         } catch (Exception e) {
             System.err.println("Could not load icon: " + iconPath);
         }
-        
+
         if (action != null) {
             item.addActionListener(action);
         }
-        
+
         menu.add(item);
     }
 
@@ -362,9 +371,9 @@ public class gui_TrangChu extends JFrame {
                 System.err.println("Warning: Menu bar is not initialized yet or has no menus");
                 return;
             }
-            
+
             boolean isAdmin = "admin".equals(loginAccount.getVaiTro().getId());
-            
+
             // Find the System menu items and disable based on permissions
             JMenu systemMenu = menuBar.getMenu(0);
             if (systemMenu != null) {
@@ -378,7 +387,7 @@ public class gui_TrangChu extends JFrame {
                     }
                 }
             }
-            
+
             // Find the Catalog menu and disable employee management if not admin
             if (menuBar.getMenuCount() > 1) {
                 JMenu catalogMenu = menuBar.getMenu(1);

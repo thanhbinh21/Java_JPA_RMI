@@ -6,6 +6,8 @@
       <GradleProjectSettings>
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/HieuThuoc_JPA" />
+        <option name="gradleHome" value="E:/gradle-8.13" />
+        <option name="gradleJvm" value="23" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/HieuThuoc_JPA" />
