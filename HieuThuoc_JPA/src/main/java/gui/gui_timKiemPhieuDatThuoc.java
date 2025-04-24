@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
@@ -135,50 +136,8 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
         gbc.weightx = 1.0;
         pnlCriteria.add(txtReceiptId, gbc);
         
-        // Supplier
-        lblSupplier = new JLabel("Tên khách hàng:");
-        lblSupplier.setFont(new Font("Arial", Font.PLAIN, 14));
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 0;
-        pnlCriteria.add(lblSupplier, gbc);
-        
-        txtSupplier = new JTextField(15);
-        gbc.gridx = 3;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        pnlCriteria.add(txtSupplier, gbc);
-        
-        // Date From
-        lblDateFrom = new JLabel("Từ ngày:");
-        lblDateFrom.setFont(new Font("Arial", Font.PLAIN, 14));
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0;
-        pnlCriteria.add(lblDateFrom, gbc);
-        
-        txtDateFrom = new JTextField(15);
-        txtDateFrom.setToolTipText("Định dạng: dd/MM/yyyy");
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        pnlCriteria.add(txtDateFrom, gbc);
-        
-        // Date To
-        lblDateTo = new JLabel("Đến ngày:");
-        lblDateTo.setFont(new Font("Arial", Font.PLAIN, 14));
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.weightx = 0;
-        pnlCriteria.add(lblDateTo, gbc);
-        
-        txtDateTo = new JTextField(15);
-        txtDateTo.setToolTipText("Định dạng: dd/MM/yyyy");
-        gbc.gridx = 3;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        pnlCriteria.add(txtDateTo, gbc);
-        
+
+//
         // Button panel
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         
@@ -299,34 +258,13 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
             
             // Get search criteria
             String receiptId = txtReceiptId.getText().trim();
-            String supplierName = txtSupplier.getText().trim();
-            LocalDateTime fromDate = null;
-            LocalDateTime toDate = null;
+
+
             
-            try {
-                if (!txtDateFrom.getText().trim().isEmpty()) {
-                    LocalDate date = LocalDate.parse(txtDateFrom.getText().trim(), displayDateFormatter);
-                    fromDate = date.atStartOfDay();
-                }
-            } catch (DateTimeParseException e) {
-                JOptionPane.showMessageDialog(this, "Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy");
-                return;
-            }
-            
-            try {
-                if (!txtDateTo.getText().trim().isEmpty()) {
-                    LocalDate date = LocalDate.parse(txtDateTo.getText().trim(), displayDateFormatter);
-                    toDate = date.plusDays(1).atStartOfDay();  // Include the entire day
-                }
-            } catch (DateTimeParseException e) {
-                JOptionPane.showMessageDialog(this, "Định dạng ngày không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy");
-                return;
-            }
-            
-            System.out.println("Tìm kiếm với điều kiện: Mã=" + receiptId + ", Khách nhàng=" + supplierName);
+            System.out.println("Tìm kiếm với điều kiện: Mã=" + receiptId );
             
 
-            List<PhieuDatThuoc> receipts = List.of();
+            List<PhieuDatThuoc> receipts = new ArrayList<>();
 
             if (receiptId.isEmpty()) {
                 System.out.println("Không có điều kiện, lấy tất cả phiếu đặt");
@@ -334,6 +272,7 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
                 receipts = PHEU_DAT_THUOC_SEVICE.findAll();
             } else {
                 PhieuDatThuoc pdt = PHEU_DAT_THUOC_SEVICE.findById(receiptId);
+
                 receipts.add(pdt);
             }
             
@@ -356,7 +295,7 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
                 Object[] row = {
                     receipt.getId(),
                     formattedDate,
-                        receipt.isTrangThai(),
+                        receipt.isTrangThai() ? "Đã lấy":"Chưa lấy",
                     receipt.getKhachHang() != null ? receipt.getKhachHang().getHoTen() : "",
                     receipt.getNhanVien() != null ? receipt.getNhanVien().getHoTen() : ""
                 };
