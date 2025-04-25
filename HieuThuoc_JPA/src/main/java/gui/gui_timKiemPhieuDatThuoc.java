@@ -68,7 +68,7 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
     public gui_timKiemPhieuDatThuoc() {
 
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
             THUOC_SEVICE = (ThuocService) registry.lookup("ThuocService");
             KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KhachHangService");
             DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DatThuocService");
@@ -361,9 +361,6 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
     private void clearForm() {
         // Clear search fields
         txtReceiptId.setText("");
-        txtSupplier.setText("");
-        txtDateFrom.setText("");
-        txtDateTo.setText("");
 
         // Clear both tables
         receiptTableModel.setRowCount(0);
@@ -372,12 +369,9 @@ public class gui_timKiemPhieuDatThuoc extends JPanel implements ActionListener {
         try {
             List<PhieuDatThuoc> allReceipts = PHEU_DAT_THUOC_SEVICE.findAll();
 
-            if (allReceipts.size() > 0) {
-
-            } else {
 
                 loadSampleData();
-            }
+
         } catch (Exception e) {
             System.err.println("Lỗi khi tải lại dữ liệu sau khi làm mới: " + e.getMessage());
             e.printStackTrace();

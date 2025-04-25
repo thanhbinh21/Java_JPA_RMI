@@ -11,7 +11,11 @@ import entity.KhachHang;
 import entity.Thuoc;
 import java.rmi.RemoteException;
 import java.util.List;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import service.BanThuocService;
+import until.JPAUtil;
 
 public class BanThuocServiceImpl extends GenericServiceImpl<Thuoc, String> implements BanThuocService {
 
@@ -70,72 +74,61 @@ public class BanThuocServiceImpl extends GenericServiceImpl<Thuoc, String> imple
     }
 
     @Override
-    public boolean createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException {
+    public synchronized boolean createHoaDon(HoaDon hoaDon, List<ChiTietHoaDon> cart) throws RemoteException {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
         try {
+            tx.begin();
+
+            // 1. Xử lý khách hàng
             KhachHang khachHang = hoaDon.getKhachHang();
             if (khachHang != null) {
                 KhachHang existingKH = khachHangDAO.selectBySdt(khachHang.getSoDienThoai());
                 if (existingKH == null) {
-                    boolean saveKhachHangResult = khachHangDAO.save(khachHang);
-                    if (!saveKhachHangResult) {
-                        return false;
-                    }
+                    em.persist(khachHang); // save khách hàng
                 } else {
                     hoaDon.setKhachHang(existingKH);
                 }
             }
-            boolean saveHoaDonResult = hoaDonDAO.save(hoaDon);
-            if (!saveHoaDonResult) {
-                return false;
-            }
-            
-            jakarta.persistence.EntityManager em = until.JPAUtil.getEntityManager();
-            jakarta.persistence.EntityTransaction tx = null;
-            
-            try {
-                for (ChiTietHoaDon cartItem : cart) {
-                    tx = em.getTransaction();
-                    tx.begin();
-                    
-                    HoaDon freshHoaDon = em.find(HoaDon.class, hoaDon.getId());
-                    
-                    String thuocId = cartItem.getThuoc().getId();
-                    Thuoc freshThuoc = em.find(Thuoc.class, thuocId);
-                    
-                    if (freshThuoc == null) {
-                        tx.rollback();
-                        System.err.println("Could not find Thuoc with ID: " + thuocId);
-                        continue;
-                    }
-                    
-                    ChiTietHoaDon newCTHD = new ChiTietHoaDon();
-                    newCTHD.setHoaDon(freshHoaDon);
-                    newCTHD.setThuoc(freshThuoc);
-                    newCTHD.setSoLuong(cartItem.getSoLuong());
-                    newCTHD.setDonGia(cartItem.getDonGia());
-                    
-                    em.persist(newCTHD);
-                    
-                    int newSoLuongTon = freshThuoc.getSoLuongTon() - cartItem.getSoLuong();
-                    freshThuoc.setSoLuongTon(newSoLuongTon);
-                    tx.commit();
-                }
-                
-                return true;
-            } catch (Exception e) {
-                if (tx != null && tx.isActive()) {
+
+            // 2. Lưu hóa đơn
+            em.persist(hoaDon);
+            em.flush(); // Đảm bảo ID được sinh
+
+            // 3. Lưu chi tiết hóa đơn
+            for (ChiTietHoaDon item : cart) {
+                Thuoc thuoc = em.find(Thuoc.class, item.getThuoc().getId());
+                if (thuoc == null) {
+                    System.err.println("Không tìm thấy thuốc: " + item.getThuoc().getId());
                     tx.rollback();
+                    return false;
                 }
-                e.printStackTrace();
-                return false;
-            } finally {
-                em.close();
+
+                ChiTietHoaDon cthd = new ChiTietHoaDon();
+                cthd.setHoaDon(hoaDon);
+                cthd.setThuoc(thuoc);
+                cthd.setSoLuong(item.getSoLuong());
+                cthd.setDonGia(item.getDonGia());
+
+                em.persist(cthd);
+
+                // Cập nhật số lượng tồn
+                thuoc.setSoLuongTon(thuoc.getSoLuongTon() - item.getSoLuong());
+                em.merge(thuoc);
             }
+
+            tx.commit();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            if (tx.isActive()) tx.rollback();
             return false;
+        } finally {
+            em.close();
         }
     }
+
 
     @Override
     public KhachHang getKhachHangBySdt(String sdt) throws RemoteException {

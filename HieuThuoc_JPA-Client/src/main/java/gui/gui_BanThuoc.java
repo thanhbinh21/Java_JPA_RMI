@@ -1,13 +1,11 @@
 package gui;
 
-import dao.impl.*;
 import entity.*;
 import other.Formatter;
 import other.MessageDialog;
 import other.RandomMa;
 import other.Validation;
 import service.*;
-import service.impl.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -105,7 +103,7 @@ public class gui_BanThuoc extends JPanel {
 //			BAN_THUOC_SERVICE = new BanThuocServiceImpl(new ThuocDAOImpl(), new HoaDonDAOImpl(),
 //					new KhachHangDAOImpl(), new ChiTietHoaDonDAOImpl(), new DanhMucDAOImpl());
 //			DDT_SERVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
-			Registry registry = LocateRegistry.getRegistry(8989);
+			Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
 
 			THUOC_SERVICE = (ThuocService) registry.lookup("ThuocService");
 			KH_SERVICE = (KhachHangService) registry.lookup("KhachHangService");
@@ -717,7 +715,7 @@ public class gui_BanThuoc extends JPanel {
 					String.valueOf(stt),
 					e.getThuoc().getTen(),
 					e.getSoLuong(),
-					Formatter.FormatVND(e.getDonGia())});
+					Formatter.FormatVND(e.getDonGia()),});
 			stt++;
 		}
 		txtTongTien.setText(Formatter.FormatVND(sum));
@@ -889,7 +887,7 @@ public class gui_BanThuoc extends JPanel {
 		try {
 			Thuoc thuoc = THUOC_SERVICE.findById(txtMaThuoc.getText());
 			int soLuong = Integer.parseInt(txtSoLuong.getText());
-			double donGia = thuoc.getDonGia()*(1 - thuoc.getKhuyenMai().getPhanTramGiamGia());
+			double donGia = thuoc.getDonGia();
 			return new ChiTietHoaDon(hoaDon, thuoc, soLuong, donGia);
 		} catch (Exception e) {
 			MessageDialog.error(this, "Lỗi khi lấy thông tin thuốc: " + e.getMessage());
@@ -1070,7 +1068,7 @@ public class gui_BanThuoc extends JPanel {
 					MessageDialog.info(this, "Lập hóa đơn thành công!");
 
 					if (MessageDialog.confirm(this, "Bạn có muốn in hóa đơn không?", "In hóa đơn")) {
-						new other.WritePDF().printHoaDon(hd, listCTHD, 1.1);
+						new other.WritePDF().printHoaDon(hd, listCTHD, 0.1);
 					}
 
 					// Reset UI and navigate

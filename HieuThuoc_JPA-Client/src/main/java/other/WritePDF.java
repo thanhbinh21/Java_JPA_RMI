@@ -476,9 +476,9 @@ public class WritePDF {
 
             Paragraph paraTongThanhToan = new Paragraph(new Phrase("Tổng thành tiền: " + formatter.format(tongTien) + "đ", fontBold15));
             paraTongThanhToan.setIndentationLeft(300);
-            Paragraph thuetxt = new Paragraph(new Phrase("Vat: " + formatter.format(thue) +"đ" , fontBold15));
+            Paragraph thuetxt = new Paragraph(new Phrase("Vat: " + formatter.format(tongTien*(thue-1)) +"đ" , fontBold15));
             thuetxt.setIndentationLeft(300);
-            Paragraph sum = new Paragraph(new Phrase("Thanh toán : " + formatter.format(tongTien+thue) +"đ" , fontBold15));
+            Paragraph sum = new Paragraph(new Phrase("Thanh toán : " + formatter.format(tongTien*thue) +"đ" , fontBold15));
             sum.setIndentationLeft(300);
 
             document.add(paraTongThanhToan);

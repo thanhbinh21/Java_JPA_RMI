@@ -72,7 +72,7 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 	 */
 	public gui_taiKhoan() throws RemoteException {
 		try {
-			Registry registry = LocateRegistry.getRegistry(8989);
+			Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
 			TK_SERVICE = (TaiKhoanService) registry.lookup("TaiKhoanService");
 			NV_SERVICE = (NhanVienService) registry.lookup("NhanVienService");
 			VT_SERVICE = (VaiTroService) registry.lookup("VaiTroService");

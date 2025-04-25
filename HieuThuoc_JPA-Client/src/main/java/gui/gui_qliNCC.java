@@ -1,10 +1,7 @@
 package gui;
 
-import dao.NhaCungCapDAO;
-import dao.impl.NhaCungCapDAOImpl;
 import entity.NhaCungCap;
 import service.NhaCungCapService;
-import service.impl.NhaCungCapServiceImpl;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -56,7 +53,7 @@ public class gui_qliNCC extends JPanel implements ActionListener {
     public gui_qliNCC() {
         // Initialize service
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             nhaCungCapService = (NhaCungCapService) registry.lookup("NhaCungCapService");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error initializing services: " + e.getMessage());

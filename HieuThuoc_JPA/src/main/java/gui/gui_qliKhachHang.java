@@ -58,7 +58,7 @@ public class gui_qliKhachHang extends JPanel implements MouseListener {
 	public gui_qliKhachHang(TaiKhoan login) {
 		try {
 			// rmi
-			Registry registry = LocateRegistry.getRegistry(8989);
+			Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
 			KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KhachHangService");
 
 		} catch (RemoteException e) {

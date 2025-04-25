@@ -51,7 +51,7 @@ public class gui_timKiemThuoc extends JPanel {
     public gui_timKiemThuoc() {
         // Initialize services
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
             thuocService = (ThuocService) registry.lookup("ThuocService");
             danhMucService = (DanhMucService) registry.lookup("DanhMucService");
             nhaSanXuatService = (NhaSanXuatService) registry.lookup("NhaSanXuatService");
@@ -227,8 +227,8 @@ public class gui_timKiemThuoc extends JPanel {
         tblResults.setRowHeight(30);
         tblResults.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         tblResults.getTableHeader().setReorderingAllowed(false);
-        tblResults.getTableHeader().setBackground(BUTTON_BG);
-        tblResults.getTableHeader().setForeground(Color.WHITE);
+//        tblResults.getTableHeader().setBackground(BUTTON_BG);
+//        tblResults.getTableHeader().setForeground(Color.WHITE);
 
         // Set column widths
         tblResults.getColumnModel().getColumn(0).setMaxWidth(60);

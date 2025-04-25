@@ -24,12 +24,13 @@ public abstract class GenericDAOImpl <T,ID> implements GenericDAO<T, ID> {
     }
 
     @Override
-    public boolean save(T t) {
+    public synchronized boolean  save(T t) {
         EntityTransaction tr = em.getTransaction();
         try{
             tr.begin();
             em.persist(t);
             tr.commit();
+             //force to save to DB
             return true;
         }catch (Exception ex){
             tr.rollback();

@@ -1,15 +1,14 @@
 package gui;
 
-import dao.impl.KhachHangDAOImpl;
 import entity.KhachHang;
 import other.MessageDialog;
 import other.RandomMa;
 import other.Validation;
 import service.KhachHangService;
-import service.impl.KhachHangServiceImpl;
 
 import javax.swing.*;
 import java.awt.*;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -32,15 +31,14 @@ public class gui_themKhachHang extends JDialog {
      */
     public gui_themKhachHang() {
         try {
-//                KHACH_HANG_SERVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             KHACH_HANG_SERVICE = (KhachHangService) registry.lookup("KhachHangService");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Không thể kết nối đến server: " + e.getMessage());
+        } catch (RemoteException | NotBoundException e) {
+            JOptionPane.showMessageDialog(null, "Lỗi khởi tạo service: " + e.getMessage());
             e.printStackTrace();
         }
-
-        getContentPane().setBackground(UIManager.getColor("CheckBox.darkShadow"));
+        
+    	getContentPane().setBackground(UIManager.getColor("CheckBox.darkShadow"));
         setBackground(SystemColor.textInactiveText);
         getContentPane().setLayout(null);
         

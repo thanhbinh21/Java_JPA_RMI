@@ -3,7 +3,10 @@ package gui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -44,8 +47,9 @@ public class gui_themKhachHang extends JDialog {
      */
     public gui_themKhachHang() {
         try {
-            KHACH_HANG_SERVICE = new KhachHangServiceImpl(new KhachHangDAOImpl());
-        } catch (RemoteException e) {
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
+            KHACH_HANG_SERVICE = (KhachHangService) registry.lookup("KhachHangService");
+        } catch (RemoteException | NotBoundException e) {
             JOptionPane.showMessageDialog(null, "Lỗi khởi tạo service: " + e.getMessage());
             e.printStackTrace();
         }

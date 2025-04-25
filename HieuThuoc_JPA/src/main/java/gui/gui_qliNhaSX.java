@@ -54,7 +54,7 @@ public class gui_qliNhaSX extends JPanel implements MouseListener {
 
     public gui_qliNhaSX() throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
             NSX_SERVICE = (NhaSanXuatService) registry.lookup("NhaSanXuatService");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Không thể kết nối đến server: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

@@ -54,7 +54,7 @@ public class gui_qliKhuyenMai extends JPanel implements MouseListener {
 
     public gui_qliKhuyenMai() {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             KHUYEN_MAI_SERVICE = (KhuyenMaiService) registry.lookup("KhuyenMaiService");
         } catch (RemoteException | NotBoundException e) {
            // KHUYEN_MAI_SERVICE = new KhuyenMaiServiceImpl(new KhuyenMaiDAOImpl());

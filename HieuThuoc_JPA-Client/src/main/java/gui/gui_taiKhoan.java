@@ -3,7 +3,7 @@ package gui;
 import entity.NhanVien;
 import entity.TaiKhoan;
 import entity.VaiTro;
-
+import jakarta.persistence.EntityManager;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.*;
@@ -11,7 +11,10 @@ import other.CustomButton;
 import other.CustomComboBox;
 import other.CustomTable;
 import other.CustomTextField;
-import service.*;
+import service.NhanVienService;
+import service.OneSessionService;
+import service.TaiKhoanService;
+import service.VaiTroService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -38,7 +41,7 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 	private CustomTextField txt_tim;
 	private CustomComboBox cbo_nv,cbo_vt;
 	private DefaultTableModel model;
-
+	EntityManager em;
 	private TaiKhoanService TK_SERVICE;
 	private NhanVienService NV_SERVICE;
 	private VaiTroService VT_SERVICE;
@@ -49,7 +52,7 @@ public class gui_taiKhoan extends JPanel implements MouseListener {
 	 */
 	public gui_taiKhoan() throws RemoteException {
 		try {
-			Registry registry = LocateRegistry.getRegistry(8989);
+			Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
 			TK_SERVICE = (TaiKhoanService) registry.lookup("TaiKhoanService");
 			NV_SERVICE = (NhanVienService) registry.lookup("NhanVienService");
 			VT_SERVICE = (VaiTroService) registry.lookup("VaiTroService");

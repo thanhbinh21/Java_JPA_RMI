@@ -26,7 +26,7 @@ public class PhieuNhapThuocDAOImpl extends GenericDAOImpl<PhieuNhapThuoc, String
     }
 
     @Override
-    public boolean save(PhieuNhapThuoc phieuNhapThuoc) {
+    public synchronized boolean save(PhieuNhapThuoc phieuNhapThuoc) {
         return super.save(phieuNhapThuoc);
     }
 

@@ -37,7 +37,7 @@ public class gui_timKiemKhachHang extends JPanel {
     public gui_timKiemKhachHang() {
         // Initialize service
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             khachHangService = (KhachHangService) registry.lookup("KhachHangService");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khởi tạo dịch vụ: " + e.getMessage());

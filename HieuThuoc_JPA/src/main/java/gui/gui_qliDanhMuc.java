@@ -47,7 +47,8 @@ public class gui_qliDanhMuc extends JPanel implements MouseListener {
 
     public gui_qliDanhMuc() {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
+
             DANH_MUC_SERVICE = (DanhMucService) registry.lookup("DanhMucService");
         } catch (RemoteException | NotBoundException e) {
            // DANH_MUC_SERVICE = new DanhMucServiceImpl(new DanhMucDAOImpl());
