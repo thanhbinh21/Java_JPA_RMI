@@ -109,7 +109,7 @@ public class gui_BanThuoc extends JPanel {
 //			BAN_THUOC_SERVICE = new BanThuocServiceImpl(new ThuocDAOImpl(), new HoaDonDAOImpl(),
 //					new KhachHangDAOImpl(), new ChiTietHoaDonDAOImpl(), new DanhMucDAOImpl());
 //			DDT_SERVICE = new PhieuDatThuocServiceImpl(new PhieuDatThuocDAOImpl(), new ChiTietPhieuDatThuocDAOImpl());
-			Registry registry = LocateRegistry.getRegistry(8989);
+			Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
 
 			THUOC_SERVICE = (ThuocService) registry.lookup("ThuocService");
 			KH_SERVICE = (KhachHangService) registry.lookup("KhachHangService");
@@ -1074,7 +1074,7 @@ public class gui_BanThuoc extends JPanel {
 					MessageDialog.info(this, "Lập hóa đơn thành công!");
 
 					if (MessageDialog.confirm(this, "Bạn có muốn in hóa đơn không?", "In hóa đơn")) {
-						new other.WritePDF().printHoaDon(hd, listCTHD, 1.1);
+						new other.WritePDF().printHoaDon(hd, listCTHD, 0.1);
 					}
 
 					// Reset UI and navigate

@@ -61,7 +61,7 @@ public class gui_ThongKeHanSuDung extends JPanel {
 
     public gui_ThongKeHanSuDung(TaiKhoan login) {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
             THUOC_SERVICE = (ThuocService) registry.lookup("ThuocService");
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Lỗi khởi tạo service: " + e.getMessage());
@@ -618,4 +618,4 @@ public class gui_ThongKeHanSuDung extends JPanel {
 
         return tableStr.toString();
     }
-} 
+}

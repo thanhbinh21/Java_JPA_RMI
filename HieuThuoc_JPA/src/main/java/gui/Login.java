@@ -1,4 +1,3 @@
-
 package gui;
 
 import java.awt.Color;
@@ -42,7 +41,7 @@ public class Login extends JFrame implements ActionListener {
 
     {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
             
             try {
                 taiKhoanService = (TaiKhoanService) registry.lookup("TaiKhoanService");
@@ -139,12 +138,11 @@ public class Login extends JFrame implements ActionListener {
         tx_password = new JPasswordField();
         tx_password.setBorder(null);
         tx_password.setBounds(0, 0, 170, 30);
-        tx_password.setEchoChar('•');
+        tx_password.setEchoChar('\u2022'); // Unicode bullet character
         passwordPanel.add(tx_password);
 
         //
-        tx_username.setText("ADMIN");
-        tx_password.setText("123");
+
         // Nút con mắt
         JButton btn_eye = new JButton(new ImageIcon(Login.class.getResource("/icon/eye.png")));
         btn_eye.setBorder(null);
@@ -193,7 +191,7 @@ public class Login extends JFrame implements ActionListener {
 
     private void togglePasswordVisibility() {
         showPassword = !showPassword;
-        tx_password.setEchoChar(showPassword ? (char) 0 : '•'); // Hiện hoặc ẩn mật khẩu
+        tx_password.setEchoChar(showPassword ? (char) 0 : '\u2022'); // Using Unicode bullet character
     }
 	private boolean isValidateFields() {
         if (Validation.isEmpty(tx_username.getText()) || Validation.isEmpty(new String(tx_password.getPassword()))) {

@@ -1,13 +1,14 @@
 package gui;
 
-import dao.impl.*;
 import entity.*;
 import other.Formatter;
 import other.MessageDialog;
 import other.RandomMa;
 import other.Validation;
-import service.*;
-import service.impl.*;
+import service.DatThuocSevice;
+import service.KhachHangService;
+import service.NhanVienService;
+import service.ThuocService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -55,7 +56,8 @@ public class gui_DatThuoc extends JPanel {
 		try {
 
 
-			Registry registry = LocateRegistry.getRegistry(8989);
+			Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
+
 			THUOC_SEVICE = (ThuocService) registry.lookup("ThuocService");
 			KHACH_HANG_SEVICE = (KhachHangService) registry.lookup("KhachHangService");
 			DAT_THUOC_SEVICE = (DatThuocSevice) registry.lookup("DatThuocService");

@@ -1,13 +1,9 @@
 package gui;
 
-import dao.*;
-import dao.impl.*;
 import entity.ChiTietPhieuNhapThuoc;
 import entity.PhieuNhapThuoc;
 import service.ChiTietPhieuNhapThuocService;
 import service.PhieuNhapThuocService;
-import service.impl.ChiTietPhieuNhapThuocServiceImpl;
-import service.impl.PhieuNhapThuocServiceImpl;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -67,7 +63,7 @@ public class gui_timKiemPhieuNhap extends JPanel implements ActionListener {
     public gui_timKiemPhieuNhap() {
         // Initialize services
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             phieuNhapThuocService = (PhieuNhapThuocService) registry.lookup("PhieuNhapThuocService");
             chiTietPhieuNhapThuocService = (ChiTietPhieuNhapThuocService) registry.lookup("ChiTietPhieuNhapThuocService");
 

@@ -1,6 +1,7 @@
 package gui;
 
-import entity.*;
+import entity.TaiKhoan;
+import entity.Thuoc;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -61,7 +62,7 @@ public class gui_ThongKeHanSuDung extends JPanel {
 
     public gui_ThongKeHanSuDung(TaiKhoan login) {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             THUOC_SERVICE = (ThuocService) registry.lookup("ThuocService");
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Lỗi khởi tạo service: " + e.getMessage());
@@ -618,4 +619,4 @@ public class gui_ThongKeHanSuDung extends JPanel {
 
         return tableStr.toString();
     }
-} 
+}

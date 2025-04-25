@@ -1,10 +1,11 @@
 package gui;
 
-import dao.*;
-import dao.impl.*;
+import dao.NhanVienDAO;
 import entity.*;
-import service.*;
-import service.impl.*;
+import service.ChiTietPhieuNhapThuocService;
+import service.NhaCungCapService;
+import service.PhieuNhapThuocService;
+import service.ThuocService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -111,7 +112,14 @@ public class gui_nhapThuoc extends JPanel implements ActionListener {
     
     private void initializeServices() {
         try {
-            // Initialize DAOs
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
+            nhaCungCapService = (NhaCungCapService) registry.lookup( "NhaCungCapService") ;
+            thuocService = (ThuocService) registry.lookup(  "ThuocService");
+            phieuNhapThuocService = (PhieuNhapThuocService) registry.lookup( "PhieuNhapThuocService");
+            chiTietPhieuNhapThuocService = (ChiTietPhieuNhapThuocService) registry.lookup(  "ChiTietPhieuNhapThuocService");
+
+
+//            // Initialize DAOs
 //            NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAOImpl();
 //            PhieuNhapThuocDAO phieuNhapThuocDAO = new PhieuNhapThuocDAOImpl();
 //            ThuocDAO thuocDAO = new ThuocDAOImpl();
@@ -129,12 +137,6 @@ public class gui_nhapThuoc extends JPanel implements ActionListener {
 //
 //            // Assign NhanVienDAO to the class field
 //            this.nhanVienDAO = nhanVienDAO;
-            Registry registry = LocateRegistry.getRegistry(8989);
-            nhaCungCapService = (NhaCungCapService) registry.lookup("NhaCungCapService");
-            thuocService = (ThuocService) registry.lookup("ThuocService");
-            phieuNhapThuocService = (PhieuNhapThuocService) registry.lookup("PhieuNhapThuocService");
-            chiTietPhieuNhapThuocService = (ChiTietPhieuNhapThuocService) registry.lookup("ChiTietPhieuNhapThuocService");
-
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khởi tạo dịch vụ: " + e.getMessage());

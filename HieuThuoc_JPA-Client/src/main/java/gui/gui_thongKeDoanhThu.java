@@ -4,7 +4,9 @@ import com.toedter.calendar.JDateChooser;
 import entity.HoaDon;
 import entity.NhanVien;
 import entity.TaiKhoan;
-import other.*;
+import other.Formatter;
+import other.JTableExporter;
+import other.MessageDialog;
 import service.ChiTietHoaDonService;
 import service.HoaDonService;
 import service.NhanVienService;
@@ -219,8 +221,8 @@ public class gui_thongKeDoanhThu extends JPanel {
                 int column = table.columnAtPoint(e.getPoint()); // Cột được nhấp
                 if (column == 5) { 
                     sorter.setComparator(5, (o1, o2) -> {
-                        double value1 = other.Formatter.unformatVND(o1.toString());
-                        double value2 = other.Formatter.unformatVND(o2.toString());
+                        double value1 = Formatter.unformatVND(o1.toString());
+                        double value2 = Formatter.unformatVND(o2.toString());
                         return Double.compare(value1, value2);
                     });
                     sorter.toggleSortOrder(5); 
@@ -234,7 +236,7 @@ public class gui_thongKeDoanhThu extends JPanel {
 	
 	private void initRMIServices() {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 8989);
+			Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             
             // Lookup RMI services
             hoaDonService = (HoaDonService) registry.lookup("HoaDonService");
@@ -272,7 +274,7 @@ public class gui_thongKeDoanhThu extends JPanel {
                     e.getKhachHang() != null ? e.getKhachHang().getHoTen() : "Khách lẻ", 
                     e.getNhanVien().getHoTen(),
                     e.getThoiGian(),
-                    other.Formatter.FormatVND(tongTien)
+                    Formatter.FormatVND(tongTien)
                 });
                 stt++;
             }
@@ -362,7 +364,7 @@ public class gui_thongKeDoanhThu extends JPanel {
                     e.getKhachHang() != null ? e.getKhachHang().getHoTen() : "Khách lẻ", 
                     e.getNhanVien().getHoTen(),
                     e.getThoiGian(),
-                    other.Formatter.FormatVND(tt)
+                    Formatter.FormatVND(tt)
                 });
                 
                 if(tt == 0.0) {
@@ -372,7 +374,7 @@ public class gui_thongKeDoanhThu extends JPanel {
 
             txt_sumHD.setText(String.valueOf(sum));
             txt_sumTra.setText(String.valueOf(k));
-            txt_SumDoanhThu.setText(other.Formatter.FormatVND(tongTien));
+            txt_SumDoanhThu.setText(Formatter.FormatVND(tongTien));
             
         } catch (Exception ex) {
             ex.printStackTrace();

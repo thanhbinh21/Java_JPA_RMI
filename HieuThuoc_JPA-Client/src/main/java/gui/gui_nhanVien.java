@@ -1,6 +1,7 @@
 package gui;
 
-import entity.*;
+import entity.NhanVien;
+import entity.TaiKhoan;
 import other.RandomMa;
 import service.NhanVienService;
 
@@ -62,7 +63,7 @@ public class gui_nhanVien extends JPanel implements ActionListener {
 
     public gui_nhanVien() throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             NHAN_VIEN_SERVICE = (NhanVienService) registry.lookup("NhanVienService");
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Lỗi khởi tạo service: " + e.getMessage());

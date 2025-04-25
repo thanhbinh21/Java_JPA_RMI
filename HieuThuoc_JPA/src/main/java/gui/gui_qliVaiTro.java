@@ -30,7 +30,7 @@ public class gui_qliVaiTro extends JPanel implements MouseListener {
 
     public gui_qliVaiTro() throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
             VT_SERVICE = (VaiTroService) registry.lookup("VaiTroService");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Không thể kết nối đến server: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

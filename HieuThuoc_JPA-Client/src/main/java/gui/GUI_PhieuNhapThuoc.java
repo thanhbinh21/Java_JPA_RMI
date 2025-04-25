@@ -3,8 +3,14 @@ package gui;
 import dao.*;
 import dao.impl.*;
 import entity.*;
-import service.*;
-import service.impl.*;
+import service.ChiTietPhieuNhapThuocService;
+import service.NhaCungCapService;
+import service.PhieuNhapThuocService;
+import service.ThuocService;
+import service.impl.ChiTietPhieuNhapThuocServiceImpl;
+import service.impl.NhaCungCapServiceImpl;
+import service.impl.PhieuNhapThuocServiceImpl;
+import service.impl.ThuocServiceImpl;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

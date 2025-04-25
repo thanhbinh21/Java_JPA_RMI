@@ -85,7 +85,7 @@ public class HoaDonDAOImpl extends GenericDAOImpl<HoaDon, String> implements Hoa
     }
 
     @Override
-    public List<ChiTietHoaDon> findChiTietByHoaDonId(String hoaDonId) {
+    public synchronized List<ChiTietHoaDon> findChiTietByHoaDonId(String hoaDonId) {
         return em.createQuery(
                         "SELECT c FROM ChiTietHoaDon c WHERE c.hoaDon.id = :hoaDonId", ChiTietHoaDon.class)
                 .setParameter("hoaDonId", hoaDonId)

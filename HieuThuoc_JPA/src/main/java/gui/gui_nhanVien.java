@@ -61,7 +61,7 @@ public class gui_nhanVien extends JPanel implements ActionListener {
 
     public gui_nhanVien() throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
             NHAN_VIEN_SERVICE = (NhanVienService) registry.lookup("NhanVienService");
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Lỗi khởi tạo service: " + e.getMessage());

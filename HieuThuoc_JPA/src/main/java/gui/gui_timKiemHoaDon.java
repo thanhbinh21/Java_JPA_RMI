@@ -57,7 +57,7 @@ public class gui_timKiemHoaDon extends JPanel {
         // Initialize service
         try {
 //            hoaDonService = new HoaDonServiceImpl(new HoaDonDAOImpl());
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry("172.20.10.12", 8989);
             hoaDonService = (HoaDonService) registry.lookup("HoaDonService");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khởi tạo dịch vụ: " + e.getMessage());

@@ -55,7 +55,7 @@ public class gui_qliThuoc extends JPanel implements MouseListener {
 
     public gui_qliThuoc(TaiKhoan login) {
         try {
-            Registry registry = LocateRegistry.getRegistry(8989);
+            Registry registry = LocateRegistry.getRegistry(BinhCode.HOST, 8989);
             THUOC_SERVICE = (ThuocService) registry.lookup("ThuocService");
         } catch (RemoteException e) {
             JOptionPane.showMessageDialog(null, "Lỗi khởi tạo service: " + e.getMessage());
@@ -658,6 +658,7 @@ public class gui_qliThuoc extends JPanel implements MouseListener {
         txtKhuyenMai.setText("");
         table.clearSelection();
         txtTenThuoc.requestFocus();
+        docDuLieuDatabaseVaoTable();
         displaySelectedImage(null); // Reset image preview
     }
 
